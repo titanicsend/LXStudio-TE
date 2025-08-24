@@ -32,7 +32,7 @@ public class ShaderConfiguration {
         + v1
         + ", v2="
         + v2
-        + ", textureChannel="
+        + ", iChannel="
         + iChannel
         + ", name='"
         + name

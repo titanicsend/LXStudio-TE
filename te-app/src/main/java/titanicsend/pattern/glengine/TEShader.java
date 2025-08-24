@@ -175,11 +175,11 @@ public class TEShader extends GLShader implements GLShader.UniformSource {
     // use the current view's model coordinates texture which
     // has already been loaded to the GPU by the texture cache manager.
     // All we need to do is bind it to right GL texture unit.
-    bindTextureUnit(TEXTURE_UNIT_COORDS, this.modelCoordsTextureHandle);
-    this.uniforms.lxModelCoords.setValue(TEXTURE_UNIT_COORDS);
+    bindTextureUnit(TEXTURE_UNIT_MODEL_COORDS, this.modelCoordsTextureHandle);
+    this.uniforms.lxModelCoords.setValue(TEXTURE_UNIT_MODEL_COORDS);
 
-    bindTextureUnit(TEXTURE_UNIT_COORD_MAP, this.modelIndexTextureHandle);
-    this.uniforms.lxModelIndex.setValue(TEXTURE_UNIT_COORD_MAP);
+    bindTextureUnit(TEXTURE_UNIT_MODEL_INDEX, this.modelIndexTextureHandle);
+    this.uniforms.lxModelIndex.setValue(TEXTURE_UNIT_MODEL_INDEX);
 
     // Clear backbuffer on first frame
     if (this.needsClearBackBuffer) {
@@ -271,8 +271,8 @@ public class TEShader extends GLShader implements GLShader.UniformSource {
   @Override
   public void unbindTextures() {
     // Unbind textures (except for audio, which stays bound for all patterns)
-    unbindTextureUnit(TEXTURE_UNIT_COORDS);
-    unbindTextureUnit(TEXTURE_UNIT_COORD_MAP);
+    unbindTextureUnit(TEXTURE_UNIT_MODEL_COORDS);
+    unbindTextureUnit(TEXTURE_UNIT_MODEL_INDEX);
     unbindTextureUnit(TEXTURE_UNIT_BACKBUFFER);
     for (TextureInfo ti : this.fileTextures) {
       unbindTextureUnit(ti.unit);
@@ -299,9 +299,9 @@ public class TEShader extends GLShader implements GLShader.UniformSource {
    *
    * @param model Current LXModel of the calling context, which is a LXView or the global model
    */
-  public void setModelCoordinates(LXModel model) {
-    this.modelCoordsTextureHandle = this.glEngine.textureCache.getCoordinatesTexture(model);
-    this.modelIndexTextureHandle = this.glEngine.textureCache.getIndexMapTexture(model);
+  public void setModel(LXModel model) {
+    this.modelCoordsTextureHandle = this.glEngine.textureCache.getModelCoordsTexture(model);
+    this.modelIndexTextureHandle = this.glEngine.textureCache.getModelIndexTexture(model);
   }
 
   // Releases native resources allocated by this shader.
