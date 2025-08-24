@@ -1,6 +1,6 @@
 {
-  "version": "1.0.1.TE.2-SNAPSHOT",
-  "timestamp": 1724897865029,
+  "version": "1.1.1-TE.1-SNAPSHOT",
+  "timestamp": 1756007778299,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -8,7 +8,21 @@
       "modulationColor": 0,
       "modulationControlsExpanded": true,
       "modulationsExpanded": true,
-      "showNormalizationBounds": false
+      "showNormalizationBounds": false,
+      "showFixtureLabels": false,
+      "fixtureLabelHorizontalAlignment": 1,
+      "fixtureLabelHorizontalAlignment/name": "CENTER",
+      "fixtureLabelVerticalAlignment": 1,
+      "fixtureLabelVerticalAlignment/name": "MIDDLE",
+      "fixtureLabelPositionX": 0,
+      "fixtureLabelPositionX/name": "POSITION",
+      "fixtureLabelPositionY": 0,
+      "fixtureLabelPositionY/name": "POSITION",
+      "fixtureLabelPositionZ": 0,
+      "fixtureLabelPositionZ/name": "POSITION",
+      "fixtureLabelOffsetX": 0.0,
+      "fixtureLabelOffsetY": 0.0,
+      "fixtureLabelOffsetZ": 0.0
     },
     "parameters": {
       "label": "LX",
@@ -16,6 +30,7 @@
       "allWhite": false,
       "mute": false,
       "normalizationMode": 0,
+      "normalizationMode/name": "AUTOMATIC",
       "normalizationX": 0.0,
       "normalizationY": 0.0,
       "normalizationZ": 0.0,
@@ -50,7 +65,11 @@
               "enabled": true,
               "selector": "window*",
               "normalization": 0,
-              "priority": true
+              "normalization/name": "RELATIVE",
+              "orientation": 0,
+              "orientation/name": "GLOBAL",
+              "priority": true,
+              "cueActive": false
             },
             "children": {}
           },
@@ -67,7 +86,11 @@
               "enabled": true,
               "selector": "w1;w8",
               "normalization": 0,
-              "priority": true
+              "normalization/name": "RELATIVE",
+              "orientation": 0,
+              "orientation/name": "GLOBAL",
+              "priority": true,
+              "cueActive": false
             },
             "children": {}
           },
@@ -84,7 +107,11 @@
               "enabled": true,
               "selector": "slice10;slice9;slice11;slice12;slice8;slice7",
               "normalization": 0,
-              "priority": true
+              "normalization/name": "RELATIVE",
+              "orientation": 0,
+              "orientation/name": "GLOBAL",
+              "priority": true,
+              "cueActive": false
             },
             "children": {}
           }
@@ -106,6 +133,7 @@
         "fps": 0.0,
         "gamma": 1.0,
         "gammaMode": 1,
+        "gammaMode/name": "DIRECT",
         "whitePointRed": 255,
         "whitePointGreen": 255,
         "whitePointBlue": 255,
@@ -156,6 +184,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -214,6 +244,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -275,6 +307,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -333,6 +367,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -391,6 +427,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -449,6 +487,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -507,6 +547,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -568,6 +610,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -627,6 +671,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -688,6 +734,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -749,6 +797,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -810,6 +860,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -871,6 +923,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -932,6 +986,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -993,6 +1049,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -1054,6 +1112,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -1115,6 +1175,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -1176,6 +1238,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -1237,6 +1301,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -1298,6 +1364,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -1359,6 +1427,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -1420,6 +1490,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -1481,6 +1553,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -1542,6 +1616,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -1603,6 +1679,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -1664,6 +1742,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -1725,6 +1805,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -1786,6 +1868,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -1847,6 +1931,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -1908,6 +1994,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -1969,6 +2057,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -2028,6 +2118,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -2087,6 +2179,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -2148,6 +2242,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -2209,6 +2305,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -2270,6 +2368,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -2331,6 +2431,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -2392,6 +2494,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -2453,6 +2557,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -2514,6 +2620,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -2575,6 +2683,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -2634,6 +2744,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -2693,6 +2805,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -2754,6 +2868,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -2815,6 +2931,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -2876,6 +2994,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -2937,6 +3057,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -2998,6 +3120,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": true,
@@ -3059,9 +3183,11 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
-          "selected": false,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
+          "selected": true,
           "deactivate": false,
-          "enabled": false,
+          "enabled": true,
           "brightness": 1.0,
           "identify": false,
           "mute": false,
@@ -3090,6 +3216,8 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
           "selected": false,
           "deactivate": false,
           "enabled": false,
@@ -3121,7 +3249,9 @@
           "pitch": 0.0,
           "roll": 0.0,
           "scale": 1.0,
-          "selected": true,
+          "hasCustomPointSize": false,
+          "pointSize": 5.0,
+          "selected": false,
           "deactivate": false,
           "enabled": false,
           "brightness": 1.0,
@@ -3145,12 +3275,17 @@
     },
     "parameters": {
       "label": "Engine",
-      "multithreaded": true,
-      "channelMultithreaded": false,
+      "compositorMultithreaded": false,
       "networkMultithreaded": false,
       "framesPerSecond": 60.0,
       "speed": 1.0,
-      "performanceMode": false
+      "performanceMode": false,
+      "camera-1": false,
+      "camera-2": false,
+      "camera-3": false,
+      "camera-4": false,
+      "camera-5": false,
+      "camera-6": false
     },
     "children": {
       "palette": {
@@ -3166,8 +3301,10 @@
           "transitionEnabled": false,
           "transitionTimeSecs": 0.1,
           "transitionMode": 1,
+          "transitionMode/name": "HSV",
           "autoCycleEnabled": false,
           "autoCycleMode": 0,
+          "autoCycleMode/name": "NEXT",
           "autoCycleTimeSecs": 60.0,
           "autoCycleCursor": 0,
           "triggerSwatchCycle": false,
@@ -3205,10 +3342,11 @@
                 "parameters": {
                   "label": "LX",
                   "mode": 0,
+                  "mode/name": "FIXED",
                   "period": 16.0,
                   "primary/brightness": 100.0,
                   "primary/saturation": 100.0,
-                  "primary/hue": 267.0588073730469,
+                  "primary/hue": 166.8235321044922,
                   "secondary/brightness": 94.99999237060547,
                   "secondary/saturation": 42.5,
                   "secondary/hue": 188.99998474121094
@@ -3226,10 +3364,11 @@
                 "parameters": {
                   "label": "LX",
                   "mode": 0,
+                  "mode/name": "FIXED",
                   "period": 30.0,
                   "primary/brightness": 100.0,
                   "primary/saturation": 100.0,
-                  "primary/hue": 267.0588073730469,
+                  "primary/hue": 304.23529052734375,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 100.0,
                   "secondary/hue": 120.0
@@ -3247,10 +3386,11 @@
                 "parameters": {
                   "label": "LX",
                   "mode": 0,
+                  "mode/name": "FIXED",
                   "period": 30.0,
                   "primary/brightness": 100.0,
                   "primary/saturation": 100.0,
-                  "primary/hue": 267.0588073730469,
+                  "primary/hue": 29.411762237548828,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 100.0,
                   "secondary/hue": 120.0
@@ -3287,10 +3427,11 @@
                 "parameters": {
                   "label": "LX",
                   "mode": 0,
+                  "mode/name": "FIXED",
                   "period": 16.0,
                   "primary/brightness": 100.0,
                   "primary/saturation": 100.0,
-                  "primary/hue": 267.0588073730469,
+                  "primary/hue": 166.8235321044922,
                   "secondary/brightness": 94.99999237060547,
                   "secondary/saturation": 42.5,
                   "secondary/hue": 188.99998474121094
@@ -3308,10 +3449,11 @@
                 "parameters": {
                   "label": "LX",
                   "mode": 0,
+                  "mode/name": "FIXED",
                   "period": 30.0,
                   "primary/brightness": 100.0,
                   "primary/saturation": 100.0,
-                  "primary/hue": 267.0588073730469,
+                  "primary/hue": 304.23529052734375,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 100.0,
                   "secondary/hue": 120.0
@@ -3329,10 +3471,11 @@
                 "parameters": {
                   "label": "LX",
                   "mode": 0,
+                  "mode/name": "FIXED",
                   "period": 30.0,
                   "primary/brightness": 100.0,
                   "primary/saturation": 100.0,
-                  "primary/hue": 267.0588073730469,
+                  "primary/hue": 29.411762237548828,
                   "secondary/brightness": 100.0,
                   "secondary/saturation": 100.0,
                   "secondary/hue": 120.0
@@ -3367,6 +3510,7 @@
                 "parameters": {
                   "label": "LX",
                   "mode": 0,
+                  "mode/name": "FIXED",
                   "period": 16.0,
                   "primary/brightness": 40.0,
                   "primary/saturation": 95.0,
@@ -3392,6 +3536,7 @@
         "parameters": {
           "label": "Tempo",
           "clockSource": 0,
+          "clockSource/name": "INTERNAL",
           "period": 491.8032786885246,
           "bpm": 122.0,
           "tap": false,
@@ -3399,7 +3544,9 @@
           "nudgeDown": false,
           "beatsPerBar": 4,
           "trigger": false,
-          "enabled": true
+          "enabled": true,
+          "launchQuantization": 0,
+          "follow": false
         },
         "children": {
           "nudge": {
@@ -3414,8 +3561,11 @@
               "label": "LENV",
               "running": false,
               "trigger": false,
+              "reset": false,
+              "midiSource/index": 0,
               "midiFilter/enabled": true,
               "midiFilter/channel": 16,
+              "midiFilter/channel/name": "OMNI",
               "midiFilter/minNote": 0,
               "midiFilter/noteRange": 128,
               "midiFilter/minVelocity": 1,
@@ -3423,6 +3573,7 @@
               "loop": false,
               "tempoSync": false,
               "tempoMultiplier": 5,
+              "tempoMultiplier/name": "QUARTER_TRIPLET",
               "tempoLock": true
             },
             "children": {},
@@ -3439,14 +3590,19 @@
           "modulationsExpanded": true
         },
         "parameters": {
-          "label": "LX",
+          "label": "Clips",
           "focusedClip": 0.0,
           "numScenes": 8,
           "snapshotTransitionEnabled": false,
           "snapshotTransitionTimeSecs": 5.0,
           "stopClips": false,
+          "launchPatternCycle": false,
           "triggerPatternCycle": false,
+          "timeBaseDefault": 1,
+          "timeBaseDefault/name": "TEMPO",
+          "clipSnapshotDefault": false,
           "gridMode": 0,
+          "gridMode/name": "PATTERNS",
           "gridViewOffset": 0,
           "gridPatternOffset": 0,
           "gridViewExpanded": false,
@@ -3708,10 +3864,32 @@
           "scene-128": false,
           "pattern-128": false
         },
-        "children": {}
+        "children": {
+          "grid": {
+            "id": 13,
+            "class": "heronarts.lx.clip.LXClipEngine$Grid",
+            "internal": {
+              "modulationColor": 0,
+              "modulationControlsExpanded": true,
+              "modulationsExpanded": true
+            },
+            "parameters": {
+              "label": "Grid",
+              "snap": true,
+              "mode": 0,
+              "mode/name": "ADAPTIVE",
+              "adaptiveSpacing": 2,
+              "adaptiveSpacing/name": "MEDIUM",
+              "fixedSpacingAbsolute": 2,
+              "fixedSpacingAbsolute/name": "SECOND",
+              "fixedSpacingTempo": 0
+            },
+            "children": {}
+          }
+        }
       },
       "audio": {
-        "id": 13,
+        "id": 14,
         "class": "heronarts.lx.audio.LXAudioEngine",
         "internal": {
           "modulationColor": 0,
@@ -3724,11 +3902,12 @@
           "label": "Audio",
           "enabled": true,
           "mode": 0,
+          "mode/name": "INPUT",
           "expandedPerformance": true
         },
         "children": {
           "input": {
-            "id": 14,
+            "id": 15,
             "class": "heronarts.lx.audio.LXAudioInput",
             "internal": {
               "modulationColor": 0,
@@ -3742,7 +3921,7 @@
             "children": {}
           },
           "output": {
-            "id": 15,
+            "id": 16,
             "class": "heronarts.lx.audio.LXAudioOutput",
             "internal": {
               "modulationColor": 0,
@@ -3759,7 +3938,7 @@
             "children": {}
           },
           "soundStage": {
-            "id": 16,
+            "id": 17,
             "class": "heronarts.lx.audio.SoundStage",
             "internal": {
               "modulationColor": 0,
@@ -3769,6 +3948,7 @@
             "parameters": {
               "label": "SoundStage",
               "mode": 0,
+              "mode/name": "DEFAULT",
               "xAbsolute": 0.0,
               "yAbsolute": 0.0,
               "zAbsolute": 0.0,
@@ -3788,12 +3968,14 @@
               "showSoundStage": false,
               "showSoundObjects": true,
               "soundObjectMeterMode": 0,
-              "soundObjectSize": 10.0
+              "soundObjectMeterMode/name": "NONE",
+              "soundObjectSize": 10.0,
+              "soundObjectLabels": true
             },
             "children": {}
           },
           "adm": {
-            "id": 17,
+            "id": 18,
             "class": "heronarts.lx.audio.ADM",
             "internal": {
               "modulationColor": 0,
@@ -3806,7 +3988,7 @@
             "children": {}
           },
           "envelop": {
-            "id": 82,
+            "id": 83,
             "class": "heronarts.lx.audio.Envelop",
             "internal": {
               "modulationColor": 0,
@@ -3817,11 +3999,12 @@
             "parameters": {
               "label": "Envelop",
               "running": false,
-              "trigger": false
+              "trigger": false,
+              "reset": false
             },
             "children": {
               "source": {
-                "id": 83,
+                "id": 84,
                 "class": "heronarts.lx.audio.Envelop$Source",
                 "internal": {
                   "modulationColor": 0,
@@ -3832,6 +4015,7 @@
                   "label": "Source",
                   "running": true,
                   "trigger": false,
+                  "reset": false,
                   "gain": 0.0,
                   "range": 24.0,
                   "attack": 0.0,
@@ -3872,7 +4056,7 @@
                 "children": {}
               },
               "decode": {
-                "id": 84,
+                "id": 85,
                 "class": "heronarts.lx.audio.Envelop$Decode",
                 "internal": {
                   "modulationColor": 0,
@@ -3883,6 +4067,7 @@
                   "label": "Decode",
                   "running": true,
                   "trigger": false,
+                  "reset": false,
                   "gain": 0.0,
                   "range": 24.0,
                   "attack": 0.0,
@@ -3901,7 +4086,7 @@
             }
           },
           "reaper": {
-            "id": 85,
+            "id": 86,
             "class": "heronarts.lx.audio.Reaper",
             "internal": {
               "modulationColor": 0,
@@ -3913,9 +4098,11 @@
               "label": "Reaper",
               "running": false,
               "trigger": false,
+              "reset": false,
               "meterAttack": 0.0,
               "meterRelease": 0.0,
               "foldMode": 1,
+              "foldMode/name": "ACTIVE",
               "master": 0.0,
               "master-active": false,
               "meter-1": 0.0,
@@ -3986,7 +4173,7 @@
             "children": {}
           },
           "meter": {
-            "id": 86,
+            "id": 87,
             "class": "heronarts.lx.audio.LXAudioEngine$Meter",
             "internal": {
               "modulationColor": 0,
@@ -3997,8 +4184,11 @@
               "label": "Meter",
               "running": true,
               "trigger": false,
+              "reset": false,
+              "midiSource/index": 0,
               "midiFilter/enabled": true,
               "midiFilter/channel": 16,
+              "midiFilter/channel/name": "OMNI",
               "midiFilter/minNote": 0,
               "midiFilter/noteRange": 128,
               "midiFilter/minVelocity": 1,
@@ -4017,20 +4207,20 @@
               "band-7": 0.0,
               "band-8": 0.0,
               "band-9": 0.0,
-              "band-10": 0.0,
-              "band-11": 0.0,
-              "band-12": 0.0,
-              "band-13": 0.0,
-              "band-14": 0.0,
-              "band-15": 0.0,
-              "band-16": 0.0
+              "band-10": 0.02274259500773379,
+              "band-11": 0.0314423057418628,
+              "band-12": 0.07133293339262747,
+              "band-13": 0.15166084605422991,
+              "band-14": 0.20042622616486871,
+              "band-15": 0.2647650289607911,
+              "band-16": 0.26394395693621464
             },
             "children": {}
           }
         }
       },
       "mixer": {
-        "id": 87,
+        "id": 88,
         "class": "heronarts.lx.mixer.LXMixerEngine",
         "internal": {
           "modulationColor": 0,
@@ -4041,19 +4231,21 @@
           "label": "Mixer",
           "crossfader": 0.07086614173228346,
           "crossfaderBlendMode": 0,
-          "focusedChannel": 6,
-          "focusedChannelAux": 6,
+          "focusedChannel": 4,
+          "focusedChannelAux": 4,
           "cueA": false,
           "cueB": false,
           "auxA": false,
           "auxB": false,
+          "autoMuteDefault": false,
+          "autoMutePatternDefault": false,
           "viewCondensed": false,
           "viewStacked": false,
           "viewDeviceBin": true
         },
         "children": {
           "master": {
-            "id": 95,
+            "id": 96,
             "class": "heronarts.lx.mixer.LXMasterBus",
             "internal": {
               "modulationColor": 0,
@@ -4069,11 +4261,12 @@
               "arm": false,
               "selected": false,
               "stopClips": false,
-              "previewMode": 0
+              "previewMode": 0,
+              "previewMode/name": "PRE"
             },
             "children": {
               "modulation": {
-                "id": 96,
+                "id": 97,
                 "class": "heronarts.lx.modulation.LXModulationEngine",
                 "internal": {
                   "modulationColor": 0,
@@ -4106,6 +4299,7 @@
                   "label": "Director",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
                   "midiFilter/minNote": 0,
                   "midiFilter/noteRange": 128,
                   "midiFilter/minVelocity": 1,
@@ -4163,25 +4357,32 @@
               "cue": false,
               "aux": false,
               "crossfadeGroup": 0,
+              "crossfadeGroup/name": "BYPASS",
               "blendMode": 0,
+              "autoMute": false,
+              "midiSource/index": 0,
               "midiFilter/enabled": false,
               "midiFilter/channel": 16,
+              "midiFilter/channel/name": "OMNI",
               "midiFilter/minNote": 0,
               "midiFilter/noteRange": 128,
               "midiFilter/minVelocity": 1,
               "midiFilter/velocityRange": 127,
               "view": 0,
               "compositeMode": 0,
+              "compositeMode/name": "PLAYLIST",
               "compositeDampingEnabled": true,
               "compositeDampingTimeSecs": 0.1,
               "autoCycleEnabled": false,
               "autoCycleMode": 0,
+              "autoCycleMode/name": "NEXT",
               "autoCycleTimeSecs": 60.0,
               "transitionEnabled": false,
               "transitionTimeSecs": 5.0,
               "transitionBlendMode": 0,
               "focusedPattern": 0,
-              "triggerPatternCycle": false
+              "triggerPatternCycle": false,
+              "launchPatternCycle": false
             },
             "children": {
               "modulation": {
@@ -4221,6 +4422,7 @@
                   "label": "Mothership Driving",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
                   "midiFilter/minNote": 0,
                   "midiFilter/noteRange": 128,
                   "midiFilter/minVelocity": 1,
@@ -4229,22 +4431,29 @@
                   "viewPriority": 0,
                   "enabled": true,
                   "recall": false,
-                  "compositeMode": 0,
+                  "launch": false,
+                  "compositeBlend": 0,
                   "compositeLevel": 1.0,
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
+                  "autoMute": false,
+                  "cueActive": false,
+                  "auxActive": false,
                   "color1/brightness": 100.0,
                   "color1/saturation": 75.83333587646484,
                   "color1/hue": 323.8828125,
                   "color1/mode": 0,
+                  "color1/mode/name": "STATIC",
                   "color1/index": 1,
                   "color2/brightness": 100.0,
                   "color2/saturation": 0.0,
                   "color2/hue": 0.0,
                   "color2/mode": 0,
+                  "color2/mode/name": "STATIC",
                   "color2/index": 1,
                   "tag1": "drive",
-                  "tag2": "run"
+                  "tag2": "run",
+                  "compositeMode": 0
                 },
                 "children": {
                   "modulation": {
@@ -4292,25 +4501,32 @@
               "cue": false,
               "aux": false,
               "crossfadeGroup": 0,
+              "crossfadeGroup/name": "BYPASS",
               "blendMode": 0,
+              "autoMute": false,
+              "midiSource/index": 0,
               "midiFilter/enabled": false,
               "midiFilter/channel": 16,
+              "midiFilter/channel/name": "OMNI",
               "midiFilter/minNote": 0,
               "midiFilter/noteRange": 128,
               "midiFilter/minVelocity": 1,
               "midiFilter/velocityRange": 127,
               "view": 0,
               "compositeMode": 0,
+              "compositeMode/name": "PLAYLIST",
               "compositeDampingEnabled": true,
               "compositeDampingTimeSecs": 0.1,
               "autoCycleEnabled": false,
               "autoCycleMode": 0,
+              "autoCycleMode/name": "NEXT",
               "autoCycleTimeSecs": 60.0,
               "transitionEnabled": false,
               "transitionTimeSecs": 5.0,
               "transitionBlendMode": 0,
-              "focusedPattern": 1,
-              "triggerPatternCycle": false
+              "focusedPattern": 4,
+              "triggerPatternCycle": false,
+              "launchPatternCycle": false
             },
             "children": {
               "modulation": {
@@ -4332,7 +4548,7 @@
             },
             "effects": [],
             "clips": [],
-            "patternIndex": 1,
+            "patternIndex": 4,
             "patterns": [
               {
                 "id": 272105,
@@ -4350,6 +4566,7 @@
                   "label": "TESolid",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
                   "midiFilter/minNote": 0,
                   "midiFilter/noteRange": 128,
                   "midiFilter/minVelocity": 1,
@@ -4358,10 +4575,14 @@
                   "viewPriority": 0,
                   "enabled": true,
                   "recall": false,
-                  "compositeMode": 0,
+                  "launch": false,
+                  "compositeBlend": 0,
                   "compositeLevel": 1.0,
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
+                  "autoMute": false,
+                  "cueActive": false,
+                  "auxActive": false,
                   "setDefaults": false,
                   "te_speed": 1.2289359223373388,
                   "te_xpos": 0.0,
@@ -4380,10 +4601,13 @@
                   "panic": false,
                   "te_color/brightness": 100.0,
                   "te_color/saturation": 100.0,
-                  "te_color/hue": 268.49618602362074,
+                  "te_color/hue": 195.00012303149427,
                   "te_color/solidSource": 0,
+                  "te_color/solidSource/name": "STATIC",
                   "te_color/blendMode": 0,
-                  "te_color/offset": 0.7952755905511799
+                  "te_color/blendMode/name": "OKLAB",
+                  "te_color/offset": 0.7952755905511799,
+                  "compositeMode": 0
                 },
                 "children": {
                   "modulation": {
@@ -4442,6 +4666,7 @@
                   "label": "StarField1",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
                   "midiFilter/minNote": 0,
                   "midiFilter/noteRange": 128,
                   "midiFilter/minVelocity": 1,
@@ -4450,10 +4675,14 @@
                   "viewPriority": 0,
                   "enabled": true,
                   "recall": false,
-                  "compositeMode": 0,
+                  "launch": false,
+                  "compositeBlend": 0,
                   "compositeLevel": 1.0,
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
+                  "autoMute": false,
+                  "cueActive": false,
+                  "auxActive": false,
                   "setDefaults": false,
                   "te_speed": 0.07836567418176088,
                   "te_xpos": 0.0,
@@ -4474,8 +4703,11 @@
                   "te_color/saturation": 100.0,
                   "te_color/hue": 0.0,
                   "te_color/solidSource": 1,
+                  "te_color/solidSource/name": "NORMAL",
                   "te_color/blendMode": 0,
-                  "te_color/offset": 0.0
+                  "te_color/blendMode/name": "OKLAB",
+                  "te_color/offset": 0.0,
+                  "compositeMode": 0
                 },
                 "children": {
                   "modulation": {
@@ -4534,6 +4766,7 @@
                   "label": "Fireflies",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
                   "midiFilter/minNote": 0,
                   "midiFilter/noteRange": 128,
                   "midiFilter/minVelocity": 1,
@@ -4542,10 +4775,14 @@
                   "viewPriority": 0,
                   "enabled": true,
                   "recall": false,
-                  "compositeMode": 0,
+                  "launch": false,
+                  "compositeBlend": 0,
                   "compositeLevel": 1.0,
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
+                  "autoMute": false,
+                  "cueActive": false,
+                  "auxActive": false,
                   "setDefaults": false,
                   "te_speed": 0.5,
                   "te_xpos": 0.0,
@@ -4566,8 +4803,11 @@
                   "te_color/saturation": 100.0,
                   "te_color/hue": 0.0,
                   "te_color/solidSource": 1,
+                  "te_color/solidSource/name": "NORMAL",
                   "te_color/blendMode": 0,
-                  "te_color/offset": 0.0
+                  "te_color/blendMode/name": "OKLAB",
+                  "te_color/offset": 0.0,
+                  "compositeMode": 0
                 },
                 "children": {
                   "modulation": {
@@ -4626,6 +4866,7 @@
                   "label": "OldMatrixScroller",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
                   "midiFilter/minNote": 0,
                   "midiFilter/noteRange": 128,
                   "midiFilter/minVelocity": 1,
@@ -4634,10 +4875,14 @@
                   "viewPriority": 0,
                   "enabled": true,
                   "recall": false,
-                  "compositeMode": 0,
+                  "launch": false,
+                  "compositeBlend": 0,
                   "compositeLevel": 1.0,
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
+                  "autoMute": false,
+                  "cueActive": false,
+                  "auxActive": false,
                   "setDefaults": false,
                   "te_speed": 0.5,
                   "te_xpos": 0.0,
@@ -4658,8 +4903,11 @@
                   "te_color/saturation": 100.0,
                   "te_color/hue": 343.60546875,
                   "te_color/solidSource": 0,
+                  "te_color/solidSource/name": "STATIC",
                   "te_color/blendMode": 0,
-                  "te_color/offset": 0.0
+                  "te_color/blendMode/name": "OKLAB",
+                  "te_color/offset": 0.0,
+                  "compositeMode": 0
                 },
                 "children": {
                   "modulation": {
@@ -4718,6 +4966,7 @@
                   "label": "Fireflies",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
                   "midiFilter/minNote": 0,
                   "midiFilter/noteRange": 128,
                   "midiFilter/minVelocity": 1,
@@ -4726,10 +4975,14 @@
                   "viewPriority": 0,
                   "enabled": true,
                   "recall": false,
-                  "compositeMode": 0,
+                  "launch": false,
+                  "compositeBlend": 0,
                   "compositeLevel": 1.0,
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
+                  "autoMute": false,
+                  "cueActive": false,
+                  "auxActive": false,
                   "setDefaults": false,
                   "te_speed": 0.5,
                   "te_xpos": 0.0,
@@ -4750,8 +5003,11 @@
                   "te_color/saturation": 100.0,
                   "te_color/hue": 0.0,
                   "te_color/solidSource": 1,
+                  "te_color/solidSource/name": "NORMAL",
                   "te_color/blendMode": 0,
-                  "te_color/offset": 0.0
+                  "te_color/blendMode/name": "OKLAB",
+                  "te_color/offset": 0.0,
+                  "compositeMode": 0
                 },
                 "children": {
                   "modulation": {
@@ -4819,25 +5075,32 @@
               "cue": false,
               "aux": false,
               "crossfadeGroup": 0,
+              "crossfadeGroup/name": "BYPASS",
               "blendMode": 0,
+              "autoMute": false,
+              "midiSource/index": 0,
               "midiFilter/enabled": false,
               "midiFilter/channel": 16,
+              "midiFilter/channel/name": "OMNI",
               "midiFilter/minNote": 0,
               "midiFilter/noteRange": 128,
               "midiFilter/minVelocity": 1,
               "midiFilter/velocityRange": 127,
               "view": 0,
               "compositeMode": 0,
+              "compositeMode/name": "PLAYLIST",
               "compositeDampingEnabled": true,
               "compositeDampingTimeSecs": 0.1,
               "autoCycleEnabled": false,
               "autoCycleMode": 0,
+              "autoCycleMode/name": "NEXT",
               "autoCycleTimeSecs": 60.0,
               "transitionEnabled": false,
               "transitionTimeSecs": 5.0,
               "transitionBlendMode": 0,
               "focusedPattern": 1,
-              "triggerPatternCycle": false
+              "triggerPatternCycle": false,
+              "launchPatternCycle": false
             },
             "children": {
               "modulation": {
@@ -4877,6 +5140,7 @@
                   "label": "StarField1",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
                   "midiFilter/minNote": 0,
                   "midiFilter/noteRange": 128,
                   "midiFilter/minVelocity": 1,
@@ -4885,10 +5149,14 @@
                   "viewPriority": 0,
                   "enabled": true,
                   "recall": false,
-                  "compositeMode": 0,
+                  "launch": false,
+                  "compositeBlend": 0,
                   "compositeLevel": 1.0,
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
+                  "autoMute": false,
+                  "cueActive": false,
+                  "auxActive": false,
                   "setDefaults": false,
                   "te_speed": 0.5,
                   "te_xpos": 0.0,
@@ -4909,8 +5177,11 @@
                   "te_color/saturation": 100.0,
                   "te_color/hue": 0.0,
                   "te_color/solidSource": 1,
+                  "te_color/solidSource/name": "NORMAL",
                   "te_color/blendMode": 0,
-                  "te_color/offset": 0.0
+                  "te_color/blendMode/name": "OKLAB",
+                  "te_color/offset": 0.0,
+                  "compositeMode": 0
                 },
                 "children": {
                   "modulation": {
@@ -4969,6 +5240,7 @@
                   "label": "Chevron",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
                   "midiFilter/minNote": 0,
                   "midiFilter/noteRange": 128,
                   "midiFilter/minVelocity": 1,
@@ -4977,10 +5249,14 @@
                   "viewPriority": 0,
                   "enabled": true,
                   "recall": false,
-                  "compositeMode": 0,
+                  "launch": false,
+                  "compositeBlend": 0,
                   "compositeLevel": 1.0,
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
+                  "autoMute": false,
+                  "cueActive": false,
+                  "auxActive": false,
                   "x": 0.5,
                   "y": 0.5,
                   "z": 0.002304687397554517,
@@ -4995,13 +5271,15 @@
                   "speedRange": 1.0,
                   "tempoSync": false,
                   "tempoDivision": 5,
+                  "tempoDivision/name": "QUARTER_TRIPLET",
                   "reverse": false,
                   "invert": 0.0,
                   "level": 0.8183203134685755,
                   "rotate": false,
                   "yaw": 0.0,
                   "pitch": 0.0,
-                  "roll": 0.0
+                  "roll": 0.0,
+                  "compositeMode": 0
                 },
                 "children": {
                   "modulation": {
@@ -5029,8 +5307,11 @@
                           "label": "LFO",
                           "running": true,
                           "trigger": false,
+                          "reset": false,
+                          "midiSource/index": 0,
                           "midiFilter/enabled": true,
                           "midiFilter/channel": 16,
+                          "midiFilter/channel/name": "OMNI",
                           "midiFilter/minNote": 0,
                           "midiFilter/noteRange": 128,
                           "midiFilter/minVelocity": 1,
@@ -5038,8 +5319,10 @@
                           "loop": true,
                           "tempoSync": true,
                           "tempoMultiplier": 5,
+                          "tempoMultiplier/name": "QUARTER_TRIPLET",
                           "tempoLock": true,
                           "clockMode": 2,
+                          "clockMode/name": "SYNC",
                           "periodFast": 1000.0,
                           "periodSlow": 10000.0,
                           "wave": 4,
@@ -5050,7 +5333,7 @@
                           "exp": 0.0
                         },
                         "children": {},
-                        "basis": 0.9099657083333623
+                        "basis": 0.5262157070999615
                       }
                     ],
                     "modulations": [],
@@ -5085,25 +5368,32 @@
               "cue": false,
               "aux": false,
               "crossfadeGroup": 0,
+              "crossfadeGroup/name": "BYPASS",
               "blendMode": 0,
+              "autoMute": false,
+              "midiSource/index": 0,
               "midiFilter/enabled": false,
               "midiFilter/channel": 16,
+              "midiFilter/channel/name": "OMNI",
               "midiFilter/minNote": 0,
               "midiFilter/noteRange": 128,
               "midiFilter/minVelocity": 1,
               "midiFilter/velocityRange": 127,
               "view": 0,
               "compositeMode": 0,
+              "compositeMode/name": "PLAYLIST",
               "compositeDampingEnabled": true,
               "compositeDampingTimeSecs": 0.1,
               "autoCycleEnabled": false,
               "autoCycleMode": 0,
+              "autoCycleMode/name": "NEXT",
               "autoCycleTimeSecs": 60.0,
               "transitionEnabled": false,
               "transitionTimeSecs": 5.0,
               "transitionBlendMode": 0,
               "focusedPattern": 2,
-              "triggerPatternCycle": false
+              "triggerPatternCycle": false,
+              "launchPatternCycle": false
             },
             "children": {
               "modulation": {
@@ -5143,6 +5433,7 @@
                   "label": "TESolid",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
                   "midiFilter/minNote": 0,
                   "midiFilter/noteRange": 128,
                   "midiFilter/minVelocity": 1,
@@ -5151,10 +5442,14 @@
                   "viewPriority": 0,
                   "enabled": true,
                   "recall": false,
-                  "compositeMode": 0,
+                  "launch": false,
+                  "compositeBlend": 0,
                   "compositeLevel": 1.0,
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
+                  "autoMute": false,
+                  "cueActive": false,
+                  "auxActive": false,
                   "setDefaults": false,
                   "te_speed": 0.5,
                   "te_xpos": 0.0,
@@ -5175,8 +5470,11 @@
                   "te_color/saturation": 100.0,
                   "te_color/hue": 0.0,
                   "te_color/solidSource": 1,
+                  "te_color/solidSource/name": "NORMAL",
                   "te_color/blendMode": 0,
-                  "te_color/offset": 0.0
+                  "te_color/blendMode/name": "OKLAB",
+                  "te_color/offset": 0.0,
+                  "compositeMode": 0
                 },
                 "children": {
                   "modulation": {
@@ -5235,6 +5533,7 @@
                   "label": "StarField1",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
                   "midiFilter/minNote": 0,
                   "midiFilter/noteRange": 128,
                   "midiFilter/minVelocity": 1,
@@ -5243,10 +5542,14 @@
                   "viewPriority": 0,
                   "enabled": true,
                   "recall": false,
-                  "compositeMode": 0,
+                  "launch": false,
+                  "compositeBlend": 0,
                   "compositeLevel": 1.0,
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
+                  "autoMute": false,
+                  "cueActive": false,
+                  "auxActive": false,
                   "setDefaults": false,
                   "te_speed": 0.07836567418176088,
                   "te_xpos": 0.0,
@@ -5267,8 +5570,11 @@
                   "te_color/saturation": 0.0,
                   "te_color/hue": 0.0,
                   "te_color/solidSource": 1,
+                  "te_color/solidSource/name": "NORMAL",
                   "te_color/blendMode": 0,
-                  "te_color/offset": 0.0
+                  "te_color/blendMode/name": "OKLAB",
+                  "te_color/offset": 0.0,
+                  "compositeMode": 0
                 },
                 "children": {
                   "modulation": {
@@ -5327,6 +5633,7 @@
                   "label": "Fireflies",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
                   "midiFilter/minNote": 0,
                   "midiFilter/noteRange": 128,
                   "midiFilter/minVelocity": 1,
@@ -5335,10 +5642,14 @@
                   "viewPriority": 0,
                   "enabled": true,
                   "recall": false,
-                  "compositeMode": 0,
+                  "launch": false,
+                  "compositeBlend": 0,
                   "compositeLevel": 1.0,
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
+                  "autoMute": false,
+                  "cueActive": false,
+                  "auxActive": false,
                   "setDefaults": false,
                   "te_speed": 0.0527335105730824,
                   "te_xpos": 0.0,
@@ -5359,8 +5670,11 @@
                   "te_color/saturation": 100.0,
                   "te_color/hue": 0.0,
                   "te_color/solidSource": 1,
+                  "te_color/solidSource/name": "NORMAL",
                   "te_color/blendMode": 0,
-                  "te_color/offset": 0.0
+                  "te_color/blendMode/name": "OKLAB",
+                  "te_color/offset": 0.0,
+                  "compositeMode": 0
                 },
                 "children": {
                   "modulation": {
@@ -5419,6 +5733,7 @@
                   "label": "OldMatrixScroller",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
                   "midiFilter/minNote": 0,
                   "midiFilter/noteRange": 128,
                   "midiFilter/minVelocity": 1,
@@ -5427,10 +5742,14 @@
                   "viewPriority": 0,
                   "enabled": true,
                   "recall": false,
-                  "compositeMode": 0,
+                  "launch": false,
+                  "compositeBlend": 0,
                   "compositeLevel": 1.0,
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
+                  "autoMute": false,
+                  "cueActive": false,
+                  "auxActive": false,
                   "setDefaults": false,
                   "te_speed": 0.06765232636809859,
                   "te_xpos": 0.0,
@@ -5451,8 +5770,11 @@
                   "te_color/saturation": 100.0,
                   "te_color/hue": 0.0,
                   "te_color/solidSource": 1,
+                  "te_color/solidSource/name": "NORMAL",
                   "te_color/blendMode": 0,
-                  "te_color/offset": 0.0
+                  "te_color/blendMode/name": "OKLAB",
+                  "te_color/offset": 0.0,
+                  "compositeMode": 0
                 },
                 "children": {
                   "modulation": {
@@ -5511,6 +5833,7 @@
                   "label": "Fireflies",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
                   "midiFilter/minNote": 0,
                   "midiFilter/noteRange": 128,
                   "midiFilter/minVelocity": 1,
@@ -5519,10 +5842,14 @@
                   "viewPriority": 0,
                   "enabled": true,
                   "recall": false,
-                  "compositeMode": 0,
+                  "launch": false,
+                  "compositeBlend": 0,
                   "compositeLevel": 1.0,
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
+                  "autoMute": false,
+                  "cueActive": false,
+                  "auxActive": false,
                   "setDefaults": false,
                   "te_speed": 0.6236560046709521,
                   "te_xpos": 0.0,
@@ -5543,8 +5870,11 @@
                   "te_color/saturation": 100.0,
                   "te_color/hue": 0.0,
                   "te_color/solidSource": 1,
+                  "te_color/solidSource/name": "NORMAL",
                   "te_color/blendMode": 0,
-                  "te_color/offset": 0.0
+                  "te_color/blendMode/name": "OKLAB",
+                  "te_color/offset": 0.0,
+                  "compositeMode": 0
                 },
                 "children": {
                   "modulation": {
@@ -5603,6 +5933,7 @@
                   "label": "FollowThatStar",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
                   "midiFilter/minNote": 0,
                   "midiFilter/noteRange": 128,
                   "midiFilter/minVelocity": 1,
@@ -5611,10 +5942,14 @@
                   "viewPriority": 0,
                   "enabled": true,
                   "recall": false,
-                  "compositeMode": 0,
+                  "launch": false,
+                  "compositeBlend": 0,
                   "compositeLevel": 1.0,
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
+                  "autoMute": false,
+                  "cueActive": false,
+                  "auxActive": false,
                   "setDefaults": false,
                   "te_speed": 1.5803453718527072,
                   "te_xpos": 0.0,
@@ -5635,8 +5970,11 @@
                   "te_color/saturation": 100.0,
                   "te_color/hue": 0.0,
                   "te_color/solidSource": 1,
+                  "te_color/solidSource/name": "NORMAL",
                   "te_color/blendMode": 0,
-                  "te_color/offset": 0.44881889763779315
+                  "te_color/blendMode/name": "OKLAB",
+                  "te_color/offset": 0.44881889763779315,
+                  "compositeMode": 0
                 },
                 "children": {
                   "modulation": {
@@ -5696,33 +6034,40 @@
             },
             "parameters": {
               "label": "Channel-5",
-              "fader": 0.0,
+              "fader": 1.0,
               "arm": false,
-              "selected": false,
+              "selected": true,
               "stopClips": false,
               "enabled": true,
-              "cue": true,
+              "cue": false,
               "aux": true,
               "crossfadeGroup": 0,
+              "crossfadeGroup/name": "BYPASS",
               "blendMode": 0,
+              "autoMute": false,
+              "midiSource/index": 0,
               "midiFilter/enabled": false,
               "midiFilter/channel": 16,
+              "midiFilter/channel/name": "OMNI",
               "midiFilter/minNote": 0,
               "midiFilter/noteRange": 128,
               "midiFilter/minVelocity": 1,
               "midiFilter/velocityRange": 127,
               "view": 0,
               "compositeMode": 0,
+              "compositeMode/name": "PLAYLIST",
               "compositeDampingEnabled": true,
               "compositeDampingTimeSecs": 0.1,
               "autoCycleEnabled": false,
               "autoCycleMode": 0,
+              "autoCycleMode/name": "NEXT",
               "autoCycleTimeSecs": 60.0,
               "transitionEnabled": false,
               "transitionTimeSecs": 5.0,
               "transitionBlendMode": 0,
-              "focusedPattern": 4,
-              "triggerPatternCycle": false
+              "focusedPattern": 13,
+              "triggerPatternCycle": false,
+              "launchPatternCycle": false
             },
             "children": {
               "modulation": {
@@ -5744,7 +6089,7 @@
             },
             "effects": [],
             "clips": [],
-            "patternIndex": 6,
+            "patternIndex": 13,
             "patterns": [
               {
                 "id": 272267,
@@ -5762,6 +6107,7 @@
                   "label": "TESolid",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
                   "midiFilter/minNote": 0,
                   "midiFilter/noteRange": 128,
                   "midiFilter/minVelocity": 1,
@@ -5770,10 +6116,14 @@
                   "viewPriority": 0,
                   "enabled": true,
                   "recall": false,
-                  "compositeMode": 0,
+                  "launch": false,
+                  "compositeBlend": 0,
                   "compositeLevel": 1.0,
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
+                  "autoMute": false,
+                  "cueActive": false,
+                  "auxActive": false,
                   "setDefaults": false,
                   "te_speed": 0.5,
                   "te_xpos": 0.07874015748031482,
@@ -5794,8 +6144,11 @@
                   "te_color/saturation": 0.0,
                   "te_color/hue": 0.0,
                   "te_color/solidSource": 0,
+                  "te_color/solidSource/name": "STATIC",
                   "te_color/blendMode": 0,
-                  "te_color/offset": 0.0
+                  "te_color/blendMode/name": "OKLAB",
+                  "te_color/offset": 0.0,
+                  "compositeMode": 0
                 },
                 "children": {
                   "modulation": {
@@ -5854,6 +6207,7 @@
                   "label": "Fireflies",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
                   "midiFilter/minNote": 0,
                   "midiFilter/noteRange": 128,
                   "midiFilter/minVelocity": 1,
@@ -5862,10 +6216,14 @@
                   "viewPriority": 0,
                   "enabled": true,
                   "recall": false,
-                  "compositeMode": 0,
+                  "launch": false,
+                  "compositeBlend": 0,
                   "compositeLevel": 1.0,
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
+                  "autoMute": false,
+                  "cueActive": false,
+                  "auxActive": false,
                   "setDefaults": false,
                   "te_speed": 0.5,
                   "te_xpos": 0.0,
@@ -5886,8 +6244,11 @@
                   "te_color/saturation": 100.0,
                   "te_color/hue": 0.0,
                   "te_color/solidSource": 1,
+                  "te_color/solidSource/name": "NORMAL",
                   "te_color/blendMode": 0,
-                  "te_color/offset": 0.0
+                  "te_color/blendMode/name": "OKLAB",
+                  "te_color/offset": 0.0,
+                  "compositeMode": 0
                 },
                 "children": {
                   "modulation": {
@@ -5946,6 +6307,7 @@
                   "label": "FollowThatStar",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
                   "midiFilter/minNote": 0,
                   "midiFilter/noteRange": 128,
                   "midiFilter/minVelocity": 1,
@@ -5954,10 +6316,14 @@
                   "viewPriority": 0,
                   "enabled": true,
                   "recall": false,
-                  "compositeMode": 0,
+                  "launch": false,
+                  "compositeBlend": 0,
                   "compositeLevel": 1.0,
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
+                  "autoMute": false,
+                  "cueActive": false,
+                  "auxActive": false,
                   "setDefaults": false,
                   "te_speed": 0.5,
                   "te_xpos": 0.0,
@@ -5978,8 +6344,11 @@
                   "te_color/saturation": 100.0,
                   "te_color/hue": 0.0,
                   "te_color/solidSource": 1,
+                  "te_color/solidSource/name": "NORMAL",
                   "te_color/blendMode": 0,
-                  "te_color/offset": 0.0
+                  "te_color/blendMode/name": "OKLAB",
+                  "te_color/offset": 0.0,
+                  "compositeMode": 0
                 },
                 "children": {
                   "modulation": {
@@ -6038,6 +6407,7 @@
                   "label": "StarField2",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
                   "midiFilter/minNote": 0,
                   "midiFilter/noteRange": 128,
                   "midiFilter/minVelocity": 1,
@@ -6046,10 +6416,14 @@
                   "viewPriority": 0,
                   "enabled": true,
                   "recall": false,
-                  "compositeMode": 0,
+                  "launch": false,
+                  "compositeBlend": 0,
                   "compositeLevel": 1.0,
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
+                  "autoMute": false,
+                  "cueActive": false,
+                  "auxActive": false,
                   "setDefaults": false,
                   "te_speed": 0.5,
                   "te_xpos": 0.0,
@@ -6070,8 +6444,11 @@
                   "te_color/saturation": 100.0,
                   "te_color/hue": 0.0,
                   "te_color/solidSource": 1,
+                  "te_color/solidSource/name": "NORMAL",
                   "te_color/blendMode": 0,
-                  "te_color/offset": 0.0
+                  "te_color/blendMode/name": "OKLAB",
+                  "te_color/offset": 0.0,
+                  "compositeMode": 0
                 },
                 "children": {
                   "modulation": {
@@ -6130,6 +6507,7 @@
                   "label": "StarField1",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
                   "midiFilter/minNote": 0,
                   "midiFilter/noteRange": 128,
                   "midiFilter/minVelocity": 1,
@@ -6138,10 +6516,14 @@
                   "viewPriority": 0,
                   "enabled": true,
                   "recall": false,
-                  "compositeMode": 0,
+                  "launch": false,
+                  "compositeBlend": 0,
                   "compositeLevel": 1.0,
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
+                  "autoMute": false,
+                  "cueActive": false,
+                  "auxActive": false,
                   "setDefaults": false,
                   "te_speed": 0.14910757953123888,
                   "te_xpos": 0.0,
@@ -6162,8 +6544,11 @@
                   "te_color/saturation": 95.09803771972656,
                   "te_color/hue": 293.8144226074219,
                   "te_color/solidSource": 1,
+                  "te_color/solidSource/name": "NORMAL",
                   "te_color/blendMode": 0,
-                  "te_color/offset": 0.0
+                  "te_color/blendMode/name": "OKLAB",
+                  "te_color/offset": 0.651718752225861,
+                  "compositeMode": 0
                 },
                 "children": {
                   "modulation": {
@@ -6191,8 +6576,11 @@
                           "label": "Audio Stem",
                           "running": true,
                           "trigger": false,
+                          "reset": false,
+                          "midiSource/index": 0,
                           "midiFilter/enabled": true,
                           "midiFilter/channel": 16,
+                          "midiFilter/channel/name": "OMNI",
                           "midiFilter/minNote": 0,
                           "midiFilter/noteRange": 128,
                           "midiFilter/minVelocity": 1,
@@ -6200,6 +6588,7 @@
                           "stem": 2,
                           "emaMs": 16.981347640472816,
                           "outputMode": 0,
+                          "outputMode/name": "ENERGY",
                           "accRate": 0.2,
                           "shape": 0,
                           "slope": 1.0
@@ -6218,8 +6607,11 @@
                           "label": "Audio Stem 2",
                           "running": true,
                           "trigger": false,
+                          "reset": false,
+                          "midiSource/index": 0,
                           "midiFilter/enabled": true,
                           "midiFilter/channel": 16,
+                          "midiFilter/channel/name": "OMNI",
                           "midiFilter/minNote": 0,
                           "midiFilter/noteRange": 128,
                           "midiFilter/minVelocity": 1,
@@ -6227,6 +6619,7 @@
                           "stem": 1,
                           "emaMs": 36.070318875908555,
                           "outputMode": 0,
+                          "outputMode/name": "ENERGY",
                           "accRate": 0.2,
                           "shape": 0,
                           "slope": 1.0
@@ -6245,8 +6638,11 @@
                           "label": "Audio Stem 3",
                           "running": true,
                           "trigger": false,
+                          "reset": false,
+                          "midiSource/index": 0,
                           "midiFilter/enabled": true,
                           "midiFilter/channel": 16,
+                          "midiFilter/channel/name": "OMNI",
                           "midiFilter/minNote": 0,
                           "midiFilter/noteRange": 128,
                           "midiFilter/minVelocity": 1,
@@ -6254,6 +6650,7 @@
                           "stem": 0,
                           "emaMs": 142.71276790626365,
                           "outputMode": 0,
+                          "outputMode/name": "ENERGY",
                           "accRate": 0.2,
                           "shape": 0,
                           "slope": 1.0
@@ -6272,8 +6669,11 @@
                           "label": "Audio Stem 4",
                           "running": true,
                           "trigger": false,
+                          "reset": false,
+                          "midiSource/index": 0,
                           "midiFilter/enabled": true,
                           "midiFilter/channel": 16,
+                          "midiFilter/channel/name": "OMNI",
                           "midiFilter/minNote": 0,
                           "midiFilter/noteRange": 128,
                           "midiFilter/minVelocity": 1,
@@ -6281,6 +6681,7 @@
                           "stem": 3,
                           "emaMs": 20.117433169145805,
                           "outputMode": 0,
+                          "outputMode/name": "ENERGY",
                           "accRate": 0.2,
                           "shape": 0,
                           "slope": 1.0
@@ -6310,6 +6711,7 @@
                           "label": "LX",
                           "enabled": true,
                           "polarity": 0,
+                          "polarity/name": "UNIPOLAR",
                           "range": 1.0
                         },
                         "children": {}
@@ -6335,6 +6737,7 @@
                           "label": "LX",
                           "enabled": true,
                           "polarity": 0,
+                          "polarity/name": "UNIPOLAR",
                           "range": 0.10171874985098839
                         },
                         "children": {}
@@ -6360,6 +6763,7 @@
                           "label": "LX",
                           "enabled": true,
                           "polarity": 0,
+                          "polarity/name": "UNIPOLAR",
                           "range": 1.0
                         },
                         "children": {}
@@ -6385,6 +6789,7 @@
                           "label": "LX",
                           "enabled": true,
                           "polarity": 0,
+                          "polarity/name": "UNIPOLAR",
                           "range": 0.06046874666935764
                         },
                         "children": {}
@@ -6410,6 +6815,7 @@
                           "label": "LX",
                           "enabled": true,
                           "polarity": 0,
+                          "polarity/name": "UNIPOLAR",
                           "range": 0.1717187490360812
                         },
                         "children": {}
@@ -6435,6 +6841,7 @@
                           "label": "LX",
                           "enabled": true,
                           "polarity": 0,
+                          "polarity/name": "UNIPOLAR",
                           "range": 0.8857031229417771
                         },
                         "children": {}
@@ -6512,6 +6919,7 @@
                   "label": "Circuitry",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
                   "midiFilter/minNote": 0,
                   "midiFilter/noteRange": 128,
                   "midiFilter/minVelocity": 1,
@@ -6520,10 +6928,14 @@
                   "viewPriority": 0,
                   "enabled": true,
                   "recall": false,
-                  "compositeMode": 0,
+                  "launch": false,
+                  "compositeBlend": 0,
                   "compositeLevel": 1.0,
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
+                  "autoMute": false,
+                  "cueActive": false,
+                  "auxActive": false,
                   "setDefaults": false,
                   "te_speed": 0.13703868465491276,
                   "te_xpos": 0.0,
@@ -6544,8 +6956,11 @@
                   "te_color/saturation": 100.0,
                   "te_color/hue": 0.0,
                   "te_color/solidSource": 1,
+                  "te_color/solidSource/name": "NORMAL",
                   "te_color/blendMode": 0,
-                  "te_color/offset": 0.0
+                  "te_color/blendMode/name": "OKLAB",
+                  "te_color/offset": 0.0,
+                  "compositeMode": 0
                 },
                 "children": {
                   "modulation": {
@@ -6604,6 +7019,7 @@
                   "label": "MetallicWaves",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
                   "midiFilter/minNote": 0,
                   "midiFilter/noteRange": 128,
                   "midiFilter/minVelocity": 1,
@@ -6612,10 +7028,14 @@
                   "viewPriority": 0,
                   "enabled": true,
                   "recall": false,
-                  "compositeMode": 0,
+                  "launch": false,
+                  "compositeBlend": 0,
                   "compositeLevel": 1.0,
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
+                  "autoMute": false,
+                  "cueActive": false,
+                  "auxActive": false,
                   "setDefaults": false,
                   "te_speed": 0.5,
                   "te_xpos": 0.0,
@@ -6636,8 +7056,11 @@
                   "te_color/saturation": 100.0,
                   "te_color/hue": 0.0,
                   "te_color/solidSource": 1,
+                  "te_color/solidSource/name": "NORMAL",
                   "te_color/blendMode": 0,
-                  "te_color/offset": 0.007874015748031496
+                  "te_color/blendMode/name": "OKLAB",
+                  "te_color/offset": 0.007874015748031496,
+                  "compositeMode": 0
                 },
                 "children": {
                   "modulation": {
@@ -6696,6 +7119,7 @@
                   "label": "MetallicBitWaves",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
                   "midiFilter/minNote": 0,
                   "midiFilter/noteRange": 128,
                   "midiFilter/minVelocity": 1,
@@ -6704,10 +7128,14 @@
                   "viewPriority": 0,
                   "enabled": true,
                   "recall": false,
-                  "compositeMode": 0,
+                  "launch": false,
+                  "compositeBlend": 0,
                   "compositeLevel": 1.0,
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
+                  "autoMute": false,
+                  "cueActive": false,
+                  "auxActive": false,
                   "setDefaults": false,
                   "te_speed": 0.5,
                   "te_xpos": 0.0,
@@ -6728,8 +7156,11 @@
                   "te_color/saturation": 100.0,
                   "te_color/hue": 0.0,
                   "te_color/solidSource": 1,
+                  "te_color/solidSource/name": "NORMAL",
                   "te_color/blendMode": 0,
-                  "te_color/offset": 0.0
+                  "te_color/blendMode/name": "OKLAB",
+                  "te_color/offset": 0.0,
+                  "compositeMode": 0
                 },
                 "children": {
                   "modulation": {
@@ -6788,6 +7219,7 @@
                   "label": "OldMatrixScroller",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
                   "midiFilter/minNote": 0,
                   "midiFilter/noteRange": 128,
                   "midiFilter/minVelocity": 1,
@@ -6796,10 +7228,14 @@
                   "viewPriority": 0,
                   "enabled": true,
                   "recall": false,
-                  "compositeMode": 0,
+                  "launch": false,
+                  "compositeBlend": 0,
                   "compositeLevel": 1.0,
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
+                  "autoMute": false,
+                  "cueActive": false,
+                  "auxActive": false,
                   "setDefaults": false,
                   "te_speed": 0.5,
                   "te_xpos": 0.0,
@@ -6820,8 +7256,11 @@
                   "te_color/saturation": 100.0,
                   "te_color/hue": 0.0,
                   "te_color/solidSource": 1,
+                  "te_color/solidSource/name": "NORMAL",
                   "te_color/blendMode": 0,
-                  "te_color/offset": 0.0
+                  "te_color/blendMode/name": "OKLAB",
+                  "te_color/offset": 0.0,
+                  "compositeMode": 0
                 },
                 "children": {
                   "modulation": {
@@ -6880,6 +7319,7 @@
                   "label": "FxDualWave",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
                   "midiFilter/minNote": 0,
                   "midiFilter/noteRange": 128,
                   "midiFilter/minVelocity": 1,
@@ -6888,10 +7328,14 @@
                   "viewPriority": 0,
                   "enabled": true,
                   "recall": false,
-                  "compositeMode": 0,
+                  "launch": false,
+                  "compositeBlend": 0,
                   "compositeLevel": 1.0,
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
+                  "autoMute": false,
+                  "cueActive": false,
+                  "auxActive": false,
                   "setDefaults": false,
                   "te_speed": 0.5,
                   "te_xpos": 0.0,
@@ -6901,6 +7345,7 @@
                   "te_spin": 0.0,
                   "te_brightness": 1.0,
                   "te_wow1": 0,
+                  "te_wow1/name": "ONCE",
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
@@ -6912,8 +7357,11 @@
                   "te_color/saturation": 100.0,
                   "te_color/hue": 0.0,
                   "te_color/solidSource": 1,
+                  "te_color/solidSource/name": "NORMAL",
                   "te_color/blendMode": 0,
-                  "te_color/offset": 0.0
+                  "te_color/blendMode/name": "OKLAB",
+                  "te_color/offset": 0.0,
+                  "compositeMode": 0
                 },
                 "children": {
                   "modulation": {
@@ -6972,6 +7420,7 @@
                   "label": "Chevron",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
                   "midiFilter/minNote": 0,
                   "midiFilter/noteRange": 128,
                   "midiFilter/minVelocity": 1,
@@ -6980,10 +7429,14 @@
                   "viewPriority": 0,
                   "enabled": true,
                   "recall": false,
-                  "compositeMode": 0,
+                  "launch": false,
+                  "compositeBlend": 0,
                   "compositeLevel": 1.0,
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
+                  "autoMute": false,
+                  "cueActive": false,
+                  "auxActive": false,
                   "x": 0.5,
                   "y": 0.5,
                   "z": 0.0,
@@ -6998,13 +7451,15 @@
                   "speedRange": 1.0,
                   "tempoSync": false,
                   "tempoDivision": 5,
+                  "tempoDivision/name": "QUARTER_TRIPLET",
                   "reverse": false,
                   "invert": 0.0,
                   "level": 1.0,
                   "rotate": false,
                   "yaw": 0.0,
                   "pitch": 0.0,
-                  "roll": 0.0
+                  "roll": 0.0,
+                  "compositeMode": 0
                 },
                 "children": {
                   "modulation": {
@@ -7043,6 +7498,7 @@
                   "label": "SigmoidDanceAudioWaveform",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
                   "midiFilter/minNote": 0,
                   "midiFilter/noteRange": 128,
                   "midiFilter/minVelocity": 1,
@@ -7051,10 +7507,14 @@
                   "viewPriority": 0,
                   "enabled": true,
                   "recall": false,
-                  "compositeMode": 0,
+                  "launch": false,
+                  "compositeBlend": 0,
                   "compositeLevel": 1.0,
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
+                  "autoMute": false,
+                  "cueActive": false,
+                  "auxActive": false,
                   "setDefaults": false,
                   "te_speed": 0.5,
                   "te_xpos": 0.0,
@@ -7075,8 +7535,11 @@
                   "te_color/saturation": 100.0,
                   "te_color/hue": 0.0,
                   "te_color/solidSource": 1,
+                  "te_color/solidSource/name": "NORMAL",
                   "te_color/blendMode": 0,
-                  "te_color/offset": 0.0
+                  "te_color/blendMode/name": "OKLAB",
+                  "te_color/offset": 0.0,
+                  "compositeMode": 0
                 },
                 "children": {
                   "modulation": {
@@ -7135,6 +7598,7 @@
                   "label": "TriangleInfinityRadialWaveform",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
                   "midiFilter/minNote": 0,
                   "midiFilter/noteRange": 128,
                   "midiFilter/minVelocity": 1,
@@ -7143,10 +7607,14 @@
                   "viewPriority": 0,
                   "enabled": true,
                   "recall": false,
-                  "compositeMode": 0,
+                  "launch": false,
+                  "compositeBlend": 0,
                   "compositeLevel": 1.0,
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
+                  "autoMute": false,
+                  "cueActive": false,
+                  "auxActive": false,
                   "setDefaults": false,
                   "te_speed": 0.03,
                   "te_xpos": 0.0,
@@ -7167,8 +7635,11 @@
                   "te_color/saturation": 100.0,
                   "te_color/hue": 0.0,
                   "te_color/solidSource": 1,
+                  "te_color/solidSource/name": "NORMAL",
                   "te_color/blendMode": 0,
-                  "te_color/offset": 0.0
+                  "te_color/blendMode/name": "OKLAB",
+                  "te_color/offset": 0.0,
+                  "compositeMode": 0
                 },
                 "children": {
                   "modulation": {
@@ -7227,6 +7698,7 @@
                   "label": "RingOfFire",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
                   "midiFilter/minNote": 0,
                   "midiFilter/noteRange": 128,
                   "midiFilter/minVelocity": 1,
@@ -7235,10 +7707,14 @@
                   "viewPriority": 0,
                   "enabled": true,
                   "recall": false,
-                  "compositeMode": 0,
+                  "launch": false,
+                  "compositeBlend": 0,
                   "compositeLevel": 1.0,
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
+                  "autoMute": false,
+                  "cueActive": false,
+                  "auxActive": false,
                   "setDefaults": false,
                   "te_speed": 0.64,
                   "te_xpos": 0.0,
@@ -7259,8 +7735,11 @@
                   "te_color/saturation": 100.0,
                   "te_color/hue": 0.0,
                   "te_color/solidSource": 1,
+                  "te_color/solidSource/name": "NORMAL",
                   "te_color/blendMode": 0,
-                  "te_color/offset": 0.0
+                  "te_color/blendMode/name": "OKLAB",
+                  "te_color/offset": 0.3623828124254942,
+                  "compositeMode": 0
                 },
                 "children": {
                   "modulation": {
@@ -7319,6 +7798,7 @@
                   "label": "LightBeamsAudioReactive",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
                   "midiFilter/minNote": 0,
                   "midiFilter/noteRange": 128,
                   "midiFilter/minVelocity": 1,
@@ -7327,10 +7807,14 @@
                   "viewPriority": 0,
                   "enabled": true,
                   "recall": false,
-                  "compositeMode": 0,
+                  "launch": false,
+                  "compositeBlend": 0,
                   "compositeLevel": 1.0,
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
+                  "autoMute": false,
+                  "cueActive": false,
+                  "auxActive": false,
                   "setDefaults": false,
                   "te_speed": 0.02,
                   "te_xpos": 0.0,
@@ -7351,8 +7835,11 @@
                   "te_color/saturation": 100.0,
                   "te_color/hue": 0.0,
                   "te_color/solidSource": 1,
+                  "te_color/solidSource/name": "NORMAL",
                   "te_color/blendMode": 0,
-                  "te_color/offset": 0.0
+                  "te_color/blendMode/name": "OKLAB",
+                  "te_color/offset": 0.0,
+                  "compositeMode": 0
                 },
                 "children": {
                   "modulation": {
@@ -7411,6 +7898,7 @@
                   "label": "Electric",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
                   "midiFilter/minNote": 0,
                   "midiFilter/noteRange": 128,
                   "midiFilter/minVelocity": 1,
@@ -7419,10 +7907,14 @@
                   "viewPriority": 0,
                   "enabled": true,
                   "recall": false,
-                  "compositeMode": 0,
+                  "launch": false,
+                  "compositeBlend": 0,
                   "compositeLevel": 1.0,
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
+                  "autoMute": false,
+                  "cueActive": false,
+                  "auxActive": false,
                   "setDefaults": false,
                   "te_speed": 0.6,
                   "te_xpos": 0.0,
@@ -7443,8 +7935,11 @@
                   "te_color/saturation": 100.0,
                   "te_color/hue": 0.0,
                   "te_color/solidSource": 1,
+                  "te_color/solidSource/name": "NORMAL",
                   "te_color/blendMode": 0,
-                  "te_color/offset": 0.0
+                  "te_color/blendMode/name": "OKLAB",
+                  "te_color/offset": 0.0,
+                  "compositeMode": 0
                 },
                 "children": {
                   "modulation": {
@@ -7503,6 +7998,7 @@
                   "label": "NeonCells",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
                   "midiFilter/minNote": 0,
                   "midiFilter/noteRange": 128,
                   "midiFilter/minVelocity": 1,
@@ -7511,10 +8007,14 @@
                   "viewPriority": 0,
                   "enabled": true,
                   "recall": false,
-                  "compositeMode": 0,
+                  "launch": false,
+                  "compositeBlend": 0,
                   "compositeLevel": 1.0,
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
+                  "autoMute": false,
+                  "cueActive": false,
+                  "auxActive": false,
                   "setDefaults": false,
                   "te_speed": 0.5,
                   "te_xpos": 0.0,
@@ -7535,9 +8035,12 @@
                   "te_color/saturation": 100.0,
                   "te_color/hue": 0.0,
                   "te_color/solidSource": 1,
+                  "te_color/solidSource/name": "NORMAL",
                   "te_color/blendMode": 0,
+                  "te_color/blendMode/name": "OKLAB",
                   "te_color/offset": 0.0,
-                  "width": 0.5
+                  "width": 0.5,
+                  "compositeMode": 0
                 },
                 "children": {
                   "modulation": {
@@ -7596,6 +8099,7 @@
                   "label": "RadialSimplex",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
                   "midiFilter/minNote": 0,
                   "midiFilter/noteRange": 128,
                   "midiFilter/minVelocity": 1,
@@ -7604,10 +8108,14 @@
                   "viewPriority": 0,
                   "enabled": true,
                   "recall": false,
-                  "compositeMode": 0,
+                  "launch": false,
+                  "compositeBlend": 0,
                   "compositeLevel": 1.0,
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
+                  "autoMute": false,
+                  "cueActive": false,
+                  "auxActive": false,
                   "setDefaults": false,
                   "te_speed": 0.25,
                   "te_xpos": 0.0,
@@ -7617,6 +8125,7 @@
                   "te_spin": 0.0,
                   "te_brightness": 1.0,
                   "te_wow1": 0,
+                  "te_wow1/name": "CLOUDS",
                   "te_wow2": 0.0,
                   "te_wowtrigger": false,
                   "te_angle": 0.0,
@@ -7628,8 +8137,11 @@
                   "te_color/saturation": 100.0,
                   "te_color/hue": 0.0,
                   "te_color/solidSource": 1,
+                  "te_color/solidSource/name": "NORMAL",
                   "te_color/blendMode": 0,
-                  "te_color/offset": 0.0
+                  "te_color/blendMode/name": "OKLAB",
+                  "te_color/offset": 0.0,
+                  "compositeMode": 0
                 },
                 "children": {
                   "modulation": {
@@ -7688,6 +8200,7 @@
                   "label": "RainBands",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
                   "midiFilter/minNote": 0,
                   "midiFilter/noteRange": 128,
                   "midiFilter/minVelocity": 1,
@@ -7696,10 +8209,14 @@
                   "viewPriority": 0,
                   "enabled": true,
                   "recall": false,
-                  "compositeMode": 0,
+                  "launch": false,
+                  "compositeBlend": 0,
                   "compositeLevel": 1.0,
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
+                  "autoMute": false,
+                  "cueActive": false,
+                  "auxActive": false,
                   "setDefaults": false,
                   "te_speed": 0.5,
                   "te_xpos": 0.0,
@@ -7720,8 +8237,11 @@
                   "te_color/saturation": 100.0,
                   "te_color/hue": 0.0,
                   "te_color/solidSource": 1,
+                  "te_color/solidSource/name": "NORMAL",
                   "te_color/blendMode": 0,
-                  "te_color/offset": 0.0
+                  "te_color/blendMode/name": "OKLAB",
+                  "te_color/offset": 0.0,
+                  "compositeMode": 0
                 },
                 "children": {
                   "modulation": {
@@ -7780,6 +8300,7 @@
                   "label": "SimplexPosterized",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
                   "midiFilter/minNote": 0,
                   "midiFilter/noteRange": 128,
                   "midiFilter/minVelocity": 1,
@@ -7788,10 +8309,14 @@
                   "viewPriority": 0,
                   "enabled": true,
                   "recall": false,
-                  "compositeMode": 0,
+                  "launch": false,
+                  "compositeBlend": 0,
                   "compositeLevel": 1.0,
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
+                  "autoMute": false,
+                  "cueActive": false,
+                  "auxActive": false,
                   "setDefaults": false,
                   "te_speed": 0.5,
                   "te_xpos": 0.0,
@@ -7812,8 +8337,11 @@
                   "te_color/saturation": 100.0,
                   "te_color/hue": 0.0,
                   "te_color/solidSource": 1,
+                  "te_color/solidSource/name": "NORMAL",
                   "te_color/blendMode": 0,
-                  "te_color/offset": 0.0
+                  "te_color/blendMode/name": "OKLAB",
+                  "te_color/offset": 0.0,
+                  "compositeMode": 0
                 },
                 "children": {
                   "modulation": {
@@ -7872,6 +8400,7 @@
                   "label": "TriangleNoise",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
                   "midiFilter/minNote": 0,
                   "midiFilter/noteRange": 128,
                   "midiFilter/minVelocity": 1,
@@ -7880,10 +8409,14 @@
                   "viewPriority": 0,
                   "enabled": true,
                   "recall": false,
-                  "compositeMode": 0,
+                  "launch": false,
+                  "compositeBlend": 0,
                   "compositeLevel": 1.0,
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
+                  "autoMute": false,
+                  "cueActive": false,
+                  "auxActive": false,
                   "setDefaults": false,
                   "te_speed": 0.5,
                   "te_xpos": 0.0,
@@ -7904,8 +8437,11 @@
                   "te_color/saturation": 100.0,
                   "te_color/hue": 0.0,
                   "te_color/solidSource": 1,
+                  "te_color/solidSource/name": "NORMAL",
                   "te_color/blendMode": 0,
-                  "te_color/offset": 0.0
+                  "te_color/blendMode/name": "OKLAB",
+                  "te_color/offset": 0.0,
+                  "compositeMode": 0
                 },
                 "children": {
                   "modulation": {
@@ -7964,6 +8500,7 @@
                   "label": "TurbulenceLines",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
                   "midiFilter/minNote": 0,
                   "midiFilter/noteRange": 128,
                   "midiFilter/minVelocity": 1,
@@ -7972,10 +8509,14 @@
                   "viewPriority": 0,
                   "enabled": true,
                   "recall": false,
-                  "compositeMode": 0,
+                  "launch": false,
+                  "compositeBlend": 0,
                   "compositeLevel": 1.0,
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
+                  "autoMute": false,
+                  "cueActive": false,
+                  "auxActive": false,
                   "setDefaults": false,
                   "te_speed": 1.0,
                   "te_xpos": 0.25,
@@ -7996,8 +8537,11 @@
                   "te_color/saturation": 100.0,
                   "te_color/hue": 0.0,
                   "te_color/solidSource": 1,
+                  "te_color/solidSource/name": "NORMAL",
                   "te_color/blendMode": 0,
-                  "te_color/offset": 0.0
+                  "te_color/blendMode/name": "OKLAB",
+                  "te_color/offset": 0.0,
+                  "compositeMode": 0
                 },
                 "children": {
                   "modulation": {
@@ -8056,6 +8600,7 @@
                   "label": "SpiralDiamonds",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
                   "midiFilter/minNote": 0,
                   "midiFilter/noteRange": 128,
                   "midiFilter/minVelocity": 1,
@@ -8064,10 +8609,14 @@
                   "viewPriority": 0,
                   "enabled": true,
                   "recall": false,
-                  "compositeMode": 0,
+                  "launch": false,
+                  "compositeBlend": 0,
                   "compositeLevel": 1.0,
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
+                  "autoMute": false,
+                  "cueActive": false,
+                  "auxActive": false,
                   "setDefaults": false,
                   "te_speed": 0.25,
                   "te_xpos": 0.0,
@@ -8088,8 +8637,11 @@
                   "te_color/saturation": 100.0,
                   "te_color/hue": 0.0,
                   "te_color/solidSource": 1,
+                  "te_color/solidSource/name": "NORMAL",
                   "te_color/blendMode": 0,
-                  "te_color/offset": 0.0
+                  "te_color/blendMode/name": "OKLAB",
+                  "te_color/offset": 0.0,
+                  "compositeMode": 0
                 },
                 "children": {
                   "modulation": {
@@ -8157,25 +8709,32 @@
               "cue": false,
               "aux": false,
               "crossfadeGroup": 0,
+              "crossfadeGroup/name": "BYPASS",
               "blendMode": 0,
+              "autoMute": false,
+              "midiSource/index": 0,
               "midiFilter/enabled": false,
               "midiFilter/channel": 16,
+              "midiFilter/channel/name": "OMNI",
               "midiFilter/minNote": 0,
               "midiFilter/noteRange": 128,
               "midiFilter/minVelocity": 1,
               "midiFilter/velocityRange": 127,
               "view": 0,
               "compositeMode": 0,
+              "compositeMode/name": "PLAYLIST",
               "compositeDampingEnabled": true,
               "compositeDampingTimeSecs": 0.1,
               "autoCycleEnabled": false,
               "autoCycleMode": 0,
+              "autoCycleMode/name": "NEXT",
               "autoCycleTimeSecs": 60.0,
               "transitionEnabled": false,
               "transitionTimeSecs": 5.0,
               "transitionBlendMode": 0,
               "focusedPattern": 0,
-              "triggerPatternCycle": false
+              "triggerPatternCycle": false,
+              "launchPatternCycle": false
             },
             "children": {
               "modulation": {
@@ -8215,6 +8774,7 @@
                   "label": "BeaconGame",
                   "midiFilter/enabled": true,
                   "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
                   "midiFilter/minNote": 0,
                   "midiFilter/noteRange": 128,
                   "midiFilter/minVelocity": 1,
@@ -8223,11 +8783,17 @@
                   "viewPriority": 0,
                   "enabled": true,
                   "recall": false,
-                  "compositeMode": 0,
+                  "launch": false,
+                  "compositeBlend": 0,
                   "compositeLevel": 1.0,
                   "hasCustomCycleTime": false,
                   "customCycleTimeSecs": 60.0,
-                  "Pan": 127.49999231065112,
+                  "autoMute": false,
+                  "cueActive": false,
+                  "auxActive": false,
+                  "stickL": 0.0,
+                  "stickR": 0.0,
+                  "Pan": 1.0,
                   "Tilt": 0.4999999698456907,
                   "Cyan": 0.0,
                   "Magenta": 0.0,
@@ -8240,13 +8806,15 @@
                   "Prism1Rotate": 0.0,
                   "Prism2Rotate": 0.0,
                   "Focus": 0.0,
-                  "Shutter": 1,
+                  "Shutter": 21,
                   "Dimmer": 100.0,
                   "Frost1": 0.0,
                   "Frost2": 0.0,
                   "ptSpd": 179,
                   "Control": 0,
-                  "Gamepad": 0
+                  "Gamepad": 0,
+                  "reset": false,
+                  "compositeMode": 0
                 },
                 "children": {
                   "modulation": {
@@ -8288,31 +8856,38 @@
               "label": "BOOTUP",
               "fader": 0.0,
               "arm": false,
-              "selected": true,
+              "selected": false,
               "stopClips": false,
               "enabled": true,
               "cue": false,
               "aux": false,
               "crossfadeGroup": 0,
+              "crossfadeGroup/name": "BYPASS",
               "blendMode": 0,
+              "autoMute": false,
+              "midiSource/index": 0,
               "midiFilter/enabled": false,
               "midiFilter/channel": 16,
+              "midiFilter/channel/name": "OMNI",
               "midiFilter/minNote": 0,
               "midiFilter/noteRange": 128,
               "midiFilter/minVelocity": 1,
               "midiFilter/velocityRange": 127,
               "view": 0,
               "compositeMode": 0,
+              "compositeMode/name": "PLAYLIST",
               "compositeDampingEnabled": true,
               "compositeDampingTimeSecs": 0.1,
               "autoCycleEnabled": false,
               "autoCycleMode": 0,
+              "autoCycleMode/name": "NEXT",
               "autoCycleTimeSecs": 60.0,
               "transitionEnabled": false,
               "transitionTimeSecs": 5.0,
               "transitionBlendMode": 0,
               "focusedPattern": 0,
-              "triggerPatternCycle": false
+              "triggerPatternCycle": false,
+              "launchPatternCycle": false
             },
             "children": {
               "modulation": {
@@ -8340,7 +8915,7 @@
         ]
       },
       "modulation": {
-        "id": 97,
+        "id": 98,
         "class": "heronarts.lx.modulation.LXModulationEngine",
         "internal": {
           "modulationColor": 0,
@@ -8356,7 +8931,7 @@
         "triggers": []
       },
       "output": {
-        "id": 98,
+        "id": 99,
         "class": "heronarts.lx.LXEngine$Output",
         "internal": {
           "modulationColor": 0,
@@ -8370,6 +8945,7 @@
           "fps": 0.0,
           "gamma": 1.0,
           "gammaMode": 1,
+          "gammaMode/name": "DIRECT",
           "whitePointRed": 255,
           "whitePointGreen": 255,
           "whitePointBlue": 255,
@@ -8378,7 +8954,7 @@
         "children": {}
       },
       "snapshots": {
-        "id": 100,
+        "id": 101,
         "class": "heronarts.lx.snapshot.LXSnapshotEngine",
         "internal": {
           "modulationColor": 0,
@@ -8394,11 +8970,14 @@
           "recallMaster": true,
           "recallOutput": true,
           "channelMode": 0,
+          "channelMode/name": "TOGGLE",
           "missingChannelMode": 0,
+          "missingChannelMode/name": "IGNORE",
           "transitionEnabled": false,
           "transitionTimeSecs": 5.0,
           "autoCycleEnabled": false,
           "autoCycleMode": 0,
+          "autoCycleMode/name": "NEXT",
           "autoCycleTimeSecs": 60.0,
           "autoCycleCursor": -1,
           "triggerSnapshotCycle": false
@@ -8407,7 +8986,7 @@
         "snapshots": []
       },
       "dmx": {
-        "id": 101,
+        "id": 102,
         "class": "heronarts.lx.dmx.LXDmxEngine",
         "internal": {
           "modulationColor": 0,
@@ -8416,13 +8995,15 @@
         },
         "parameters": {
           "label": "LX",
+          "artNetReceiveHost": "0.0.0.0",
           "artNetReceivePort": 6454,
-          "artNetReceiveActive": true
+          "artNetReceiveActive": true,
+          "artNetLog": false
         },
         "children": {}
       },
       "midi": {
-        "id": 102,
+        "id": 103,
         "class": "heronarts.lx.midi.LXMidiEngine",
         "internal": {
           "modulationColor": 0,
@@ -8433,96 +9014,15 @@
           "label": "LX",
           "computerKeyboardEnabled": false,
           "computerKeyboardOctave": 5,
-          "computerKeyboardVelocity": 5
+          "computerKeyboardVelocity": 5,
+          "computerKeyboardChannel": 0
         },
         "children": {},
-        "inputs": [
-          {
-            "name": "Midi Fighter Twister",
-            "channel": false,
-            "control": false,
-            "sync": false
-          },
-          {
-            "name": "Midi Fighter Twister",
-            "channel": false,
-            "control": false,
-            "sync": false
-          },
-          {
-            "name": "APC40 mkII",
-            "channel": false,
-            "control": true,
-            "sync": false
-          },
-          {
-            "name": "Director",
-            "channel": false,
-            "control": false,
-            "sync": false
-          },
-          {
-            "name": "FoH: Midi Fighter Twister (2)",
-            "channel": false,
-            "control": false,
-            "sync": false
-          }
-        ],
-        "surfaces": [
-          {
-            "class": "heronarts.lx.midi.surface.MidiFighterTwister",
-            "name": "Midi Fighter Twister",
-            "settings": {
-              "knobClickMode": 0,
-              "focusMode": 0,
-              "isAux": true,
-              "currentBank": 1
-            }
-          },
-          {
-            "class": "heronarts.lx.midi.surface.MidiFighterTwister",
-            "name": "Midi Fighter Twister",
-            "settings": {
-              "knobClickMode": 0,
-              "focusMode": 0,
-              "isAux": true,
-              "currentBank": 0
-            }
-          },
-          {
-            "class": "heronarts.lx.midi.surface.APC40Mk2",
-            "name": "APC40 mkII",
-            "settings": {
-              "masterFaderEnabled": true,
-              "crossfaderEnabled": true,
-              "faderMode": 1,
-              "deviceControl": false,
-              "performanceLock": true
-            }
-          },
-          {
-            "class": "titanicsend.lx.DirectorAPCminiMk2",
-            "name": "Director",
-            "settings": {
-              "faderMode": 1
-            }
-          },
-          {
-            "class": "studio.jkb.supermod.MidiFighterTwister",
-            "name": "FoH: Midi Fighter Twister (2)",
-            "settings": {
-              "knobClickMode": 0,
-              "focusMode": 0,
-              "isAux": false,
-              "currentBank": 0,
-              "isSuperMod": true
-            }
-          }
-        ],
+        "templates": [],
         "mapping": []
       },
       "osc": {
-        "id": 103,
+        "id": 104,
         "class": "heronarts.lx.osc.LXOscEngine",
         "internal": {
           "modulationColor": 0,
@@ -8540,10 +9040,26 @@
           "logInput": false,
           "logOutput": false
         },
+        "children": {},
+        "inputs": [],
+        "outputs": []
+      },
+      "audioStems": {
+        "id": 105,
+        "class": "titanicsend.audio.AudioStems",
+        "internal": {
+          "modulationColor": 0,
+          "modulationControlsExpanded": true,
+          "modulationsExpanded": true
+        },
+        "parameters": {
+          "label": "audioStems",
+          "gain": 0.0
+        },
         "children": {}
       },
       "virtualOverlays": {
-        "id": 104,
+        "id": 106,
         "class": "titanicsend.app.TEVirtualOverlays",
         "internal": {
           "modulationColor": 0,
@@ -8564,7 +9080,7 @@
         "children": {}
       },
       "globalPatternControls": {
-        "id": 105,
+        "id": 107,
         "class": "titanicsend.app.TEGlobalPatternControls",
         "internal": {
           "modulationColor": 0,
@@ -8577,7 +9093,7 @@
         "children": {}
       },
       "NDIEngine": {
-        "id": 108,
+        "id": 110,
         "class": "titanicsend.ndi.NDIEngine",
         "internal": {
           "modulationColor": 0,
@@ -8590,7 +9106,7 @@
         "children": {}
       },
       "GLEngine": {
-        "id": 109,
+        "id": 111,
         "class": "titanicsend.pattern.glengine.GLEngine",
         "internal": {
           "modulationColor": 0,
@@ -8602,22 +9118,8 @@
         },
         "children": {}
       },
-      "audioStems": {
-        "id": 156,
-        "class": "titanicsend.audio.AudioStems",
-        "internal": {
-          "modulationColor": 0,
-          "modulationControlsExpanded": true,
-          "modulationsExpanded": true
-        },
-        "parameters": {
-          "label": "audioStems",
-          "gain": 0.0
-        },
-        "children": {}
-      },
       "paletteManagerA": {
-        "id": 157,
+        "id": 161,
         "class": "titanicsend.color.ColorPaletteManager",
         "internal": {
           "modulationColor": 0,
@@ -8626,26 +9128,27 @@
         },
         "parameters": {
           "label": "Color Palette Manager",
-          "hue": 267.0588073730469,
+          "hue": 166.746305976063,
           "saturation": 100.0,
           "brightness": 100.0,
-          "paletteStrategy": 0,
+          "paletteStrategy": 2,
+          "paletteStrategy/name": "GOLDEN_RATIO_CONJUGATE",
           "color1/brightness": 100.0,
           "color1/saturation": 100.0,
-          "color1/hue": 267.0588073730469,
+          "color1/hue": 166.8235321044922,
           "color2/brightness": 100.0,
           "color2/saturation": 100.0,
-          "color2/hue": 267.0588073730469,
+          "color2/hue": 304.23529052734375,
           "color3/brightness": 100.0,
           "color3/saturation": 100.0,
-          "color3/hue": 267.0588073730469,
+          "color3/hue": 29.411762237548828,
           "pushSwatch": false,
           "pinSwatch": false
         },
         "children": {}
       },
       "focus": {
-        "id": 172,
+        "id": 176,
         "class": "titanicsend.osc.CrutchOSC",
         "internal": {
           "modulationColor": 0,
@@ -8658,7 +9161,7 @@
         "children": {}
       },
       "director": {
-        "id": 173,
+        "id": 177,
         "class": "titanicsend.app.director.Director",
         "internal": {
           "modulationColor": 0,
@@ -8688,18 +9191,25 @@
       "paletteExpanded": false,
       "cameraExpanded": true,
       "mixerCentered": false,
-      "fixtureInspectorExpanded": false,
+      "fixtureInspectorExpanded": true,
       "viewsExpanded": true,
       "soundStageExpanded": true,
       "preview": {
-        "animation": false,
-        "animationTime": 1000.0,
         "projection": 0,
+        "projection/name": "PERSPECTIVE",
         "perspective": 60.0,
         "depth": 1.0,
+        "animationTime": 1000.0,
+        "animationEase": 0.5,
+        "animationEaseShape": 0,
+        "animationEaseShape/name": "SINUSOIDAL",
+        "animationClampY": false,
+        "animationMinY": 0.0,
+        "animationMaxY": 10000.0,
+        "animation": false,
         "camera": {
           "active": false,
-          "radius": 272.98635666206195,
+          "radius": 291.6170717408072,
           "theta": 359.8358939141035,
           "phi": 11.00527735054493,
           "x": 0.0,
@@ -8762,15 +9272,43 @@
             "z": 0.0
           }
         ],
+        "autopilot": {
+          "enabled": false,
+          "radiusPeriod": 15.0,
+          "radiusMin": 120.0,
+          "radiusMax": 120.0,
+          "radiusContrast": 0.0,
+          "radiusMotion": 2,
+          "radiusMotion/name": "NOISE",
+          "thetaPeriod": 60.0,
+          "thetaMin": 0.0,
+          "thetaMax": 360.0,
+          "thetaContrast": 0.0,
+          "thetaMotion": 1,
+          "thetaMotion/name": "CYCLE",
+          "phiPeriod": 15.0,
+          "phiMin": 0.0,
+          "phiMax": 30.0,
+          "phiContrast": 0.0,
+          "phiMotion": 2,
+          "phiMotion/name": "NOISE"
+        },
         "focus": 0,
         "pointCloud": {
           "ledStyle": 0,
+          "ledStyle/name": "LENS1",
           "pointSize": 1.0,
           "alphaRef": 8,
           "feather": 0.5,
           "sparkle": 1.0,
           "sparkleCurve": 2.0,
           "sparkleRotate": 45.0,
+          "directional": 0,
+          "directional/name": "OMNI",
+          "directionalDispersion": 180.0,
+          "directionalContrast": 0.0,
+          "directionalShowNormals": false,
+          "directionalShowNormalsLength": 5.0,
           "contrast": 1.0,
           "depthTest": true,
           "useCustomParams": false
@@ -8792,11 +9330,18 @@
         }
       },
       "previewAux": {
-        "animation": false,
-        "animationTime": 1000.0,
         "projection": 0,
+        "projection/name": "PERSPECTIVE",
         "perspective": 60.0,
         "depth": 2.0,
+        "animationTime": 1000.0,
+        "animationEase": 0.5,
+        "animationEaseShape": 0,
+        "animationEaseShape/name": "SINUSOIDAL",
+        "animationClampY": false,
+        "animationMinY": 0.0,
+        "animationMaxY": 10000.0,
+        "animation": false,
         "camera": {
           "active": false,
           "radius": 290.75455818813987,
@@ -8862,15 +9407,43 @@
             "z": 0.0
           }
         ],
+        "autopilot": {
+          "enabled": false,
+          "radiusPeriod": 15.0,
+          "radiusMin": 120.0,
+          "radiusMax": 120.0,
+          "radiusContrast": 0.0,
+          "radiusMotion": 2,
+          "radiusMotion/name": "NOISE",
+          "thetaPeriod": 60.0,
+          "thetaMin": 0.0,
+          "thetaMax": 360.0,
+          "thetaContrast": 0.0,
+          "thetaMotion": 1,
+          "thetaMotion/name": "CYCLE",
+          "phiPeriod": 15.0,
+          "phiMin": 0.0,
+          "phiMax": 30.0,
+          "phiContrast": 0.0,
+          "phiMotion": 2,
+          "phiMotion/name": "NOISE"
+        },
         "focus": 0,
         "pointCloud": {
           "ledStyle": 0,
+          "ledStyle/name": "LENS1",
           "pointSize": 3.0,
           "alphaRef": 8,
           "feather": 0.5,
           "sparkle": 1.0,
           "sparkleCurve": 2.0,
           "sparkleRotate": 45.0,
+          "directional": 0,
+          "directional/name": "OMNI",
+          "directionalDispersion": 180.0,
+          "directionalContrast": 0.0,
+          "directionalShowNormals": false,
+          "directionalShowNormalsLength": 5.0,
           "contrast": 1.0,
           "depthTest": true,
           "useCustomParams": false
