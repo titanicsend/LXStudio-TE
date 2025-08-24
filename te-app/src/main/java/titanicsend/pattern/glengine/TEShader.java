@@ -21,8 +21,10 @@ public class TEShader extends GLShader implements GLShader.UniformSource {
 
   // texture buffers
   private class TextureInfo {
-    public String name;
-    public int channel;
+    /** Filename is kept only to release the refcount on disposal */
+    public String filename;
+
+    public int iChannel;
     public String uniformName;
     public int handle;
 
@@ -30,7 +32,7 @@ public class TEShader extends GLShader implements GLShader.UniformSource {
     public int unit;
   }
 
-  private final ArrayList<TextureInfo> textures = new ArrayList<>();
+  private final ArrayList<TextureInfo> fileTextures = new ArrayList<>();
 
   // TODO(JKB): this combination of CPU and GPU render variables is a bit of a mess
   // but for now they're crammed in here so we can develop both on one branch
@@ -111,16 +113,17 @@ public class TEShader extends GLShader implements GLShader.UniformSource {
   }
 
   private void loadTextureFiles() {
-    for (Map.Entry<Integer, String> textureInput :
-        this.fragmentShader.getChannelToTexture().entrySet()) {
+    for (Map.Entry<Integer, String> iChannelFilename :
+        this.fragmentShader.getiChannelFilenames().entrySet()) {
 
       TextureInfo ti = new TextureInfo();
-      ti.name = textureInput.getValue();
-      ti.channel = textureInput.getKey();
-      ti.uniformName = UniformNames.CHANNEL + ti.channel;
-      ti.handle = this.glEngine.textureCache.useTexture(textureInput.getValue());
+      ti.filename = iChannelFilename.getValue();
+      ti.iChannel = iChannelFilename.getKey();
+      ti.uniformName = UniformNames.CHANNEL + ti.iChannel;
+      ti.handle = this.glEngine.textureCache.useTexture(ti.filename);
+
       ti.unit = getNextTextureUnit();
-      textures.add(ti);
+      this.fileTextures.add(ti);
     }
   }
 
@@ -189,8 +192,8 @@ public class TEShader extends GLShader implements GLShader.UniformSource {
     bindTextureUnit(TEXTURE_UNIT_BACKBUFFER, backBufferHandle);
     this.uniforms.backBuffer.setValue(TEXTURE_UNIT_BACKBUFFER);
 
-    // Bind shadertoy textures to corresponding shader-specific texture units.
-    for (TextureInfo ti : this.textures) {
+    // Bind static file textures to corresponding shader-specific texture units.
+    for (TextureInfo ti : this.fileTextures) {
       bindTextureUnit(ti.unit, ti.handle);
       setUniform(ti.uniformName, ti.unit);
     }
@@ -271,7 +274,7 @@ public class TEShader extends GLShader implements GLShader.UniformSource {
     unbindTextureUnit(TEXTURE_UNIT_COORDS);
     unbindTextureUnit(TEXTURE_UNIT_COORD_MAP);
     unbindTextureUnit(TEXTURE_UNIT_BACKBUFFER);
-    for (TextureInfo ti : this.textures) {
+    for (TextureInfo ti : this.fileTextures) {
       unbindTextureUnit(ti.unit);
     }
   }
@@ -315,8 +318,8 @@ public class TEShader extends GLShader implements GLShader.UniformSource {
       }
 
       // free any textures on ShaderToy channels
-      for (TextureInfo ti : this.textures) {
-        this.glEngine.textureCache.releaseStaticTexture(ti.name);
+      for (TextureInfo ti : this.fileTextures) {
+        this.glEngine.textureCache.releaseStaticTexture(ti.filename);
       }
     }
 

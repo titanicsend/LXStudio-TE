@@ -18,7 +18,7 @@ import titanicsend.pattern.glengine.ShaderConfiguration;
  */
 public class FragmentShader {
   private final String shaderName;
-  private final Map<Integer, String> channelToTexture;
+  private final Map<Integer, String> iChannelFileNames = new HashMap<>();
   private final List<ShaderConfiguration> shaderConfig = new ArrayList<>();
 
   private final List<LXParameter> mutableParameters = new ArrayList<>();
@@ -26,7 +26,6 @@ public class FragmentShader {
 
   public FragmentShader(File shaderFile, List<File> textureFiles) {
     String shaderBody;
-    this.channelToTexture = new HashMap<>();
 
     // try the new way
     GLPreprocessor glp = new GLPreprocessor();
@@ -44,7 +43,7 @@ public class FragmentShader {
       for (int i = 0; i < textureFiles.size(); i++) {
         // automatically assign textures to iChannels, starting
         // at 1 since audio will be at iChannel0.
-        channelToTexture.put(i + 1, textureFiles.get(i).getPath());
+        iChannelFileNames.put(i + 1, textureFiles.get(i).getPath());
       }
     }
     // otherwise, see if there are any texture declarations or extra parameters
@@ -53,7 +52,7 @@ public class FragmentShader {
       for (ShaderConfiguration config : shaderConfig) {
         switch (config.opcode) {
           case SET_TEXTURE:
-            channelToTexture.put(config.textureChannel, new File(config.name).getPath());
+            iChannelFileNames.put(config.iChannel, new File(config.name).getPath());
             break;
           case ADD_LX_PARAMETER:
             mutableParameters.add(config.lxParameter);
@@ -69,8 +68,8 @@ public class FragmentShader {
     return shaderName;
   }
 
-  public Map<Integer, String> getChannelToTexture() {
-    return channelToTexture;
+  public Map<Integer, String> getiChannelFilenames() {
+    return iChannelFileNames;
   }
 
   public List<ShaderConfiguration> getShaderConfig() {
