@@ -328,7 +328,7 @@ public class NativeShader implements GLEventListener {
 
   private void loadTextureFiles(FragmentShader fragmentShader) {
     for (Map.Entry<Integer, String> textureInput :
-        fragmentShader.getChannelToTexture().entrySet()) {
+        fragmentShader.getiChannelFilenames().entrySet()) {
       try {
         File file = new File(textureInput.getValue());
         // TE.log("File Texture %s", textureInput.getValue());
