@@ -1,6 +1,6 @@
 {
   "version": "1.1.1-TE.1-SNAPSHOT",
-  "timestamp": 1756023025159,
+  "timestamp": 1756026659388,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -26,7 +26,7 @@
     },
     "parameters": {
       "label": "LX",
-      "syncModelFile": true,
+      "syncModelFile": false,
       "allWhite": false,
       "mute": false,
       "normalizationMode": 0,
@@ -1600,10 +1600,10 @@
           "strand1output": 1,
           "strand2host": "10.7.100.12",
           "strand2output": 2,
-          "strand3host": "10.7.2.21",
-          "strand3output": 3,
-          "strand4host": "10.7.100.12",
-          "strand4output": 4,
+          "strand3host": "10.7.100.12",
+          "strand3output": 4,
+          "strand4host": "10.7.2.21",
+          "strand4output": 3,
           "strand5host": "10.7.2.21",
           "strand5output": 2,
           "artnetSequence": false,
@@ -23876,7 +23876,7 @@
         "animation": false,
         "camera": {
           "active": false,
-          "radius": 324.5547559169947,
+          "radius": 458.1566391316941,
           "theta": 352.70857113972306,
           "phi": -16.213686427799985,
           "x": -146.18841874638747,
