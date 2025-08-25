@@ -3767,7 +3767,7 @@
       "jsonParameters": {
         "points": 120,
         "host": "10.7.17.110",
-        "output": 1,
+        "output": 4,
         "ledOffset": 242,
         "artnetSequence": false,
         "reverse": false,
@@ -9658,7 +9658,7 @@
       "jsonParameters": {
         "points": 113,
         "host": "10.7.17.110",
-        "output": 1,
+        "output": 4,
         "ledOffset": 68,
         "artnetSequence": false,
         "reverse": false,
