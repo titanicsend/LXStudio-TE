@@ -1,6 +1,7 @@
 package titanicsend.pattern.glengine;
 
 import com.jogamp.opengl.GL4;
+import heronarts.lx.LX;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.parameter.LXParameter;
 import java.nio.ByteBuffer;
@@ -8,6 +9,7 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import titanicsend.pattern.glengine.model.ModelIndexTexture;
 import titanicsend.pattern.yoffa.shader_engine.Uniform;
 import titanicsend.pattern.yoffa.shader_engine.UniformNames;
 
@@ -292,6 +294,17 @@ public class TEShader extends GLShader implements GLShader.UniformSource {
 
   // Staging Uniforms: LX Model
 
+  private static boolean initializedModelTextures = false;
+  private static ModelIndexTexture modelIndexTexture;
+
+  private static void initializeModelTextures(LX lx, GLEngine glEngine) {
+    initializedModelTextures = true;
+
+    // TODO: move indexModelTexture to a subclass of TEShader
+    modelIndexTexture = new ModelIndexTexture(lx, glEngine);
+    glEngine.textureCache.registerModelTexture(modelIndexTexture);
+  }
+
   /**
    * Copy LXPoints' normalized coordinates into textures for use by shaders. Must be called by the
    * parent pattern or effect at least once before the first frame is rendered. And should be called
@@ -300,8 +313,14 @@ public class TEShader extends GLShader implements GLShader.UniformSource {
    * @param model Current LXModel of the calling context, which is a LXView or the global model
    */
   public void setModel(LXModel model) {
+    if (!initializedModelTextures) {
+      initializeModelTextures(this.lx, this.glEngine);
+    }
+
+    // Coords Textures are managed by TextureManager
     this.modelCoordsTextureHandle = this.glEngine.textureCache.getModelCoordsTexture(model);
-    this.modelIndexTextureHandle = this.glEngine.textureCache.getModelIndexTexture(model);
+    // Index Textures are managed by TEShader
+    this.modelIndexTextureHandle = modelIndexTexture.getTexture(model);
   }
 
   // Releases native resources allocated by this shader.

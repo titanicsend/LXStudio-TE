@@ -13,15 +13,16 @@ import static titanicsend.pattern.glengine.GLShader.TEXTURE_UNIT_MODEL_COORDS;
 
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.util.GLBuffers;
+import heronarts.lx.LX;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
 import java.nio.FloatBuffer;
 import titanicsend.pattern.glengine.GLEngine;
 
-public class CoordsModelTexture extends ModelTextureType {
+public class ModelCoordsTexture extends ModelTexture {
 
-  public CoordsModelTexture(GLEngine glEngine, GL4 gl4) {
-    super(glEngine, gl4);
+  public ModelCoordsTexture(LX lx, GLEngine glEngine) {
+    super(lx, glEngine);
   }
 
   @Override

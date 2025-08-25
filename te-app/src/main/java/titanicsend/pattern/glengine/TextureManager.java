@@ -1,34 +1,20 @@
 package titanicsend.pattern.glengine;
 
-import static com.jogamp.opengl.GL.GL_CLAMP_TO_EDGE;
-import static com.jogamp.opengl.GL.GL_FLOAT;
-import static com.jogamp.opengl.GL.GL_NEAREST;
-import static com.jogamp.opengl.GL.GL_TEXTURE0;
-import static com.jogamp.opengl.GL.GL_TEXTURE_2D;
-import static com.jogamp.opengl.GL.GL_TEXTURE_MAG_FILTER;
-import static com.jogamp.opengl.GL.GL_TEXTURE_MIN_FILTER;
-import static com.jogamp.opengl.GL.GL_TEXTURE_WRAP_S;
-import static com.jogamp.opengl.GL.GL_TEXTURE_WRAP_T;
-import static titanicsend.pattern.glengine.GLShader.TEXTURE_UNIT_MODEL_COORDS;
-import static titanicsend.pattern.glengine.GLShader.TEXTURE_UNIT_MODEL_INDEX;
-
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.GLAutoDrawable;
-import com.jogamp.opengl.util.GLBuffers;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureIO;
 import heronarts.lx.LX;
 import heronarts.lx.model.LXModel;
-import heronarts.lx.model.LXPoint;
 import java.io.File;
 import java.io.IOException;
-import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import titanicsend.pattern.glengine.model.ModelTextureType;
+import titanicsend.pattern.glengine.model.ModelCoordsTexture;
+import titanicsend.pattern.glengine.model.ModelTexture;
 
 // Manages the lifecycle of the (relatively) static OpenGL textures used by
 // the shader engine.  We use are two types of textures: coordinate and static.
@@ -37,7 +23,6 @@ import titanicsend.pattern.glengine.model.ModelTextureType;
 // image files, and are used as 2D textures in the shaders.
 //
 public class TextureManager implements LX.Listener {
-  private static final int MODEL_TEXTURE_COUNT = 2;
 
   private final LX lx;
   private final GLEngine glEngine;
@@ -49,7 +34,9 @@ public class TextureManager implements LX.Listener {
   // For each LXModel we now store two ModelTextures
   // [0] = normalized model coordinates at current gl_FragCoord
   // [1] = (GL_RG32F) indices of the model points
-  private final List<ModelTextureType> modelTextureTypes = new ArrayList<>();
+  private final List<ModelTexture> modelTextures = new ArrayList<>();
+
+  private ModelCoordsTexture modelCoordsTexture = null;
 
   // Textures that have been loaded for a filename
   private final Map<String, StaticTexture> staticTextures = new HashMap<>();
@@ -57,9 +44,6 @@ public class TextureManager implements LX.Listener {
   public TextureManager(LX lx, GLEngine glEngine) {
     this.lx = lx;
     this.glEngine = glEngine;
-
-    // Register for top-level model changes
-    lx.addListener(this);
   }
 
   public void initialize(GL4 gl4) {
@@ -72,152 +56,12 @@ public class TextureManager implements LX.Listener {
     this.canvas = this.glEngine.getCanvas();
   }
 
-  /** This event is fired if fixtures are moved but no points were added or destroyed */
-  @Override
-  public void modelGenerationChanged(LX lx, LXModel model) {
-    if (!initialized) {
-      return;
-    }
-
-    // Top level model changed or moved. Mark all texture contents as stale.
-    markModelTexturesStale();
-  }
-
-  public TextureManager registerModelTextureType(ModelTextureType modelTextureType) {
-    if (this.modelTextureTypes.contains(Objects.requireNonNull(modelTextureType))) {
+  public void registerModelTexture(ModelTexture modelTexture) {
+    if (this.modelTextures.contains(Objects.requireNonNull(modelTexture))) {
       throw new IllegalArgumentException(
-          "ModelTextureType " + modelTextureType + " already registered");
+          "ModelTextureType " + modelTexture + " already registered");
     }
-    this.modelTextureTypes.add(modelTextureType);
-    return this;
-  }
-
-  /**
-   * Create the coordinate textures for a model. This should be called by the parent pattern or
-   * effect at least once before the first frame is rendered, and when the model or view changes.
-   *
-   * <p>This adds an entry to coordTextures that contains two textures: one for normalized
-   * coordinates and one for index mapping.
-   *
-   * @param model The model (view) to copy coordinates from
-   */
-  public void createModelTextures(LXModel model) {
-
-    // Create new array with two entries, the first for normalized coordinates
-    // and the second for index mapping.
-    this.canvas.getContext().makeCurrent();
-    ModelTexture[] slots = new ModelTexture[MODEL_TEXTURE_COUNT];
-    ModelTexture normalizedXYZ = new ModelTexture();
-    slots[0] = normalizedXYZ;
-    ModelTexture indexMap = new ModelTexture();
-    slots[1] = indexMap;
-    this.modelTextures.put(model, slots);
-
-    // Double check size of engine and model points
-    int width = this.glEngine.getWidth();
-    int height = this.glEngine.getHeight();
-    final int enginePoints = width * height;
-    final int modelPoints = model.points.length;
-    if (modelPoints > enginePoints) {
-      LX.error(
-          String.format(
-              "GLEngine resolution (%d) too small for number of points in the model (%d). Re-run with higher --resolution WxH",
-              enginePoints, modelPoints));
-    }
-
-    // Create a FloatBuffer to hold the normalized coordinates of the model points
-    FloatBuffer coords = GLBuffers.newDirectFloatBuffer(enginePoints * 3);
-
-    // Create a FloatBuffer to hold the indices of the model points
-    FloatBuffer indices = GLBuffers.newDirectFloatBuffer(enginePoints * 2);
-
-    // Initialize with NaNs for coordinates and indices
-    coords.rewind();
-    indices.rewind();
-    for (int i = 0; i < enginePoints; i++) {
-      coords.put(Float.NaN);
-      coords.put(Float.NaN);
-      coords.put(Float.NaN);
-      indices.put(Float.NaN);
-      indices.put(Float.NaN);
-    }
-    // Insert normalized coordinates and their indices into the buffers
-    for (LXPoint p : model.points) {
-      int destIndex = p.index * 3;
-      coords.put(destIndex, p.xn);
-      coords.put(destIndex + 1, p.yn);
-      coords.put(destIndex + 2, p.zn);
-
-      // save normalized coordinates to a rectangular texture index
-      // using the model's width and height. We actually write to
-      // a rectangular neighborhood around the target pixel to compensate
-      // for rounding errors in sampling, and the plain old non-contiguous
-      // nature of the model points.
-      setIndexNeighborhood(p, indices, width, height);
-    }
-
-    coords.rewind();
-    indices.rewind();
-
-    // Create an OpenGL texture to hold the coordinate data
-    this.glEngine.bindTextureUnit(TEXTURE_UNIT_MODEL_COORDS, normalizedXYZ.getHandle());
-
-    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    // load the coordinate data into the texture
-    gl4.glTexImage2D(
-        GL4.GL_TEXTURE_2D, 0, GL4.GL_RGB32F, width, height, 0, GL4.GL_RGB, GL_FLOAT, coords);
-
-    gl4.glBindTexture(GL_TEXTURE_2D, 0);
-    gl4.glActiveTexture(GL_TEXTURE0);
-
-    // And create an OpenGL texture to hold the index data
-    this.glEngine.bindTextureUnit(TEXTURE_UNIT_MODEL_INDEX, indexMap.getHandle());
-
-    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    // load the index data into the texture
-    gl4.glTexImage2D(
-        GL4.GL_TEXTURE_2D, 0, GL4.GL_RG32F, width, height, 0, GL4.GL_RG, GL4.GL_FLOAT, indices);
-
-    gl4.glBindTexture(GL_TEXTURE_2D, 0);
-    gl4.glActiveTexture(GL_TEXTURE0);
-  }
-
-  private boolean hasModelTextures(LXModel model) {
-    return this.modelTextures.containsKey(model);
-  }
-
-  /**
-   * Get the texture handle for an LXModel-derived texture
-   *
-   * @param model The model (view) that the textures were derived from
-   * @param textureUnit The reserved texture unit of the texture to retrieve
-   * @return The OpenGL texture handle for the specified model texture
-   */
-  private int getModelTexture(LXModel model, int textureUnit) {
-    // Retrieve array of texture handles for the model
-    ModelTexture[] slots = modelTextures.get(model);
-    ModelTexture tex;
-    switch (textureUnit) {
-      case TEXTURE_UNIT_MODEL_COORDS: // normalized coordinates
-        tex = slots[0];
-        break;
-      case TEXTURE_UNIT_MODEL_INDEX: // textureUnit mapping
-        tex = slots[1];
-        break;
-      default:
-        // invalid textureUnit - this is a programming error and should not happen
-        // so we throw an exception to make a big fuss.
-        throw new IllegalArgumentException("Invalid model texture unit: " + textureUnit);
-    }
-    return tex.getHandle();
+    this.modelTextures.add(modelTexture);
   }
 
   /**
@@ -226,34 +70,26 @@ public class TextureManager implements LX.Listener {
    * called by the pattern's frametime run() function on every frame for full Chromatik view
    * support.
    *
-   * <p>This returns the handle for model texture slot 0 (coordinates).
+   * <p>This returns the handle for coordinates model texture.
    *
    * @param model The model (view) to copy coordinates from
    * @return The texture handle of the view's coordinates texture
    */
   public int getModelCoordsTexture(LXModel model) {
-    // If the texture does not exist, create it
-    if (!hasModelTextures(model)) {
-      createModelTextures(model);
+    if (this.modelCoordsTexture == null) {
+      this.modelCoordsTexture = new ModelCoordsTexture(this.lx, this.glEngine);
+      registerModelTexture(this.modelCoordsTexture);
     }
-    return getModelTexture(model, TEXTURE_UNIT_MODEL_COORDS);
+
+    return this.modelCoordsTexture.getTexture(model);
   }
 
-  /**
-   * Copy a model's index mapping into a special texture for use by shaders. Must be called by the
-   * parent pattern or effect at least once before the first frame is rendered and should be called
-   * by the pattern's frametime run() function on every frame for full Chromatik view support.
-   *
-   * <p>This returns the handle for model texture slot 1 (index map).
-   *
-   * @param model The model (view) to copy coordinates from
-   * @return The texture handle of the view's indices texture
-   */
-  public int getModelIndexTexture(LXModel model) {
-    if (!hasModelTextures(model)) {
-      createModelTextures(model);
+  /** Delete all existing lxmodel-derived textures (both slots) and clear the map. */
+  private void clearModelTextures() {
+    for (ModelTexture modelTexture : this.modelTextures) {
+      modelTexture.dispose();
     }
-    return getModelTexture(model, TEXTURE_UNIT_MODEL_INDEX);
+    this.modelTextures.clear();
   }
 
   /**
@@ -276,20 +112,6 @@ public class TextureManager implements LX.Listener {
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
-  }
-
-  private void markModelTexturesStale() {
-    for (ModelTextureType modelTextureType : this.modelTextureTypes) {
-      modelTextureType.markStale();
-    }
-  }
-
-  /** Delete all existing lxmodel-derived textures (both slots) and clear the map. */
-  private void clearModelTextures() {
-    for (ModelTextureType modelTextureType : this.modelTextureTypes) {
-      modelTextureType.dispose();
-    }
-    this.modelTextureTypes.clear();
   }
 
   /**
@@ -320,8 +142,6 @@ public class TextureManager implements LX.Listener {
       }
       this.staticTextures.clear();
     }
-    // stop listening for model changes
-    this.lx.removeListener(this);
   }
 
   private class StaticTexture {

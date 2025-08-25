@@ -188,7 +188,7 @@ public class NDIOutShaderEffect extends TEEffect
     }
 
     private void modelChanged(LXModel model) {
-      this.shader.setModelCoordinates(model);
+      this.shader.setModel(model);
 
       // If our fixture size changed, set the NDI stream resolution to match
       int width = fixture.widthPixels.getValuei();

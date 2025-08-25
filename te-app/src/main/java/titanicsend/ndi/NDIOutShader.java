@@ -32,7 +32,6 @@ public class NDIOutShader extends GLShader implements GLShader.UniformSource {
   private String ndiStreamLabel = "TitanicsEnd";
 
   private int modelCoordsTextureHandle = UNINITIALIZED;
-  private int modelIndexTextureHandle = UNINITIALIZED;
 
   // Variables that will be passed to uniforms
   // Incoming texture handle
@@ -197,9 +196,8 @@ public class NDIOutShader extends GLShader implements GLShader.UniformSource {
    *
    * @param model Current LXModel of the calling context, which is a LXView or the global model
    */
-  public void setModelCoordinates(LXModel model) {
+  public void setModel(LXModel model) {
     this.modelCoordsTextureHandle = this.glEngine.textureCache.getModelCoordsTexture(model);
-    this.modelIndexTextureHandle = this.glEngine.textureCache.getModelIndexTexture(model);
   }
 
   @Override

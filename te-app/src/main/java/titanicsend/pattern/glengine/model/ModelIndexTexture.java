@@ -12,15 +12,16 @@ import static titanicsend.pattern.glengine.GLShader.TEXTURE_UNIT_MODEL_INDEX;
 
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.util.GLBuffers;
+import heronarts.lx.LX;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
 import java.nio.FloatBuffer;
 import titanicsend.pattern.glengine.GLEngine;
 
-public class IndexModelTexture extends ModelTextureType {
+public class ModelIndexTexture extends ModelTexture {
 
-  public IndexModelTexture(GLEngine glEngine, GL4 gl4) {
-    super(glEngine, gl4);
+  public ModelIndexTexture(LX lx, GLEngine glEngine) {
+    super(lx, glEngine);
   }
 
   @Override

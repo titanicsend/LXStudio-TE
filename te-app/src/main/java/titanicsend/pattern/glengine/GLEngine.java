@@ -98,6 +98,10 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     return canvas;
   }
 
+  public GL4 getGL4() {
+    return this.gl4;
+  }
+
   public int getWidth() {
     return this.width;
   }
