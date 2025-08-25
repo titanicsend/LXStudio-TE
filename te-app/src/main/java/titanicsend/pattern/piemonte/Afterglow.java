@@ -124,7 +124,7 @@ public class Afterglow extends TEPerformancePattern {
               fadeFactor *= 0.5f;
             }
 
-            int color = LXColor.scaleBrightness(whiteColor, fadeFactor);
+            int color = LXColor.scaleBrightness(whiteColor, fadeFactor * getBrightness());
             colors[point.index] = LXColor.add(colors[point.index], color);
           }
 
@@ -139,7 +139,7 @@ public class Afterglow extends TEPerformancePattern {
               fadeFactor *= 0.5f;
             }
 
-            int color = LXColor.scaleBrightness(whiteColor, fadeFactor);
+            int color = LXColor.scaleBrightness(whiteColor, fadeFactor * getBrightness());
             colors[point.index] = LXColor.add(colors[point.index], color);
           }
 
