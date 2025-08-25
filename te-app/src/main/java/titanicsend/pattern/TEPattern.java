@@ -76,10 +76,6 @@ public abstract class TEPattern extends DmxPattern {
           PresetEngine.get().applyPresetDelayed(preset, this);
         };
     this.presetSelector.addListener(this.presetListener);
-
-    // Listen to model generation changes (geometry changes) at top level and treat it
-    // as a modelChanged event, because the points have moved.  JKB: LX fix needed here?
-    this.lx.addListener(this.lxListener);
   }
 
   @Override
@@ -87,16 +83,6 @@ public abstract class TEPattern extends DmxPattern {
     // clearPixels(); // Note(JKB): should be ok to remove this, confirm after running for a while
     super.onInactive();
   }
-
-  private final LX.Listener lxListener =
-      new LX.Listener() {
-        @Override
-        public void modelGenerationChanged(LX lx, LXModel model) {
-          // The model (object) didn't change but the points moved. Redirect to onModelChanged() to
-          // force recalculation (such as for shader lxModelCoordinates to reload)
-          onModelChanged(getModelView());
-        }
-      };
 
   @Override
   protected void onModelChanged(LXModel model) {
@@ -360,7 +346,6 @@ public abstract class TEPattern extends DmxPattern {
   @Override
   public void dispose() {
     this.presetSelector.removeListener(this.presetListener);
-    this.lx.removeListener(this.lxListener);
     super.dispose();
   }
 }
