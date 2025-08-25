@@ -43,15 +43,15 @@ public class TEShader extends GLShader implements GLShader.UniformSource {
   // Render buffers: ping-pong FBOs and textures
   private PingPongFBO ppFBOs;
 
-  // Texture handle for the current view model coordinate texture
+  // Texture handles for the current view model textures
   private int modelCoordsTextureHandle = UNINITIALIZED;
-  private int modelIndexTextureHandle = UNINITIALIZED;
+  private int modelNeighborhoodTextureHandle = UNINITIALIZED;
 
   private static class TEShaderUniforms {
     private Uniform.Int1 audio;
     private Uniform.Int1 lxModelCoords;
     private Uniform.Int1 backBuffer;
-    private Uniform.Int1 lxModelIndex;
+    private Uniform.Int1 lxModelNeighborhood;
   }
 
   private final TEShaderUniforms uniforms = new TEShaderUniforms();
@@ -140,7 +140,7 @@ public class TEShader extends GLShader implements GLShader.UniformSource {
     this.uniforms.audio = getUniformInt1(UniformNames.AUDIO_CHANNEL);
     this.uniforms.lxModelCoords = getUniformInt1(UniformNames.LX_MODEL_COORDS);
     this.uniforms.backBuffer = getUniformInt1(UniformNames.BACK_BUFFER);
-    this.uniforms.lxModelIndex = getUniformInt1(UniformNames.LX_MODEL_INDEX);
+    this.uniforms.lxModelNeighborhood = getUniformInt1(UniformNames.LX_MODEL_NEIGHBORHOOD);
   }
 
   @Override
@@ -178,8 +178,8 @@ public class TEShader extends GLShader implements GLShader.UniformSource {
     bindTextureUnit(TEXTURE_UNIT_MODEL_COORDS, this.modelCoordsTextureHandle);
     this.uniforms.lxModelCoords.setValue(TEXTURE_UNIT_MODEL_COORDS);
 
-    bindTextureUnit(TEXTURE_UNIT_MODEL_INDEX, this.modelIndexTextureHandle);
-    this.uniforms.lxModelIndex.setValue(TEXTURE_UNIT_MODEL_INDEX);
+    bindTextureUnit(TEXTURE_UNIT_MODEL_NEIGHBORHOOD, this.modelNeighborhoodTextureHandle);
+    this.uniforms.lxModelNeighborhood.setValue(TEXTURE_UNIT_MODEL_NEIGHBORHOOD);
 
     // Clear backbuffer on first frame
     if (this.needsClearBackBuffer) {
@@ -272,7 +272,7 @@ public class TEShader extends GLShader implements GLShader.UniformSource {
   public void unbindTextures() {
     // Unbind textures (except for audio, which stays bound for all patterns)
     unbindTextureUnit(TEXTURE_UNIT_MODEL_COORDS);
-    unbindTextureUnit(TEXTURE_UNIT_MODEL_INDEX);
+    unbindTextureUnit(TEXTURE_UNIT_MODEL_NEIGHBORHOOD);
     unbindTextureUnit(TEXTURE_UNIT_BACKBUFFER);
     for (TextureInfo ti : this.fileTextures) {
       unbindTextureUnit(ti.unit);
@@ -301,7 +301,8 @@ public class TEShader extends GLShader implements GLShader.UniformSource {
    */
   public void setModel(LXModel model) {
     this.modelCoordsTextureHandle = this.glEngine.textureCache.getModelCoordsTexture(model);
-    this.modelIndexTextureHandle = this.glEngine.textureCache.getModelIndexTexture(model);
+    this.modelNeighborhoodTextureHandle =
+        this.glEngine.textureCache.getModelNeighborhoodTexture(model);
   }
 
   // Releases native resources allocated by this shader.

@@ -53,7 +53,7 @@ public abstract class GLShader {
   public static final int TEXTURE_UNIT_AUDIO = 0;
   public static final int TEXTURE_UNIT_MODEL_COORDS = 1;
   public static final int TEXTURE_UNIT_BACKBUFFER = 2;
-  public static final int TEXTURE_UNIT_MODEL_INDEX = 3;
+  public static final int TEXTURE_UNIT_MODEL_NEIGHBORHOOD = 3;
   public static final int FIRST_UNRESERVED_TEXTURE_UNIT = 4;
 
   /**
@@ -218,7 +218,8 @@ public abstract class GLShader {
     // Reserved texture units
     this.uniformTextureUnits.put(UniformNames.BACK_BUFFER, TEXTURE_UNIT_BACKBUFFER);
     this.uniformTextureUnits.put(UniformNames.LX_MODEL_COORDS, TEXTURE_UNIT_MODEL_COORDS);
-    this.uniformTextureUnits.put(UniformNames.LX_MODEL_INDEX, TEXTURE_UNIT_MODEL_INDEX);
+    this.uniformTextureUnits.put(
+        UniformNames.LX_MODEL_NEIGHBORHOOD, TEXTURE_UNIT_MODEL_NEIGHBORHOOD);
   }
 
   // Buffers

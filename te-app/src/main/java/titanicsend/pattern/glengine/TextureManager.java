@@ -10,7 +10,7 @@ import static com.jogamp.opengl.GL.GL_TEXTURE_MIN_FILTER;
 import static com.jogamp.opengl.GL.GL_TEXTURE_WRAP_S;
 import static com.jogamp.opengl.GL.GL_TEXTURE_WRAP_T;
 import static titanicsend.pattern.glengine.GLShader.TEXTURE_UNIT_MODEL_COORDS;
-import static titanicsend.pattern.glengine.GLShader.TEXTURE_UNIT_MODEL_INDEX;
+import static titanicsend.pattern.glengine.GLShader.TEXTURE_UNIT_MODEL_NEIGHBORHOOD;
 
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.GLAutoDrawable;
@@ -125,8 +125,8 @@ public class TextureManager implements LX.Listener {
     ModelTexture[] slots = new ModelTexture[MODEL_TEXTURE_COUNT];
     ModelTexture normalizedXYZ = new ModelTexture();
     slots[0] = normalizedXYZ;
-    ModelTexture indexMap = new ModelTexture();
-    slots[1] = indexMap;
+    ModelTexture neighborhood = new ModelTexture();
+    slots[1] = neighborhood;
     this.modelTextures.put(model, slots);
 
     // Double check size of engine and model points
@@ -190,15 +190,15 @@ public class TextureManager implements LX.Listener {
     gl4.glBindTexture(GL_TEXTURE_2D, 0);
     gl4.glActiveTexture(GL_TEXTURE0);
 
-    // And create an OpenGL texture to hold the index data
-    this.glEngine.bindTextureUnit(TEXTURE_UNIT_MODEL_INDEX, indexMap.getHandle());
+    // And create an OpenGL texture to hold the neighborhood data
+    this.glEngine.bindTextureUnit(TEXTURE_UNIT_MODEL_NEIGHBORHOOD, neighborhood.getHandle());
 
     gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
-    // load the index data into the texture
+    // load the neighborhood data into the texture
     gl4.glTexImage2D(
         GL4.GL_TEXTURE_2D, 0, GL4.GL_RG32F, width, height, 0, GL4.GL_RG, GL4.GL_FLOAT, indices);
 
@@ -225,7 +225,7 @@ public class TextureManager implements LX.Listener {
       case TEXTURE_UNIT_MODEL_COORDS: // normalized coordinates
         tex = slots[0];
         break;
-      case TEXTURE_UNIT_MODEL_INDEX: // textureUnit mapping
+      case TEXTURE_UNIT_MODEL_NEIGHBORHOOD: // textureUnit mapping
         tex = slots[1];
         break;
       default:
@@ -265,11 +265,11 @@ public class TextureManager implements LX.Listener {
    * @param model The model (view) to copy coordinates from
    * @return The texture handle of the view's indices texture
    */
-  public int getModelIndexTexture(LXModel model) {
+  public int getModelNeighborhoodTexture(LXModel model) {
     if (!hasModelTextures(model)) {
       createModelTextures(model);
     }
-    return getModelTexture(model, TEXTURE_UNIT_MODEL_INDEX);
+    return getModelTexture(model, TEXTURE_UNIT_MODEL_NEIGHBORHOOD);
   }
 
   /**

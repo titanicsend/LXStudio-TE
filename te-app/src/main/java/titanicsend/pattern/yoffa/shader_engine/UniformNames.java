@@ -9,6 +9,6 @@ public class UniformNames {
   public static final String AUDIO_CHANNEL = CHANNEL + "0";
   public static final String LX_PARAMETER_SUFFIX = "_parameter";
   public static final String LX_MODEL_COORDS = "lxModelCoords";
-  public static final String LX_MODEL_INDEX = "lxModelIndex";
+  public static final String LX_MODEL_NEIGHBORHOOD = "lxModelIndex";
   public static final String BACK_BUFFER = "iBackbuffer";
 }
