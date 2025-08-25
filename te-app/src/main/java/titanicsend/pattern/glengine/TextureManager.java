@@ -23,8 +23,12 @@ import heronarts.lx.model.LXPoint;
 import java.io.File;
 import java.io.IOException;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import titanicsend.pattern.glengine.model.ModelTextureType;
 
 // Manages the lifecycle of the (relatively) static OpenGL textures used by
 // the shader engine.  We use are two types of textures: coordinate and static.
@@ -45,7 +49,7 @@ public class TextureManager implements LX.Listener {
   // For each LXModel we now store two ModelTextures
   // [0] = normalized model coordinates at current gl_FragCoord
   // [1] = (GL_RG32F) indices of the model points
-  private final Map<LXModel, ModelTexture[]> modelTextures = new HashMap<>();
+  private final List<ModelTextureType> modelTextureTypes = new ArrayList<>();
 
   // Textures that have been loaded for a filename
   private final Map<String, StaticTexture> staticTextures = new HashMap<>();
@@ -68,44 +72,24 @@ public class TextureManager implements LX.Listener {
     this.canvas = this.glEngine.getCanvas();
   }
 
+  /** This event is fired if fixtures are moved but no points were added or destroyed */
   @Override
   public void modelGenerationChanged(LX lx, LXModel model) {
     if (!initialized) {
       return;
     }
 
-    // Top level model changed. Discard all coordinate textures.
-    clearModelTextures();
+    // Top level model changed or moved. Mark all texture contents as stale.
+    markModelTexturesStale();
   }
 
-  /**
-   * Writes the index of a model point to a 5x5 pixel neighborhood in the index texture buffer. This
-   * greatly improves the quality of sampling from the model buffer
-   *
-   * @param p The model point
-   * @param indices The float buffer for the index texture
-   * @param width The width of the texture
-   * @param height The height of the texture
-   */
-  private void setIndexNeighborhood(LXPoint p, FloatBuffer indices, int width, int height) {
-    // Calculate the center pixel coordinates from the point's normalized position
-    int px = Math.round(p.xn * (width - 1));
-    int py = Math.round(p.yn * (height - 1));
-
-    // Convert index to 2D coordinates
-    float val1 = (float) (p.index % width);
-    float val2 = (float) Math.floor(p.index / width);
-
-    // Iterate over neighborhood centered at (px, py)
-    for (int ny = py - 2; ny <= py + 2; ny++) {
-      for (int nx = px - 2; nx <= px + 2; nx++) {
-        if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
-          int destIndex = (ny * width + nx) * 2;
-          indices.put(destIndex, val1);
-          indices.put(destIndex + 1, val2);
-        }
-      }
+  public TextureManager registerModelTextureType(ModelTextureType modelTextureType) {
+    if (this.modelTextureTypes.contains(Objects.requireNonNull(modelTextureType))) {
+      throw new IllegalArgumentException(
+          "ModelTextureType " + modelTextureType + " already registered");
     }
+    this.modelTextureTypes.add(modelTextureType);
+    return this;
   }
 
   /**
@@ -144,7 +128,7 @@ public class TextureManager implements LX.Listener {
     // Create a FloatBuffer to hold the normalized coordinates of the model points
     FloatBuffer coords = GLBuffers.newDirectFloatBuffer(enginePoints * 3);
 
-    // Create a buffer to hold the indices of the model points
+    // Create a FloatBuffer to hold the indices of the model points
     FloatBuffer indices = GLBuffers.newDirectFloatBuffer(enginePoints * 2);
 
     // Initialize with NaNs for coordinates and indices
@@ -294,19 +278,18 @@ public class TextureManager implements LX.Listener {
     }
   }
 
+  private void markModelTexturesStale() {
+    for (ModelTextureType modelTextureType : this.modelTextureTypes) {
+      modelTextureType.markStale();
+    }
+  }
+
   /** Delete all existing lxmodel-derived textures (both slots) and clear the map. */
   private void clearModelTextures() {
-    for (ModelTexture[] arr : this.modelTextures.values()) {
-      if (arr != null) {
-        for (int i = 0; i < arr.length; i++) {
-          if (arr[i] != null) {
-            arr[i].dispose();
-            arr[i] = null;
-          }
-        }
-      }
+    for (ModelTextureType modelTextureType : this.modelTextureTypes) {
+      modelTextureType.dispose();
     }
-    this.modelTextures.clear();
+    this.modelTextureTypes.clear();
   }
 
   /**
@@ -339,24 +322,6 @@ public class TextureManager implements LX.Listener {
     }
     // stop listening for model changes
     this.lx.removeListener(this);
-  }
-
-  private class ModelTexture {
-    // OpenGL texture handle for this lxmodel texture
-    // Will be 0 (invalid) if the texture has not been created yet.
-    final int[] handles = new int[1];
-
-    ModelTexture() {
-      gl4.glGenTextures(1, handles, 0);
-    }
-
-    int getHandle() {
-      return handles[0];
-    }
-
-    void dispose() {
-      gl4.glDeleteTextures(1, handles, 0);
-    }
   }
 
   private class StaticTexture {
