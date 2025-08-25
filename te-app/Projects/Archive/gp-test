@@ -2444,39 +2444,7 @@
               "selected": false
             },
             "children": {},
-            "effects": [
-              {
-                "id": 41839,
-                "class": "titanicsend.effect.NoGapEffect",
-                "internal": {
-                  "modulationColor": 0,
-                  "expanded": true,
-                  "modulationExpanded": false
-                },
-                "parameters": {
-                  "label": "NoGapEffect",
-                  "enabled": true,
-                  "LogSec": 300.0
-                },
-                "children": {
-                  "modulation": {
-                    "id": 41840,
-                    "class": "heronarts.lx.modulation.LXModulationEngine",
-                    "internal": {
-                      "modulationColor": 0
-                    },
-                    "parameters": {
-                      "label": "Modulation"
-                    },
-                    "children": {},
-                    "modulators": [],
-                    "modulations": [],
-                    "triggers": []
-                  }
-                },
-                "deviceVersion": -1
-              }
-            ],
+            "effects": [],
             "clips": []
           }
         },

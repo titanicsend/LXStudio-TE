@@ -7,8 +7,12 @@ import heronarts.lx.LXLoopTask;
 import heronarts.lx.color.LXColor;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.util.*;
-import playasystems.gigglepixel.*;
+import java.util.ArrayList;
+import java.util.List;
+import playasystems.gigglepixel.GPBroadcaster;
+import playasystems.gigglepixel.GPColor;
+import playasystems.gigglepixel.GPIdentificationPacket;
+import playasystems.gigglepixel.GPPalettePacket;
 import titanicsend.util.TimeAccumulator;
 
 @Deprecated

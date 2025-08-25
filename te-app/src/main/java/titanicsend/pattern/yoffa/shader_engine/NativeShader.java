@@ -1,24 +1,43 @@
 package titanicsend.pattern.yoffa.shader_engine;
 
-import static com.jogamp.opengl.GL.*;
-import static titanicsend.pattern.yoffa.shader_engine.UniformTypes.*;
+import static com.jogamp.opengl.GL.GL_ARRAY_BUFFER;
+import static com.jogamp.opengl.GL.GL_BACK;
+import static com.jogamp.opengl.GL.GL_BGRA;
+import static com.jogamp.opengl.GL.GL_CLAMP_TO_EDGE;
+import static com.jogamp.opengl.GL.GL_ELEMENT_ARRAY_BUFFER;
+import static com.jogamp.opengl.GL.GL_FLOAT;
+import static com.jogamp.opengl.GL.GL_NEAREST;
+import static com.jogamp.opengl.GL.GL_TEXTURE0;
+import static com.jogamp.opengl.GL.GL_TEXTURE_2D;
+import static com.jogamp.opengl.GL.GL_TEXTURE_MAG_FILTER;
+import static com.jogamp.opengl.GL.GL_TEXTURE_MIN_FILTER;
+import static com.jogamp.opengl.GL.GL_TEXTURE_WRAP_S;
+import static com.jogamp.opengl.GL.GL_TEXTURE_WRAP_T;
+import static com.jogamp.opengl.GL.GL_UNSIGNED_BYTE;
 
 import Jama.Matrix;
 import com.jogamp.common.nio.Buffers;
-import com.jogamp.opengl.*;
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GL4;
+import com.jogamp.opengl.GLAutoDrawable;
+import com.jogamp.opengl.GLContext;
+import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.util.GLBuffers;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureIO;
-import heronarts.lx.LX;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.parameter.LXParameter;
 import java.io.File;
 import java.io.IOException;
-import java.nio.*;
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import titanicsend.util.TE;
 
 // Technically we don't need to implement GLEventListener unless we plan on rendering on screen,
 // but let's leave it for good practice.
@@ -40,8 +59,8 @@ public class NativeShader implements GLEventListener {
   };
 
   private final FragmentShader fragmentShader;
-  private final int xResolution;
-  private final int yResolution;
+  private final int width;
+  private final int height;
 
   private final FloatBuffer vertexBuffer;
   private final IntBuffer indexBuffer;
@@ -56,12 +75,14 @@ public class NativeShader implements GLEventListener {
   private final int audioTextureHeight;
   FloatBuffer audioTextureData;
 
+  private final List<Uniform> mutableUniforms = new ArrayList<>();
+  public final List<Uniform> uniforms = Collections.unmodifiableList(this.mutableUniforms);
   // map of user created uniforms.
-  protected HashMap<String, UniformTypes> uniforms = null;
+  protected final HashMap<String, Uniform> uniformMap = new HashMap<>();
 
-  public NativeShader(FragmentShader fragmentShader, int xResolution, int yResolution) {
-    this.xResolution = xResolution;
-    this.yResolution = yResolution;
+  public NativeShader(FragmentShader fragmentShader, int width, int height) {
+    this.width = width;
+    this.height = height;
     this.fragmentShader = fragmentShader;
     this.vertexBuffer = Buffers.newDirectFloatBuffer(VERTICES.length);
     this.indexBuffer = Buffers.newDirectIntBuffer(INDICES.length);
@@ -72,23 +93,25 @@ public class NativeShader implements GLEventListener {
     this.controlData = null;
 
     // gl-compatible buffer for reading offscreen surface to cpu memory
-    this.backBuffer = GLBuffers.newDirectByteBuffer(xResolution * yResolution * 4);
+    this.backBuffer = GLBuffers.newDirectByteBuffer(width * height * 4);
 
     this.audioTextureWidth = 512;
     this.audioTextureHeight = 2;
     this.audioTextureData = GLBuffers.newDirectFloatBuffer(audioTextureHeight * audioTextureWidth);
   }
 
+  private GL4 gl4;
+
   @Override
   public void init(GLAutoDrawable glAutoDrawable) {
     GLContext context = glAutoDrawable.getContext();
     context.makeCurrent();
-    GL4 gl4 = glAutoDrawable.getGL().getGL4();
+    this.gl4 = glAutoDrawable.getGL().getGL4();
 
     if (!isInitialized()) {
       initShaderProgram(gl4);
       loadTextureFiles(fragmentShader);
-      gl4.glUseProgram(shaderProgram.getProgramId());
+      gl4.glUseProgram(shaderProgram.id);
     }
     context.release();
   }
@@ -113,7 +136,7 @@ public class NativeShader implements GLEventListener {
     setUniforms(gl4);
 
     render(gl4);
-    saveSnapshot(gl4, xResolution, yResolution);
+    saveSnapshot(gl4, width, height);
   }
 
   private void saveSnapshot(GL4 gl4, int width, int height) {
@@ -124,6 +147,8 @@ public class NativeShader implements GLEventListener {
     // directly to LX as colors, without any additional work on the Java side.
     gl4.glReadPixels(0, 0, width, height, GL_BGRA, GL_UNSIGNED_BYTE, backBuffer);
   }
+
+  private int position;
 
   /**
    * Preallocate GPU memory objects at initialization time
@@ -152,9 +177,10 @@ public class NativeShader implements GLEventListener {
         indexBuffer,
         GL.GL_STATIC_DRAW);
 
+    this.position = gl4.glGetAttribLocation(shaderProgram.id, ShaderAttribute.POSITION);
+
     // Audio texture object - on id GL_TEXTURE0
     gl4.glActiveTexture(GL_TEXTURE0);
-    gl4.glEnable(GL_TEXTURE_2D);
     gl4.glGenTextures(1, audioTextureHandle, 0);
     gl4.glBindTexture(GL4.GL_TEXTURE_2D, audioTextureHandle[0]);
 
@@ -181,8 +207,6 @@ public class NativeShader implements GLEventListener {
    */
   private void render(GL4 gl4) {
     // set up geometry
-    int position = shaderProgram.getShaderAttributeLocation(ShaderAttribute.POSITION);
-
     gl4.glBindBuffer(GL_ARRAY_BUFFER, geometryBufferHandles[0]);
     gl4.glVertexAttribPointer(position, 3, GL4.GL_FLOAT, false, 0, 0);
     gl4.glEnableVertexAttribArray(position);
@@ -212,7 +236,7 @@ public class NativeShader implements GLEventListener {
 
     // set standard shadertoy-style uniforms
     setUniform("iTime", (float) ctl.getTime());
-    setUniform("iResolution", (float) xResolution, (float) yResolution);
+    setUniform("iResolution", (float) width, (float) height);
     // setUniform("iMouse", 0f, 0f, 0f, 0f);
 
     // TE standard audio uniforms
@@ -249,8 +273,10 @@ public class NativeShader implements GLEventListener {
     setStandardUniforms(controlData);
 
     // Add all preprocessed LX parameters from the shader code as uniforms
-    for (LXParameter customParameter : fragmentShader.getParameters()) {
-      setUniform(customParameter.getLabel() + Uniforms.CUSTOM_SUFFIX, customParameter.getValuef());
+    for (LXParameter customParameter : fragmentShader.parameters) {
+      setUniform(
+          customParameter.getLabel() + UniformNames.LX_PARAMETER_SUFFIX,
+          customParameter.getValuef());
     }
 
     // Set audio waveform and fft data as a 512x2 texture on the specified audio
@@ -283,20 +309,19 @@ public class NativeShader implements GLEventListener {
         GL4.GL_RED,
         GL_FLOAT,
         audioTextureData);
-    setUniform(Uniforms.AUDIO_CHANNEL, 0);
+    setUniform(UniformNames.AUDIO_CHANNEL, 0);
 
     // add shadertoy texture channels
     for (Map.Entry<Integer, Texture> textureInput : textures.entrySet()) {
-      setUniform(Uniforms.CHANNEL + textureInput.getKey(), textureInput.getValue(), true);
+      setUniform(UniformNames.CHANNEL + textureInput.getKey(), textureInput.getValue(), true);
     }
 
     // hand the complete uniform list to OpenGL
-    updateUniforms(gl4);
+    updateUniforms();
   }
 
   private void initShaderProgram(GL4 gl4) {
-    shaderProgram = new ShaderProgram();
-    shaderProgram.init(gl4, fragmentShader.getShaderName());
+    shaderProgram = new ShaderProgram(gl4, fragmentShader.getShaderName());
 
     allocateShaderBuffers(gl4);
   }
@@ -318,7 +343,7 @@ public class NativeShader implements GLEventListener {
   public void dispose(GLAutoDrawable glAutoDrawable) {
     GL4 gl4 = glAutoDrawable.getGL().getGL4();
     cleanupGLHandles(gl4);
-    shaderProgram.dispose(gl4);
+    shaderProgram.dispose();
   }
 
   @Override
@@ -339,7 +364,7 @@ public class NativeShader implements GLEventListener {
   }
 
   public boolean isInitialized() {
-    return (shaderProgram != null) && (shaderProgram.isInitialized());
+    return shaderProgram != null;
   }
 
   /*
@@ -355,182 +380,80 @@ public class NativeShader implements GLEventListener {
   types. Oh yeah, and a couple of worker methods to manage the uniform list we're building.
   */
 
-  // worker for adding user specified uniforms to our big list'o'uniforms
-  protected void addUniform(String name, int type, Object value) {
-    if (uniforms == null) {
-      uniforms = new HashMap<>();
-    }
-    // The first instance of a uniform wins. Subsequent
-    // attempts to (re)set it are ignored.  This makes it so control uniforms
-    // can be set from user pattern code without being overridden by the automatic
-    // setter, which is called right before frame generation.
+  /*  // worker for adding user specified uniforms to our big list'o'uniforms
+  protected void addUniform(String name, UniformType type, Object value) {
+    // Note(jkb): Child setters now get called last, so values set by user code take priority.
+    // This is the same outcome but a different mechanism than the previous code.
     // TODO - we'll have to be more sophisticated about this when we start retaining textures
     // TODO - and other large, invariant uniforms between frames.
-    if (!uniforms.containsKey(name)) {
-      uniforms.put(name, new UniformTypes(type, value));
+    Uniform uniform = this.uniforms.get(name);
+    if (uniform == null) {
+      int location = this.gl4.glGetUniformLocation(this.shaderProgram.getProgramId(), name);
+      uniform = new Uniform(location, type);
+      this.uniforms.put(name, uniform);
     }
-  }
+
+    // Stage the new uniform value and mark it as modified
+    uniform.set(value);
+  }*/
 
   // parse uniform list and create necessary GL objects
   // Note that array buffers passed in must be allocated to the exact appropriate size
   // you want. No allocating a big buffer, then partly filling it. GL is picky about this.
-  protected void updateUniforms(GL4 gl4) {
-    int[] v;
-    float[] vf;
-    IntBuffer vIArray;
-    FloatBuffer vFArray;
-    if (uniforms != null && !uniforms.isEmpty()) {
-      for (String name : uniforms.keySet()) {
-        int loc = gl4.glGetUniformLocation(shaderProgram.getProgramId(), name);
-
-        if (loc == -1) {
-          // LX.log("No uniform \"" + name + "\"  found in shader");
-          continue;
-        }
-        UniformTypes val = uniforms.get(name);
-
-        switch (val.type) {
-          case INT1:
-            v = ((int[]) val.value);
-            gl4.glUniform1i(loc, v[0]);
-            break;
-          case INT2:
-            v = ((int[]) val.value);
-            gl4.glUniform2i(loc, v[0], v[1]);
-            break;
-          case INT3:
-            v = ((int[]) val.value);
-            gl4.glUniform3i(loc, v[0], v[1], v[2]);
-            break;
-          case INT4:
-            v = ((int[]) val.value);
-            gl4.glUniform4i(loc, v[0], v[1], v[2], v[3]);
-            break;
-          case FLOAT1:
-            vf = ((float[]) val.value);
-            gl4.glUniform1f(loc, vf[0]);
-            break;
-          case FLOAT2:
-            vf = ((float[]) val.value);
-            gl4.glUniform2f(loc, vf[0], vf[1]);
-            break;
-          case FLOAT3:
-            vf = ((float[]) val.value);
-            gl4.glUniform3f(loc, vf[0], vf[1], vf[2]);
-            break;
-          case FLOAT4:
-            vf = ((float[]) val.value);
-            gl4.glUniform4f(loc, vf[0], vf[1], vf[2], vf[3]);
-            break;
-          case INT1VEC:
-            vIArray = ((IntBuffer) val.value);
-            gl4.glUniform1iv(loc, vIArray.capacity(), vIArray);
-            break;
-          case INT2VEC:
-            vIArray = ((IntBuffer) val.value);
-            gl4.glUniform2iv(loc, vIArray.capacity() / 2, vIArray);
-            break;
-          case INT3VEC:
-            vIArray = ((IntBuffer) val.value);
-            gl4.glUniform3iv(loc, vIArray.capacity() / 3, vIArray);
-            break;
-          case INT4VEC:
-            vIArray = ((IntBuffer) val.value);
-            gl4.glUniform4iv(loc, vIArray.capacity() / 4, vIArray);
-            break;
-          case FLOAT1VEC:
-            vFArray = ((FloatBuffer) val.value);
-            gl4.glUniform1fv(loc, vFArray.capacity(), vFArray);
-            break;
-          case FLOAT2VEC:
-            vFArray = ((FloatBuffer) val.value);
-            gl4.glUniform2fv(loc, vFArray.capacity() / 2, vFArray);
-            break;
-          case FLOAT3VEC:
-            vFArray = ((FloatBuffer) val.value);
-            gl4.glUniform3fv(loc, vFArray.capacity() / 3, vFArray);
-            break;
-          case FLOAT4VEC:
-            vFArray = ((FloatBuffer) val.value);
-            gl4.glUniform4fv(loc, vFArray.capacity() / 4, vFArray);
-            break;
-          case MAT2:
-            vFArray = ((FloatBuffer) val.value);
-            gl4.glUniformMatrix2fv(loc, 1, true, vFArray);
-            break;
-          case MAT3:
-            vFArray = ((FloatBuffer) val.value);
-            gl4.glUniformMatrix3fv(loc, 1, true, vFArray);
-            break;
-          case MAT4:
-            vFArray = ((FloatBuffer) val.value);
-            gl4.glUniformMatrix4fv(loc, 1, true, vFArray);
-            break;
-          case SAMPLER2DSTATIC:
-          case SAMPLER2D:
-            Texture tex = ((Texture) val.value);
-            gl4.glActiveTexture(GL_TEXTURE0 + textureKey);
-            tex.enable(gl4);
-            tex.bind(gl4);
-            gl4.glUniform1i(loc, textureKey);
-            tex.disable(gl4);
-            textureKey++;
-            break;
-          default:
-            LX.log("Unsupported uniform type");
-            break;
-        }
+  private void updateUniforms() {
+    for (Uniform uniform : this.uniforms) {
+      if (uniform.hasUpdate()) {
+        uniform.update();
       }
-      uniforms.clear();
     }
   }
 
   /** setter -- single int */
-  public void setUniform(String name, int x) {
-    addUniform(name, INT1, new int[] {x});
+  public Uniform.Int1 setUniform(String name, int x) {
+    return ((Uniform.Int1) getUniform(name, UniformType.INT1)).setValue(x);
   }
 
   /** 2 element int array or ivec2 */
-  public void setUniform(String name, int x, int y) {
-    addUniform(name, INT2, new int[] {x, y});
+  public Uniform.Int2 setUniform(String name, int x, int y) {
+    return ((Uniform.Int2) getUniform(name, UniformType.INT2)).setValue(x, y);
   }
 
   /** 3 element int array or ivec3 */
-  public void setUniform(String name, int x, int y, int z) {
-    addUniform(name, INT3, new int[] {x, y, z});
+  public Uniform.Int3 setUniform(String name, int x, int y, int z) {
+    return ((Uniform.Int3) getUniform(name, UniformType.INT3)).setValue(x, y, z);
   }
 
   /** 4 element int array or ivec4 */
-  public void setUniform(String name, int x, int y, int z, int w) {
-    addUniform(name, UniformTypes.INT4, new int[] {x, y, z, w});
+  public Uniform.Int4 setUniform(String name, int x, int y, int z, int w) {
+    return ((Uniform.Int4) getUniform(name, UniformType.INT4)).setValue(x, y, z, w);
   }
 
   /** single float */
-  public void setUniform(String name, float x) {
-    addUniform(name, UniformTypes.FLOAT1, new float[] {x});
+  public Uniform.Float1 setUniform(String name, float x) {
+    return ((Uniform.Float1) getUniform(name, UniformType.FLOAT1)).setValue(x);
   }
 
   /** 2 element float array or vec2 */
-  public void setUniform(String name, float x, float y) {
-    addUniform(name, UniformTypes.FLOAT2, new float[] {x, y});
+  public Uniform.Float2 setUniform(String name, float x, float y) {
+    return ((Uniform.Float2) getUniform(name, UniformType.FLOAT2)).setValue(x, y);
   }
 
   /** 3 element float array or vec3 */
-  public void setUniform(String name, float x, float y, float z) {
-    addUniform(name, UniformTypes.FLOAT3, new float[] {x, y, z});
+  public Uniform.Float3 setUniform(String name, float x, float y, float z) {
+    return ((Uniform.Float3) getUniform(name, UniformType.FLOAT3)).setValue(x, y, z);
   }
 
   /** 4 element float array or vec4 */
-  public void setUniform(String name, float x, float y, float z, float w) {
-    addUniform(name, UniformTypes.FLOAT4, new float[] {x, y, z, w});
+  public Uniform.Float4 setUniform(String name, float x, float y, float z, float w) {
+    return ((Uniform.Float4) getUniform(name, UniformType.FLOAT4)).setValue(x, y, z, w);
   }
 
-  public void setUniform(String name, boolean x) {
-    addUniform(name, INT1, new int[] {(x) ? 1 : 0});
+  public Uniform.Boolean1 setUniform(String name, boolean x) {
+    return ((Uniform.Boolean1) getUniform(name, UniformType.BOOLEAN1)).setValue(x);
   }
 
-  public void setUniform(String name, boolean x, boolean y) {
-    addUniform(name, INT2, new int[] {(x) ? 1 : 0, (y) ? 1 : 0});
+  public Uniform.Boolean2 setUniform(String name, boolean x, boolean y) {
+    return ((Uniform.Boolean2) getUniform(name, UniformType.BOOLEAN2)).setValue(x, y);
   }
 
   /**
@@ -538,8 +461,8 @@ public class NativeShader implements GLEventListener {
    * static textures. If you know your texture will be changed on every frame, use setUniform(String
    * name, Texture tex) instead. TODO - STATIC TEXTURES NOT YET IMPLEMENTED
    */
-  public void setUniform(String name, Texture tex, boolean isStatic) {
-    addUniform(name, UniformTypes.SAMPLER2D, tex);
+  public Uniform.Sampler2D setUniform(String name, Texture tex, boolean isStatic) {
+    return ((Uniform.Sampler2D) getUniform(name, UniformType.SAMPLER2D)).setValue(tex);
   }
 
   /**
@@ -548,51 +471,31 @@ public class NativeShader implements GLEventListener {
    * TODO - static/dynamic textures not yet implemented. All textures are treated TODO - as dynamic
    * and reloaded on every frame.
    */
-  public void setUniform(String name, Texture tex) {
-    addUniform(name, UniformTypes.SAMPLER2D, tex);
+  public Uniform.Sampler2D setUniform(String name, Texture tex) {
+    return ((Uniform.Sampler2D) getUniform(name, UniformType.SAMPLER2DSTATIC)).setValue(tex);
   }
 
   /**
    * @param columns number of coordinates per element, max 4
    */
-  public void setUniform(String name, IntBuffer vec, int columns) {
-    switch (columns) {
-      case 1:
-        addUniform(name, UniformTypes.INT1VEC, vec);
-        break;
-      case 2:
-        addUniform(name, UniformTypes.INT2VEC, vec);
-        break;
-      case 3:
-        addUniform(name, UniformTypes.INT3VEC, vec);
-        break;
-      case 4:
-        addUniform(name, UniformTypes.INT4VEC, vec);
-        break;
-      default:
-        // TE.log("SetUniform(%s): %d coords specified, maximum 4 allowed", name, columns);
-        break;
-    }
+  public Uniform setUniform(String name, IntBuffer vec, int columns) {
+    return switch (columns) {
+      case 1 -> ((Uniform.Int1Vec) getUniform(name, UniformType.INT1VEC)).setValue(vec);
+      case 2 -> ((Uniform.Int2Vec) getUniform(name, UniformType.INT2VEC)).setValue(vec);
+      case 3 -> ((Uniform.Int3Vec) getUniform(name, UniformType.INT3VEC)).setValue(vec);
+      case 4 -> ((Uniform.Int4Vec) getUniform(name, UniformType.INT4VEC)).setValue(vec);
+      default -> throw new IllegalArgumentException("Invalid number of columns: " + columns);
+    };
   }
 
-  public void setUniform(String name, FloatBuffer vec, int columns) {
-    switch (columns) {
-      case 1:
-        addUniform(name, UniformTypes.FLOAT1VEC, vec);
-        break;
-      case 2:
-        addUniform(name, UniformTypes.FLOAT2VEC, vec);
-        break;
-      case 3:
-        addUniform(name, UniformTypes.FLOAT3VEC, vec);
-        break;
-      case 4:
-        addUniform(name, UniformTypes.FLOAT4VEC, vec);
-        break;
-      default:
-        // TE.log("SetUniform(%s): %d coords specified, maximum 4 allowed", name, columns);
-        break;
-    }
+  public Uniform setUniform(String name, FloatBuffer vec, int columns) {
+    return switch (columns) {
+      case 1 -> ((Uniform.Float1Vec) getUniform(name, UniformType.FLOAT1VEC)).setValue(vec);
+      case 2 -> ((Uniform.Float2Vec) getUniform(name, UniformType.FLOAT2VEC)).setValue(vec);
+      case 3 -> ((Uniform.Float3Vec) getUniform(name, UniformType.FLOAT3VEC)).setValue(vec);
+      case 4 -> ((Uniform.Float4Vec) getUniform(name, UniformType.FLOAT4VEC)).setValue(vec);
+      default -> throw new IllegalArgumentException("Invalid number of columns: " + columns);
+    };
   }
 
   /**
@@ -602,33 +505,25 @@ public class NativeShader implements GLEventListener {
    * @param vec Floating point matrix data, in row major order
    * @param sz Size of matrix (Number of rows & columns. 2,3 or 4)
    */
-  public void setUniformMatrix(String name, FloatBuffer vec, int sz) {
-    switch (sz) {
-      case 2:
-        addUniform(name, UniformTypes.MAT2, vec);
-        break;
-      case 3:
-        addUniform(name, UniformTypes.MAT3, vec);
-        break;
-      case 4:
-        addUniform(name, UniformTypes.MAT4, vec);
-        break;
-      default:
-        // TE.log("SetUniformMatrix(%s): %d incorrect matrix size specified", name, columns);
-        break;
-    }
+  public Uniform setUniformMatrix(String name, FloatBuffer vec, int sz) {
+    return switch (sz) {
+      case 2 -> ((Uniform.Mat2) getUniform(name, UniformType.MAT2)).setValue(vec);
+      case 3 -> ((Uniform.Mat3) getUniform(name, UniformType.MAT3)).setValue(vec);
+      case 4 -> ((Uniform.Mat4) getUniform(name, UniformType.MAT4)).setValue(vec);
+      default -> throw new IllegalArgumentException("Invalid matrix size: " + sz);
+    };
   }
 
   /**
    * Sets a uniform for a square floating point matrix, of type MAT2(2x2), MAT3(3x3) or MAT4(4x4).
    * Input matrix must be in row major order.
    */
-  public void setUniform(String name, float[][] matrix) {
+  public Uniform setUniform(String name, float[][] matrix) {
     // requires a square matrix of dimension 2x2,3x3 or 4x4
     int dim = matrix.length;
     if (dim < 2 || dim > 4) {
-      TE.log("SetUniform(%s): %d incorrect matrix size specified", name, dim);
-      return;
+      throw new IllegalArgumentException(
+          "Invalid matrix dimension " + dim + " for uniform " + name);
     }
 
     FloatBuffer buf = Buffers.newDirectFloatBuffer(dim);
@@ -642,18 +537,18 @@ public class NativeShader implements GLEventListener {
 
     // and set the uniform object
     buf.rewind();
-    setUniformMatrix(name, buf, dim);
+    return setUniformMatrix(name, buf, dim);
   }
 
   /**
    * Sets a uniform for a square floating point matrix, of type MAT2(2x2), MAT3(3x3) or MAT4(4x4)
    */
-  public void setUniform(String name, Matrix matrix) {
+  public Uniform setUniform(String name, Matrix matrix) {
     // requires a square matrix of dimension 2x2,3x3 or 4x4
     int dim = matrix.getRowDimension();
     if (dim < 2 || dim > 4 || dim != matrix.getColumnDimension()) {
-      TE.log("SetUniform(%s): %d invalid matrix dimension specified.", name);
-      return;
+      throw new IllegalArgumentException(
+          "Invalid matrix dimension " + dim + " for uniform " + name);
     }
 
     // allocate buffer to send to OpenGl
@@ -668,6 +563,28 @@ public class NativeShader implements GLEventListener {
 
     // and set the uniform object
     buf.rewind();
-    setUniformMatrix(name, buf, dim);
+    return setUniformMatrix(name, buf, dim);
+  }
+
+  public Uniform getUniform(String name, UniformType type) {
+    Uniform uniform = this.uniformMap.get(name);
+    if (uniform == null) {
+      // First time accessing this uniform, create a new object.
+      int location = this.gl4.glGetUniformLocation(this.shaderProgram.id, name);
+      // Special handling for Sampler2D, textureUnit will be set once in the constructor.
+      // if (type == UniformType.SAMPLER2D || type == UniformType.SAMPLER2DSTATIC) {
+      //   TODO: Looks like this class didn't handle texture units the same way as GLShader...
+      //   uniform = Uniform.create(this.gl4, name, location, type, getTextureUnit(name));
+      // } else {
+      uniform = Uniform.create(this.gl4, name, location, type);
+      // }
+      this.uniformMap.put(name, uniform);
+      this.mutableUniforms.add(uniform);
+    }
+    // else {
+    //   We could double-check the type here, but let's keep it fast for a tight loop.
+    //   If the type doesn't match it will blow up somewhere else.
+    // }
+    return uniform;
   }
 }

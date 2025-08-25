@@ -3,8 +3,14 @@ package titanicsend.output;
 import heronarts.lx.LX;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+// Legacy artnet output. No longer used. Can be deleted in a standalone PR.
+@Deprecated
 public class GrandShlomoStation {
 
   // Using a map like a set because Java doesn't have Set.get(T) returning T

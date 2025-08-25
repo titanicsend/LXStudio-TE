@@ -6,9 +6,14 @@ import heronarts.lx.blend.MultiplyBlend;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.model.LXPoint;
-import heronarts.lx.parameter.*;
+import heronarts.lx.parameter.BooleanParameter;
+import heronarts.lx.parameter.CompoundParameter;
+import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.transform.LXVector;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import titanicsend.color.TEColorType;
 import titanicsend.model.TEEdgeModel;
@@ -78,8 +83,8 @@ public class EdgeSymmetry extends TEPattern {
 
   public void run(double deltaMs) {
     int color = colorParam.getColor();
-    if (getChannel() != null) {
-      if (getChannel().blendMode.getObject().getClass().equals(MultiplyBlend.class)) {
+    if (getMixerChannel() != null) {
+      if (getMixerChannel().blendMode.getObject().getClass().equals(MultiplyBlend.class)) {
         // Operate in Mask mode
         setEdges(LXColor.BLACK);
         color = LXColor.WHITE;

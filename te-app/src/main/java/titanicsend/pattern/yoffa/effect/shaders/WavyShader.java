@@ -1,7 +1,11 @@
 package titanicsend.pattern.yoffa.effect.shaders;
 
-import static java.lang.Math.*;
-import static titanicsend.util.TEMath.*;
+import static java.lang.Math.atan2;
+import static java.lang.Math.cos;
+import static java.lang.Math.min;
+import static java.lang.Math.sin;
+import static titanicsend.util.TEMath.addToArray;
+import static titanicsend.util.TEMath.divideArrays;
 
 import heronarts.lx.parameter.LXParameter;
 import java.util.Collection;

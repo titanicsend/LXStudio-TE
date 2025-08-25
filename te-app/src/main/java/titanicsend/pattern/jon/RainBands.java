@@ -21,18 +21,13 @@ public class RainBands extends DriftEnabledPattern {
     controls.setNormalizationCurve(TEControlTag.SIZE, BoundedParameter.NormalizationCurve.REVERSE);
     controls.setExponent(TEControlTag.SIZE, 3);
 
+    controls.markUnused(controls.getLXControl(TEControlTag.LEVELREACTIVITY));
+    controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
+
     controls.setRange(TEControlTag.WOW1, 1.5, 8, 0.01); // relative y scale
     // register common controls with LX
     addCommonControls();
 
-    addShader(
-        "rain_noise.fs",
-        new GLShaderFrameSetup() {
-          @Override
-          public void OnFrame(GLShader s) {
-            // calculate incremental transform based on elapsed time
-            s.setUniform("iTranslate", (float) getXPosition(), (float) getYPosition());
-          }
-        });
+    addShader(GLShader.config(lx).withFilename("rain_noise.fs"));
   }
 }

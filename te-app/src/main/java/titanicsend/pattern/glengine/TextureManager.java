@@ -1,17 +1,28 @@
 package titanicsend.pattern.glengine;
 
-import static com.jogamp.opengl.GL.*;
+import static com.jogamp.opengl.GL.GL_CLAMP_TO_EDGE;
+import static com.jogamp.opengl.GL.GL_FLOAT;
+import static com.jogamp.opengl.GL.GL_NEAREST;
+import static com.jogamp.opengl.GL.GL_TEXTURE0;
+import static com.jogamp.opengl.GL.GL_TEXTURE_2D;
+import static com.jogamp.opengl.GL.GL_TEXTURE_MAG_FILTER;
+import static com.jogamp.opengl.GL.GL_TEXTURE_MIN_FILTER;
+import static com.jogamp.opengl.GL.GL_TEXTURE_WRAP_S;
+import static com.jogamp.opengl.GL.GL_TEXTURE_WRAP_T;
+import static titanicsend.pattern.glengine.GLShader.TEXTURE_UNIT_COORDS;
+import static titanicsend.pattern.glengine.GLShader.TEXTURE_UNIT_COORD_MAP;
 
 import com.jogamp.opengl.GL4;
+import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.util.GLBuffers;
 import com.jogamp.opengl.util.texture.Texture;
 import com.jogamp.opengl.util.texture.TextureIO;
 import heronarts.lx.LX;
 import heronarts.lx.model.LXModel;
+import heronarts.lx.model.LXPoint;
 import java.io.File;
 import java.io.IOException;
 import java.nio.FloatBuffer;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,50 +32,210 @@ import java.util.Map;
 // points in the various views of the model.  Static textures are loaded from
 // image files, and are used as 2D textures in the shaders.
 //
-public class TextureManager {
+public class TextureManager implements LX.Listener {
+  private static final int COORDINATE_TEXTURE_COUNT = 2;
 
-  // texture types we manage
-  private enum CachedTextureType {
-    COORDINATE,
-    STATIC
-  }
-
-  // per texture management data for the texture cache
-  private class CachedTextureInfo {
-    protected Texture texture;
-    protected int textureUnit;
-    protected int[] textureHandle = new int[1];
-    protected CachedTextureType type;
-    protected int refCount;
-  }
-
+  private final LX lx;
+  private final GLEngine glEngine;
+  private GLAutoDrawable canvas;
   private GL4 gl4;
 
-  // the next available OpenGL texture unit number
-  private static final int FIRST_UNRESERVED_TEXTURE_UNIT = 3;
-  private int nextTextureUnit = FIRST_UNRESERVED_TEXTURE_UNIT;
+  private boolean initialized = false;
 
-  // map of texture hash codes to texture data
-  // The hash code uniquely identifies the texture, the texture unit number is
-  // used to bind the texture to the GPU, and the other data is used for
-  // cache management.
-  private final Map<Integer, CachedTextureInfo> textures = new HashMap<>();
+  // For each LXModel we now store two CoordTextures
+  // [0] = normalized model coordinates at current gl_FragCoord
+  // [1] = (GL_RG32F) indices of the model points
+  private final Map<LXModel, CoordTexture[]> coordTextures = new HashMap<>();
 
-  // a list of that we can use to keep track of released texture unit numbers
-  private final ArrayList<Integer> releasedTextureUnits = new ArrayList<>();
+  // Textures that have been loaded for a filename
+  private final Map<String, StaticTexture> staticTextures = new HashMap<>();
+
+  public TextureManager(LX lx, GLEngine glEngine) {
+    this.lx = lx;
+    this.glEngine = glEngine;
+
+    // Register for top-level model changes
+    lx.addListener(this);
+  }
+
+  public void initialize(GL4 gl4) {
+    if (this.initialized) {
+      throw new IllegalStateException("TextureManager already initialized");
+    }
+    this.initialized = true;
+
+    this.gl4 = gl4;
+    this.canvas = this.glEngine.getCanvas();
+  }
+
+  @Override
+  public void modelGenerationChanged(LX lx, LXModel model) {
+    if (!initialized) {
+      return;
+    }
+
+    // Top level model changed. Discard all coordinate textures.
+    clearCoordinateTextures();
+  }
 
   /**
-   * Almost certainly reliable hashing function! This generates a hash code for a texture file name
-   * string, which is then used to look up the texture unit number in our static textures map. It
-   * is, as mentioned, almost certainly reliable for our use case, but not absolutely guaranteed to
-   * generate a unique code for every possible filename.
+   * Writes the index of a model point to a 5x5 pixel neighborhood in the index texture buffer. This
+   * greatly improves the quality of sampling from the model buffer
+   *
+   * @param p The model point
+   * @param indices The float buffer for the index texture
+   * @param width The width of the texture
+   * @param height The height of the texture
    */
-  private int stringToHash(String s) {
-    int hash = 0;
-    for (int i = 0; i < s.length(); i++) {
-      hash = (hash << 5) - hash + s.charAt(i);
+  private void setIndexNeighborhood(LXPoint p, FloatBuffer indices, int width, int height) {
+    // Calculate the center pixel coordinates from the point's normalized position
+    int px = Math.round(p.xn * (width - 1));
+    int py = Math.round(p.yn * (height - 1));
+
+    // Convert index to 2D coordinates
+    float val1 = (float) (p.index % width);
+    float val2 = (float) Math.floor(p.index / width);
+
+    // Iterate over neighborhood centered at (px, py)
+    for (int ny = py - 2; ny <= py + 2; ny++) {
+      for (int nx = px - 2; nx <= px + 2; nx++) {
+        if (nx >= 0 && nx < width && ny >= 0 && ny < height) {
+          int destIndex = (ny * width + nx) * 2;
+          indices.put(destIndex, val1);
+          indices.put(destIndex + 1, val2);
+        }
+      }
     }
-    return hash;
+  }
+
+  /**
+   * Create the coordinate textures for a model. This should be called by the parent pattern or
+   * effect at least once before the first frame is rendered, and when the model or view changes.
+   *
+   * <p>This adds an entry to coordTextures that contains two textures: one for normalized
+   * coordinates and one for index mapping.
+   *
+   * @param model The model (view) to copy coordinates from
+   */
+  public void createCoordinateTextures(LXModel model) {
+
+    // Create new array with two entries, the first for normalized coordinates
+    // and the second for index mapping.
+    this.canvas.getContext().makeCurrent();
+    CoordTexture[] slots = new CoordTexture[COORDINATE_TEXTURE_COUNT];
+    CoordTexture normalizedXYZ = new CoordTexture();
+    slots[0] = normalizedXYZ;
+    CoordTexture indexMap = new CoordTexture();
+    slots[1] = indexMap;
+    this.coordTextures.put(model, slots);
+
+    // Double check size of engine and model points
+    int width = this.glEngine.getWidth();
+    int height = this.glEngine.getHeight();
+    final int enginePoints = width * height;
+    final int modelPoints = model.points.length;
+    if (modelPoints > enginePoints) {
+      LX.error(
+          String.format(
+              "GLEngine resolution (%d) too small for number of points in the model (%d). Re-run with higher --resolution WxH",
+              enginePoints, modelPoints));
+    }
+
+    // Create a FloatBuffer to hold the normalized coordinates of the model points
+    FloatBuffer coords = GLBuffers.newDirectFloatBuffer(enginePoints * 3);
+
+    // Create a buffer to hold the indices of the model points
+    FloatBuffer indices = GLBuffers.newDirectFloatBuffer(enginePoints * 2);
+
+    // Initialize with NaNs for coordinates and indices
+    coords.rewind();
+    indices.rewind();
+    for (int i = 0; i < enginePoints; i++) {
+      coords.put(Float.NaN);
+      coords.put(Float.NaN);
+      coords.put(Float.NaN);
+      indices.put(Float.NaN);
+      indices.put(Float.NaN);
+    }
+    // Insert normalized coordinates and their indices into the buffers
+    for (LXPoint p : model.points) {
+      int destIndex = p.index * 3;
+      coords.put(destIndex, p.xn);
+      coords.put(destIndex + 1, p.yn);
+      coords.put(destIndex + 2, p.zn);
+
+      // save normalized coordinates to a rectangular texture index
+      // using the model's width and height. We actually write to
+      // a rectangular neighborhood around the target pixel to compensate
+      // for rounding errors in sampling, and the plain old non-contiguous
+      // nature of the model points.
+      setIndexNeighborhood(p, indices, width, height);
+    }
+
+    coords.rewind();
+    indices.rewind();
+
+    // Create an OpenGL texture to hold the coordinate data
+    this.glEngine.bindTextureUnit(TEXTURE_UNIT_COORDS, normalizedXYZ.getHandle());
+
+    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    // load the coordinate data into the texture
+    gl4.glTexImage2D(
+        GL4.GL_TEXTURE_2D, 0, GL4.GL_RGB32F, width, height, 0, GL4.GL_RGB, GL_FLOAT, coords);
+
+    gl4.glBindTexture(GL_TEXTURE_2D, 0);
+    gl4.glActiveTexture(GL_TEXTURE0);
+
+    // And create an OpenGL texture to hold the index data
+    this.glEngine.bindTextureUnit(TEXTURE_UNIT_COORD_MAP, indexMap.getHandle());
+
+    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    // load the index data into the texture
+    gl4.glTexImage2D(
+        GL4.GL_TEXTURE_2D, 0, GL4.GL_RG32F, width, height, 0, GL4.GL_RG, GL4.GL_FLOAT, indices);
+
+    gl4.glBindTexture(GL_TEXTURE_2D, 0);
+    gl4.glActiveTexture(GL_TEXTURE0);
+  }
+
+  /**
+   * Get the texture handle for a coordinate texture entry in a model.
+   *
+   * @param model The model (view) to retrieve the texture from
+   * @param entryId The entry ID of the texture to retrieve
+   * @return The OpenGL texture handle for the specified coordinate texture entry
+   */
+  public int getCoordinateTextureHandle(LXModel model, int entryId) {
+    // Check if the model has coordinate textures
+    if (!this.coordTextures.containsKey(model)) {
+      // OpenGL uses 0 to indicate an invalid texture handle
+      return 0;
+    }
+
+    // Retrieve array of texture entries for the model
+    CoordTexture[] slots = coordTextures.get(model);
+    CoordTexture tex;
+    switch (entryId) {
+      case TEXTURE_UNIT_COORDS: // normalized coordinates
+        tex = slots[0];
+        break;
+      case TEXTURE_UNIT_COORD_MAP: // index mapping
+        tex = slots[1];
+        break;
+      default:
+        // invalid entry ID - this is a programming error and should not happen
+        // so we throw an exception to make a big fuss.
+        throw new IllegalArgumentException("Invalid coordinate texture entry ID: " + entryId);
+    }
+    return tex.getHandle();
   }
 
   /**
@@ -73,234 +244,144 @@ public class TextureManager {
    * called by the pattern's frametime run() function on every frame for full Chromatik view
    * support.
    *
+   * <p>This returns the handle for coordinate texture slot 0 (primary).
+   *
    * @param model The model (view) to copy coordinates from
-   * @return The texture unit number that the view's coordinate texture is bound to.
+   * @return The texture handle of the view's primary (index 0) coordinate texture
    */
-  public int useViewCoordinates(LXModel model) {
-    CachedTextureInfo t;
+  public int getCoordinatesTexture(LXModel model) {
+    int normalizedXYZ = getCoordinateTextureHandle(model, TEXTURE_UNIT_COORDS);
 
-    // if the view's coordinate texture is already loaded, just use it
-    // NOTE: We don't use the cache's texture reference counting mechanism
-    // for the coordinate texture. Once a view coord texture is loaded, it's never
-    // released until the model changes.
-    int textureHash = model.hashCode();
-    if (textures.containsKey(textureHash)) {
-      t = textures.get(textureHash);
-    } else {
-      // otherwise, create a new coordinate texture and bind it to the next available texture unit
-      t = createCoordinateTexture(model);
-      textures.put(textureHash, t);
+    // If the texture does not exist, create it
+    if (normalizedXYZ == 0) {
+      createCoordinateTextures(model);
+      normalizedXYZ = getCoordinateTextureHandle(model, TEXTURE_UNIT_COORDS);
     }
-    // return the texture's information block
-    return t.textureUnit;
+    return normalizedXYZ;
   }
 
   /**
-   * Create a coordinate texture from the normalized coordinates of the given model and bind it to
-   * the next available texture unit. If the view's coordinate texture already exists,return the
-   * bound texture unit number.
+   * Copy a model's index mapping into a special texture for use by shaders. Must be called by the
+   * parent pattern or effect at least once before the first frame is rendered and should be called
+   * by the pattern's frametime run() function on every frame for full Chromatik view support.
+   *
+   * <p>This returns the handle for coordinate texture slot 1 (index map).
+   *
+   * @param model The model (view) to copy coordinates from
+   * @return The texture handle of the view's index mapping coordinate texture
    */
-  public CachedTextureInfo createCoordinateTexture(LXModel model) {
-    // create new cached texture management object
-    CachedTextureInfo t = new CachedTextureInfo();
-    t.type = CachedTextureType.COORDINATE;
-    t.textureUnit = getNextTextureUnit();
-    t.refCount = 1;
+  public int getIndexMapTexture(LXModel model) {
+    int indexMap = getCoordinateTextureHandle(model, TEXTURE_UNIT_COORD_MAP);
 
-    // get data we need to create the texture from the system and
-    // the model
-    int xSize = GLEngine.getWidth();
-    int ySize = GLEngine.getHeight();
-    int maxPoints = xSize * ySize;
-
-    final int numPoints = model.points.length;
-
-    // Create a FloatBuffer to hold the normalized coordinates of the model points
-    FloatBuffer coords = GLBuffers.newDirectFloatBuffer(maxPoints * 3);
-
-    // Copy the normalized model coordinates to the buffer
-    coords.rewind();
-    for (int i = 0; i < maxPoints; i++) {
-      if (i < numPoints) {
-        coords.put(model.points[i].xn);
-        coords.put(model.points[i].yn);
-        coords.put(model.points[i].zn);
-      } else {
-        // fill unused points with NaN so we can stop
-        // computation in the shader early when possible.
-        coords.put(Float.NaN);
-        coords.put(Float.NaN);
-        coords.put(Float.NaN);
-      }
+    // If the texture does not exist, create it
+    if (indexMap == 0) {
+      createCoordinateTextures(model);
+      indexMap = getCoordinateTextureHandle(model, TEXTURE_UNIT_COORD_MAP);
     }
-    coords.rewind();
-
-    // Sanity check: make sure the system resolution has enough points
-    // to hold the model.
-    // This should really never fail, but we're checkin' anyway.
-    if (numPoints > maxPoints) {
-      LX.error(
-          "GLEngine resolution ("
-              + maxPoints
-              + ") too small for number of points in the model ("
-              + numPoints
-              + ")");
-    }
-
-    // Create an OpenGL texture to hold the coordinate data
-    gl4.glActiveTexture(GL_TEXTURE0 + t.textureUnit);
-    gl4.glEnable(GL_TEXTURE_2D);
-    gl4.glGenTextures(1, t.textureHandle, 0);
-    gl4.glBindTexture(GL4.GL_TEXTURE_2D, t.textureHandle[0]);
-
-    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    gl4.glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    // load the coordinate data into the texture, where it will stay 'till
-    // the model changes or Chromatik is stopped.
-    gl4.glTexImage2D(
-        GL4.GL_TEXTURE_2D, 0, GL4.GL_RGB32F, xSize, ySize, 0, GL4.GL_RGB, GL_FLOAT, coords);
-
-    // done!  return the cache management object
-    return t;
+    return indexMap;
   }
 
   /**
-   * Returns the next available texture unit number, either by reusing a released texture unit
-   * number or by allocating a new one.
+   * Load a static texture from a file and return the texture *handle*. If the texture is already
+   * loaded, just increment the ref count and return the existing texture handle.
    */
-  public int getNextTextureUnit() {
-    if (releasedTextureUnits.size() > 0) {
-      return releasedTextureUnits.remove(0);
-    } else {
-      return nextTextureUnit++;
-    }
-  }
-
-  /** Return a texture unit number to the pool of available texture units. */
-  public int releaseTextureUnit(int textureUnit) {
-    if (textureUnit < FIRST_UNRESERVED_TEXTURE_UNIT) {
-      throw new RuntimeException(
-          "GLEngine: Attempt to release a reserved texture unit: " + textureUnit);
-    }
-    if (releasedTextureUnits.contains(textureUnit)) {
-      throw new RuntimeException(
-          "GLEngine: Attempt to release a texture unit that is already released: " + textureUnit);
-    }
-    releasedTextureUnits.add(textureUnit);
-    return textureUnit;
-  }
-
-  /**
-   * (internal only) Given a cached texture object with a ref count of zero, return its texture unit
-   * number to the pool of available units.
-   */
-  private void recycleTextureUnit(CachedTextureInfo t) {
-    if (!releasedTextureUnits.contains(t.textureUnit)) {
-      releasedTextureUnits.add(t.textureUnit);
-    }
-  }
-
-  /**
-   * Load a static texture from a file and bind it to the next available texture unit Returns the
-   * texture unit number. If the texture is already loaded, just increment the ref count and return
-   * the existing texture unit number.
-   */
-  public int useTexture(GL4 gl4, String textureName) {
-    CachedTextureInfo t;
-
+  public int useTexture(String textureName) {
     try {
-      // if the texture is already loaded, just increment the ref count
-      int textureHash = stringToHash(textureName);
-      if (textures.containsKey(textureHash)) {
-        t = textures.get(textureHash);
+      StaticTexture t = staticTextures.get(textureName);
+      if (t != null) {
         t.refCount++;
       } else {
-        // otherwise, load the texture its file and bind it to the next available texture unit
         File file = new File(textureName);
-        t = new CachedTextureInfo();
-        t.type = CachedTextureType.STATIC;
-        t.texture = TextureIO.newTexture(file, false);
-        t.textureUnit = getNextTextureUnit();
-        t.refCount = 1;
-        textures.put(textureHash, t);
-
-        gl4.glActiveTexture(GL_TEXTURE0 + t.textureUnit);
-        gl4.glEnable(GL_TEXTURE_2D);
-        t.texture.enable(gl4);
-        t.texture.bind(gl4);
+        Texture texture = TextureIO.newTexture(file, false);
+        t = new StaticTexture(texture);
+        staticTextures.put(textureName, t);
       }
-      // return the texture unit number
-      return t.textureUnit;
+      return t.getHandle();
 
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
   }
 
-  /**
-   * This function must be called when the model changes (when it is edited, or when a project is
-   * loaded/unloaded) to delete all existing view coordinate textures and remove them from the
-   * textures map.
-   */
-  public void clearCoordinateTextures() {
-    ArrayList<Integer> keysToRemove = new ArrayList<>();
-
-    for (Map.Entry<Integer, CachedTextureInfo> entry : textures.entrySet()) {
-      CachedTextureInfo t = entry.getValue();
-
-      // create a list of keys for all coordinate textures
-      if (t.type == CachedTextureType.COORDINATE) {
-        t.refCount = 0; // should already be zero, but just in case
-        keysToRemove.add(entry.getKey());
+  /** Delete all existing view coordinate textures (both slots) and clear the map. */
+  private void clearCoordinateTextures() {
+    for (CoordTexture[] arr : this.coordTextures.values()) {
+      if (arr != null) {
+        for (int i = 0; i < arr.length; i++) {
+          if (arr[i] != null) {
+            arr[i].dispose();
+            arr[i] = null;
+          }
+        }
       }
     }
-
-    // remove all coordinate textures from the map
-    for (Integer key : keysToRemove) {
-      releaseTexture(key);
-    }
+    this.coordTextures.clear();
   }
 
   /**
-   * Release a cached texture. If the texture's ref count reaches 0, delete the texture, return it's
-   * GL texture unit to the pool and remove it from the textures map.
+   * Release a static texture by name.
    *
    * @param textureName - filename of the texture to release
    */
-  public void releaseTexture(String textureName) {
-    releaseTexture(stringToHash(textureName));
-  }
-
-  /**
-   * Release a cached texture. If the texture's ref count reaches 0, delete the texture, return it's
-   * GL texture unit to the pool and remove it from the textures map.
-   *
-   * @param textureHash - integer hash code of the texture to release
-   */
-  public void releaseTexture(int textureHash) {
-    CachedTextureInfo t = textures.get(textureHash);
+  public void releaseStaticTexture(String textureName) {
+    StaticTexture t = staticTextures.get(textureName);
     if (t == null) {
-      throw new RuntimeException("Attempt to release texture that was never used:");
+      throw new RuntimeException("Attempted to release texture that was never created: ");
     }
     t.refCount--;
     if (t.refCount <= 0) {
-      switch (t.type) {
-        case STATIC:
-          t.texture.destroy(gl4);
-          break;
-        case COORDINATE:
-          gl4.glDeleteTextures(1, t.textureHandle, 0);
-          break;
-      }
-      recycleTextureUnit(t);
-      textures.remove(textureHash);
+      t.dispose();
+      staticTextures.remove(textureName);
     }
   }
 
-  public TextureManager(GL4 gl4) {
-    this.gl4 = gl4;
+  public void dispose() {
+    if (this.initialized) {
+      // dispose coordinate textures
+      clearCoordinateTextures();
+
+      // dispose static textures
+      for (StaticTexture t : this.staticTextures.values()) {
+        t.dispose();
+      }
+      this.staticTextures.clear();
+    }
+    // stop listening for model changes
+    this.lx.removeListener(this);
+  }
+
+  private class CoordTexture {
+    // OpenGL texture handle for this coordinate texture
+    // Will be 0 (invalid) if the texture has not been created yet.
+    final int[] handles = new int[1];
+
+    CoordTexture() {
+      gl4.glGenTextures(1, handles, 0);
+    }
+
+    int getHandle() {
+      return handles[0];
+    }
+
+    void dispose() {
+      gl4.glDeleteTextures(1, handles, 0);
+    }
+  }
+
+  private class StaticTexture {
+    final Texture texture;
+    int refCount = 1;
+
+    StaticTexture(Texture texture) {
+      this.texture = texture;
+    }
+
+    int getHandle() {
+      return texture.getTextureObject();
+    }
+
+    void dispose() {
+      texture.destroy(gl4);
+    }
   }
 }

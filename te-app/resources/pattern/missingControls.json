@@ -138,13 +138,7 @@
       "XorceryDiamonds"
     ],
     "uses_palette": true,
-    "missing_control_tags": [
-      "SIZE",
-      "QUANTITY",
-      "WOW1",
-      "WOW2",
-      "WOWTRIGGER"
-    ]
+    "missing_control_tags": []
   },
   {
     "shader_name": "audio_test.fs",
@@ -263,16 +257,6 @@
     ]
   },
   {
-    "shader_name": "triangle_cross_waveform.fs",
-    "pattern_classes": [
-      "TriangleCrossAudioWaveform"
-    ],
-    "uses_palette": true,
-    "missing_control_tags": [
-      "WOWTRIGGER"
-    ]
-  },
-  {
     "shader_name": "radial_simplex.fs",
     "pattern_classes": [
       "RadialSimplex"
@@ -381,13 +365,7 @@
       "FourStar"
     ],
     "uses_palette": true,
-    "missing_control_tags": [
-      "SIZE",
-      "QUANTITY",
-      "WOW1",
-      "WOW2",
-      "WOWTRIGGER"
-    ]
+    "missing_control_tags": []
   },
   {
     "shader_name": "synth_waves.fs",

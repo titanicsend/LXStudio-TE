@@ -1,17 +1,18 @@
 package titanicsend.pattern.yoffa.shader_engine;
 
-import com.jogamp.opengl.*;
+import com.jogamp.opengl.GLAutoDrawable;
+import com.jogamp.opengl.GLContext;
 import java.nio.ByteBuffer;
 
 public class OffscreenShaderRenderer {
-  private static final int xResolution = 640;
-  private static final int yResolution = 480;
+  private static final int width = 640;
+  private static final int height = 480;
 
   private NativeShader nativeShader;
   private GLAutoDrawable offscreenDrawable = null;
 
   public OffscreenShaderRenderer(FragmentShader fragmentShader) {
-    nativeShader = new NativeShader(fragmentShader, xResolution, yResolution);
+    nativeShader = new NativeShader(fragmentShader, width, height);
   }
 
   public void initializeNativeShader() {
@@ -19,7 +20,7 @@ public class OffscreenShaderRenderer {
     // that's trying to draw something on the UI
     GLContext prevContext = GLContext.getCurrent();
 
-    offscreenDrawable = ShaderUtils.createGLSurface(xResolution, yResolution);
+    offscreenDrawable = ShaderUtils.createGLSurface(width, height);
     offscreenDrawable.display();
     nativeShader.init(offscreenDrawable);
 
@@ -45,11 +46,11 @@ public class OffscreenShaderRenderer {
     return nativeShader;
   }
 
-  public static int getXResolution() {
-    return xResolution;
+  public static int getWidth() {
+    return width;
   }
 
-  public static int getYResolution() {
-    return yResolution;
+  public static int getHeight() {
+    return height;
   }
 }

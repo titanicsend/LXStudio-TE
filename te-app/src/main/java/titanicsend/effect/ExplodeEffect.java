@@ -5,7 +5,13 @@ import heronarts.lx.LXCategory;
 import heronarts.lx.Tempo;
 import heronarts.lx.modulator.LXWaveshape;
 import heronarts.lx.modulator.SawLFO;
-import heronarts.lx.parameter.*;
+import heronarts.lx.parameter.BooleanParameter;
+import heronarts.lx.parameter.BoundedParameter;
+import heronarts.lx.parameter.CompoundParameter;
+import heronarts.lx.parameter.EnumParameter;
+import heronarts.lx.parameter.FunctionalParameter;
+import heronarts.lx.parameter.ObjectParameter;
+import heronarts.lx.parameter.TriggerParameter;
 import heronarts.lx.utils.LXUtils;
 import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.glengine.GLShaderEffect;
@@ -39,10 +45,10 @@ public class ExplodeEffect extends GLShaderEffect {
       new BoundedParameter("Slope", 5, 1, 15).setDescription("Steepness of effect/time curve");
 
   public final BooleanParameter tempoSync =
-      new BooleanParameter("Sync", true).setDescription("Sync the effect to the engine tempo");
+      new BooleanParameter("Sync", false).setDescription("Sync the effect to the engine tempo");
 
   public final BooleanParameter manualTrigger =
-      new BooleanParameter("Manual", false)
+      new BooleanParameter("Manual", true)
           .setDescription("Enable manual triggering w/trigger button");
 
   public final EnumParameter<Tempo.Division> tempoDivision =
@@ -57,8 +63,8 @@ public class ExplodeEffect extends GLShaderEffect {
   public final BoundedParameter size =
       new BoundedParameter("Size", 0, 0, 10).setDescription("Explosion block size");
 
-  public final BooleanParameter trigger =
-      new BooleanParameter("Trigger", false)
+  public final TriggerParameter trigger =
+      new TriggerParameter("Trigger", this::triggerListener)
           .setMode(BooleanParameter.Mode.MOMENTARY)
           .setDescription("Explode NOW!!! (manual sync mode only");
 
@@ -75,22 +81,19 @@ public class ExplodeEffect extends GLShaderEffect {
                 }
               }));
 
-  private final LXParameterListener triggerListener =
-      (p) -> {
-        if (trigger.isOn()) {
-          if (manualTrigger.isOn()) {
-            isRunning = true;
-            // in tempo sync mode, the trigger schedules an event on
-            // the next cycle start
-            triggerRequested = tempoSync.isOn();
-            lastBasis = 0;
+  private void triggerListener() {
+    if (manualTrigger.isOn()) {
+      isRunning = true;
+      // in tempo sync mode, the trigger schedules an event on
+      // the next cycle start
+      triggerRequested = tempoSync.isOn();
+      lastBasis = 0;
 
-            // if tempo sync, we wait 'till the next cycle start to trigger
-            // if free running, reset sawtooth and trigger immediately
-            if (!tempoSync.isOn()) basis.setBasis(0.0);
-          }
-        }
-      };
+      // if tempo sync, we wait 'till the next cycle start to trigger
+      // if free running, reset sawtooth and trigger immediately
+      if (!tempoSync.isOn()) basis.setBasis(0.0);
+    }
+  }
 
   private double getBasis() {
     double r;
@@ -130,8 +133,6 @@ public class ExplodeEffect extends GLShaderEffect {
   public ExplodeEffect(LX lx) {
     super(lx);
 
-    trigger.addListener(triggerListener);
-
     addParameter("speed", this.speed);
     addParameter("depth", this.depth);
     addParameter("waveshape", this.waveshape);
@@ -145,26 +146,22 @@ public class ExplodeEffect extends GLShaderEffect {
     addParameter("manualTrigger", this.manualTrigger);
     addParameter("trigger", this.trigger);
 
-    // add the first shader, passing in the effect's backbuffer
-    GLShader shader = new GLShader(lx, "explode_effect.fs", getControlData(), getImageBuffer());
     addShader(
-        shader,
-        new GLShaderFrameSetup() {
-          @Override
-          public void OnFrame(GLShader shader) {
-            double basis;
+        GLShader.config(lx).withFilename("explode_effect.fs").withUniformSource(this::setUniforms));
+  }
 
-            basis = getBasis();
-            double exp = slope.getValue();
-            basis = (exp != 1) ? Math.pow(basis, exp) : basis;
+  private void setUniforms(GLShader shader) {
+    double basis;
 
-            shader.setUniform("basis", (float) (basis * effectDepth));
+    basis = getBasis();
+    double exp = slope.getValue();
+    basis = (exp != 1) ? Math.pow(basis, exp) : basis;
 
-            float granularity = size.getValuef();
-            granularity = (granularity > 0) ? 10 * (11 - granularity) : 0;
-            shader.setUniform("size", granularity);
-          }
-        });
+    shader.setUniform("basis", (float) (basis * effectDepth));
+
+    float granularity = size.getValuef();
+    granularity = (granularity > 0) ? 10 * (11 - granularity) : 0;
+    shader.setUniform("size", granularity);
   }
 
   @Override
@@ -175,7 +172,6 @@ public class ExplodeEffect extends GLShaderEffect {
 
   @Override
   public void dispose() {
-    trigger.removeListener(triggerListener);
     super.dispose();
   }
 }

@@ -4,9 +4,17 @@ import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import java.util.List;
 import titanicsend.pattern.jon.TEControlTag;
-import titanicsend.pattern.will.shaders.*;
-import titanicsend.pattern.yoffa.effect.*;
-import titanicsend.pattern.yoffa.effect.shaders.*;
+import titanicsend.pattern.will.shaders.OldMatrixScroll;
+import titanicsend.pattern.yoffa.effect.AlternatingDotsEffect;
+import titanicsend.pattern.yoffa.effect.BreathingDotsEffect;
+import titanicsend.pattern.yoffa.effect.PulseEffect;
+import titanicsend.pattern.yoffa.effect.ShimmeringEffect;
+import titanicsend.pattern.yoffa.effect.shaders.NeonBarsShader;
+import titanicsend.pattern.yoffa.effect.shaders.NeonCellsShader;
+import titanicsend.pattern.yoffa.effect.shaders.NeonSnakeShader;
+import titanicsend.pattern.yoffa.effect.shaders.RainbowSwirlShader;
+import titanicsend.pattern.yoffa.effect.shaders.WaterShader;
+import titanicsend.pattern.yoffa.effect.shaders.WavyShader;
 import titanicsend.pattern.yoffa.framework.ConstructedPattern;
 import titanicsend.pattern.yoffa.framework.PatternEffect;
 import titanicsend.pattern.yoffa.framework.PatternTarget;
@@ -15,24 +23,6 @@ import titanicsend.pattern.yoffa.media.BasicVideoPatternEffect;
 
 @SuppressWarnings("unused")
 public class OrganicPatternConfig {
-
-  /*  Removed from UI - see TEApp.java for details.
-   @LXCategory("Yoffa Panel Combo")
-   public static class StarryOutrun extends ConstructedPattern {
-       public StarryOutrun(LX lx) {
-           super(lx);
-       }
-       @Override
-       protected List<PatternEffect> createEffects() {
-           return List.of(
-                   new OutrunGridShader(new PatternTarget(this, TEShaderView.SPLIT_PANEL_SECTIONS)),
-                   new AlternatingDotsEffect(new PatternTarget(this, TEShaderView.SPLIT_PANEL_SECTIONS))
-                           .setHorizon(OutrunGridShader.HORIZON_Y)
-                           .setShouldBlend(true)
-           );
-       }
-   }
-  */
 
   @LXCategory("Yoffa Panel Shader")
   public static class RainbowSwirlPanels extends ConstructedPattern {

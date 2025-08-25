@@ -44,7 +44,8 @@
       numPoints: "$width",
       instances: "$height",
       spacing: "$widthFt*12/($width-1)",
-      y: "$instance*$heightFt*12/($height-1)"
+      y: "$instance*$heightFt*12/($height-1)",
+      "pointSize": 0.1
     }
   ]
 }

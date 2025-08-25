@@ -1,13 +1,17 @@
 package titanicsend.pattern;
 
+import com.google.gson.JsonObject;
 import com.jogamp.common.nio.Buffers;
 import heronarts.lx.LX;
 import heronarts.lx.LXComponent;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.parameter.BoundedParameter;
+import heronarts.lx.parameter.LXNormalizedParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.LXParameterListener;
 import java.nio.FloatBuffer;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import titanicsend.app.TEGlobalPatternControls;
 import titanicsend.pattern.glengine.ShaderConfiguration;
@@ -18,7 +22,6 @@ import titanicsend.util.Rotor;
 import titanicsend.util.TEColor;
 
 public abstract class TEPerformancePattern extends TEAudioPattern {
-
   private final TEShaderView defaultView;
 
   /**
@@ -43,16 +46,16 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
 
   protected final TEGlobalPatternControls globalControls;
 
+  private boolean constructed = false;
+
   protected TEPerformancePattern(LX lx) {
     this(lx, null);
   }
 
   protected TEPerformancePattern(LX lx, TEShaderView defaultView) {
     super(lx);
-    controls = new TECommonControls(this);
-
+    this.controls = new TECommonControls(this);
     this.defaultView = defaultView;
-
     this.globalControls = (TEGlobalPatternControls) lx.engine.getChild("globalPatternControls");
 
     lx.engine.addTask(
@@ -72,6 +75,9 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
           // survive a file save/load which is much less inconvenient than this default behavior.
           this.controls.setRemoteControls();
         });
+
+    this.controls.markUnused(this.controls.getLXControl(TEControlTag.TWIST));
+    this.constructed = true;
   }
 
   public TECommonControls getControls() {
@@ -95,6 +101,30 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
   LXComponent removeParam(String path) {
     removeParameter(path);
     return this;
+  }
+
+  private final List<LXNormalizedParameter> mutableSubclassParameters = new ArrayList<>();
+  public final List<LXNormalizedParameter> subclassParameters =
+      Collections.unmodifiableList(mutableSubclassParameters);
+
+  @Override
+  protected LXComponent addParameter(String path, LXParameter p) {
+    // Track UI-only parameters added by subclasses
+    // Ignore params added from parent class constructors
+    if (this.constructed
+        && p.getParentParameter() == null
+        && p instanceof LXNormalizedParameter normalizedParameter) {
+      this.mutableSubclassParameters.add(normalizedParameter);
+    }
+    return super.addParameter(path, p);
+  }
+
+  @Override
+  protected LXComponent removeParameter(LXParameter p) {
+    if (p instanceof LXNormalizedParameter normalizedParameter) {
+      this.mutableSubclassParameters.remove(normalizedParameter);
+    }
+    return super.removeParameter(p);
   }
 
   public FloatBuffer getCurrentPalette() {
@@ -182,12 +212,34 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
    *     <p>At present, the brightness control lets you dim the current color, but if you want to
    *     brighten it, you have to do that with the channel fader or the color control.
    */
-  public int calcColor() {
+  public int calcColor(boolean setBrightness) {
     if (isStaleColor) {
-      _calcColor = TEColor.setBrightness(controls.color.calcColor(), (float) getBrightness());
+      _calcColor = controls.color.calcColor();
       isStaleColor = false;
     }
-    return _calcColor;
+    return (setBrightness)
+        ? TEColor.setBrightness(_calcColor, (float) getBrightness())
+        : _calcColor;
+  }
+
+  /**
+   * For patterns that consume two solid colors, use this method to retrieve the 2nd color. Returns
+   * a color offset in position from the first color.
+   *
+   * @return
+   */
+  public int calcColor2(boolean setBrightness) {
+    if (isStaleColor2) {
+      _calcColor2 = controls.color.calcColor2();
+      isStaleColor2 = false;
+    }
+    return (setBrightness)
+        ? TEColor.setBrightness(_calcColor2, (float) getBrightness())
+        : _calcColor2;
+  }
+
+  public int calcColor() {
+    return calcColor(true);
   }
 
   /**
@@ -197,23 +249,7 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
    * @return
    */
   public int calcColor2() {
-    if (isStaleColor2) {
-      _calcColor2 = TEColor.setBrightness(controls.color.calcColor2(), (float) getBrightness());
-      isStaleColor2 = false;
-    }
-    return _calcColor2;
-  }
-
-  /**
-   * Gets the current color as set in the color control, without adjusting for brightness. This is
-   * used by the OpenGL renderer, which has a unified mechanism for handling brightness.
-   */
-  public int getColor() {
-    if (isStaleColorBase) {
-      _getColor = controls.color.calcColor();
-      isStaleColorBase = false;
-    }
-    return _getColor;
+    return calcColor2(true);
   }
 
   public int getGradientColor(float lerp) {
@@ -437,6 +473,33 @@ public abstract class TEPerformancePattern extends TEAudioPattern {
     expireColors();
 
     super.run(deltaMs);
+  }
+
+  // Key from LXDeviceComponent
+  private static final String KEY_REMOTE_CONTROLS = "remoteControls";
+
+  @Override
+  public void save(LX lx, JsonObject obj) {
+    super.save(lx, obj);
+
+    // Don't save off-air virtual parameters
+    removeOffAirParameters(obj);
+  }
+
+  @Override
+  public void load(LX lx, JsonObject obj) {
+    // Strip out custom remote controls to avoid stale versions overriding the new. (8-25: We've
+    // been using custom remote controls wrong, which causes problems on project files and presets)
+    if (obj.has(KEY_REMOTE_CONTROLS)) {
+      obj.remove(KEY_REMOTE_CONTROLS);
+    }
+    removeOffAirParameters(obj);
+    super.load(lx, obj);
+  }
+
+  private void removeOffAirParameters(JsonObject obj) {
+    removeParameter(obj, TECommonControls.KEY_PRESET_SELECTOR_OFFAIR);
+    removeParameter(obj, TECommonControls.KEY_VIEW_OFFAIR);
   }
 
   @Override

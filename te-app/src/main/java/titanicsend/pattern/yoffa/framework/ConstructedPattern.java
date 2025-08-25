@@ -1,12 +1,15 @@
 package titanicsend.pattern.yoffa.framework;
 
+import heronarts.lx.GpuDevice;
 import heronarts.lx.LX;
 import heronarts.lx.parameter.LXParameter;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import titanicsend.pattern.TEPerformancePattern;
 
-public abstract class ConstructedPattern extends TEPerformancePattern {
+public abstract class ConstructedPattern extends TEPerformancePattern implements GpuDevice {
 
   private final List<PatternEffect> effects;
 

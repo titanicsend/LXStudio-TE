@@ -44,17 +44,18 @@ public class RadialSimplex extends GLShaderPattern {
     // noiseMode (in Wow1 control position)
     controls.setControl(TEControlTag.WOW1, noiseMode);
 
+    controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
+
     // register common controls with LX
     addCommonControls();
 
     addShader(
-        "radial_simplex.fs",
-        new GLShaderFrameSetup() {
-          @Override
-          public void OnFrame(GLShader s) {
-            RadialSimplex.NoiseMode mode = noiseMode.getEnum();
-            s.setUniform("iWow1", (float) mode.ordinal());
-          }
-        });
+        GLShader.config(lx)
+            .withFilename("radial_simplex.fs")
+            .withUniformSource(
+                (s) -> {
+                  RadialSimplex.NoiseMode mode = noiseMode.getEnum();
+                  s.setUniform("iWow1", (float) mode.ordinal());
+                }));
   }
 }

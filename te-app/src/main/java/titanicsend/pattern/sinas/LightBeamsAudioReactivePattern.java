@@ -39,32 +39,29 @@ public class LightBeamsAudioReactivePattern extends ConstructedShaderPattern {
     controls.setRange(TEControlTag.FREQREACTIVITY, 0.01, 0, 1);
 
     addShader(
-        "light_beams.fs",
-        new GLShaderFrameSetup() {
-          @Override
-          public void OnFrame(GLShader s) {
-            // Update the pattern local control values based on the UI values.
-            float levelReactivityControl =
-                (float) getControls().getControl(TEControlTag.LEVELREACTIVITY).getValue();
-            float freqReactivityControl =
-                (float) getControls().getControl(TEControlTag.FREQREACTIVITY).getValue();
+        GLShader.config(lx).withFilename("light_beams.fs").withUniformSource(this::setUniforms));
+  }
 
-            // Get the rotation angle from the spin. This is the default value for the
-            // iRotationAngle and we're going to apply a diff on this value based on the
-            // bassLevel.
-            double radians = getRotationAngleFromSpin();
-            int spinControlSign =
-                Float.compare(
-                    (float) getControls().getLXControl(TEControlTag.SPIN).getValue(), 0.0f);
-            radians += getRotationDiff(levelReactivityControl) * spinControlSign;
-            s.setUniform("iRotationAngle", (float) radians);
+  private void setUniforms(GLShader s) {
+    // Update the pattern local control values based on the UI values.
+    float levelReactivityControl =
+        (float) getControls().getControl(TEControlTag.LEVELREACTIVITY).getValue();
+    float freqReactivityControl =
+        (float) getControls().getControl(TEControlTag.FREQREACTIVITY).getValue();
 
-            // Similar to the rotation, but for speed instead.
-            double currentTime = getTime();
-            currentTime += getTimeDiff(freqReactivityControl);
-            s.setUniform("iTime", (float) currentTime);
-          }
-        });
+    // Get the rotation angle from the spin. This is the default value for the
+    // iRotationAngle and we're going to apply a diff on this value based on the
+    // bassLevel.
+    double radians = getRotationAngleFromSpin();
+    int spinControlSign =
+        Float.compare((float) getControls().getLXControl(TEControlTag.SPIN).getValue(), 0.0f);
+    radians += getRotationDiff(levelReactivityControl) * spinControlSign;
+    s.setUniform("iRotationAngle", (float) radians);
+
+    // Similar to the rotation, but for speed instead.
+    double currentTime = getTime();
+    currentTime += getTimeDiff(freqReactivityControl);
+    s.setUniform("iTime", (float) currentTime);
   }
 
   /***

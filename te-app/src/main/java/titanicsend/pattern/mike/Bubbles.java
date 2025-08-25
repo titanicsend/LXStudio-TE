@@ -6,9 +6,12 @@ import static titanicsend.util.TEColor.TRANSPARENT;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.color.LinkedColorParameter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import titanicsend.color.TEColorType;
-import titanicsend.model.*;
+import titanicsend.model.TEPanelModel;
 import titanicsend.pattern.TEPattern;
 
 @LXCategory("Panel FG")
@@ -46,8 +49,6 @@ public class Bubbles extends TEPattern {
         this.bubbleFraction.put(panel, fraction);
         this.newBubbleQueue.add(panel);
       }
-
-      clearPixels();
     }
 
     shuffle(this.newBubbleQueue);

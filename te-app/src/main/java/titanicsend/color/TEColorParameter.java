@@ -56,7 +56,7 @@ public class TEColorParameter extends ColorParameter implements GradientUtils.Gr
     HSVCCW
   }
 
-  private final BlendMode BLEND_MODE_DEFAULT = BlendMode.HSVM;
+  private final BlendMode BLEND_MODE_DEFAULT = BlendMode.OKLAB;
 
   public final EnumParameter<BlendMode> blendMode =
       new EnumParameter<BlendMode>("BlendMode", BLEND_MODE_DEFAULT) {
@@ -111,6 +111,10 @@ public class TEColorParameter extends ColorParameter implements GradientUtils.Gr
       };
 
   private final TEGradientSource gradientSource;
+
+  public TEColorParameter(String label) {
+    this(TEGradientSource.get(), label);
+  }
 
   public TEColorParameter(TEGradientSource gradientSource, String label) {
     this(gradientSource, label, 0xff000000);
@@ -286,6 +290,32 @@ public class TEColorParameter extends ColorParameter implements GradientUtils.Gr
       setColor(getGradientColor(0));
     } else {
       super.onSubparameterUpdate(p);
+    }
+  }
+
+  public float calcHuef() {
+    switch (this.colorSource.getEnum()) {
+      case NORMAL:
+        return LXColor.h(getGradientColorFixed(getOffsetf(), TEGradient.NORMAL));
+      case DARK:
+        // Workaround: Hue will dip to 0(red) if we sample a black part of the Dark gradient.
+        // But the correct hue is visible in the Normal gradient, so we'll just use that.
+        return LXColor.h(getGradientColorFixed(getOffsetf(), TEGradient.NORMAL));
+      case STATIC:
+      default:
+        return this.hue.getValuef();
+    }
+  }
+
+  public float calcSaturationf() {
+    switch (this.colorSource.getEnum()) {
+      case NORMAL:
+        return LXColor.s(getGradientColorFixed(getOffsetf(), TEGradient.NORMAL));
+      case DARK:
+        return LXColor.s(getGradientColorFixed(getOffsetf(), TEGradient.DARK));
+      case STATIC:
+      default:
+        return this.saturation.getValuef();
     }
   }
 

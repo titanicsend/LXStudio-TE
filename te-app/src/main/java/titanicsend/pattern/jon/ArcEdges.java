@@ -10,7 +10,8 @@ import titanicsend.pattern.yoffa.framework.TEShaderView;
 
 @LXCategory("Combo FG")
 public class ArcEdges extends GLShaderPattern {
-  static final int LINE_COUNT = 52;
+  static final int MAX_LINE_COUNT = 104;
+  int lineCount = 0;
   boolean updateGeometry = true;
   FloatBuffer gl_segments;
   float[][] saved_lines;
@@ -24,7 +25,7 @@ public class ArcEdges extends GLShaderPattern {
     controls.setRange(TEControlTag.FREQREACTIVITY, 0.333, 0.0, 1.0);
 
     // Noise field magnitude - controls size + density of arcs
-    controls.setRange(TEControlTag.SIZE, 0.025, 0.001, 0.08);
+    controls.setRange(TEControlTag.SIZE, 0.04, 0.001, 0.08);
 
     // Controls number of arcs by modifying noise field position offset
     controls.setRange(TEControlTag.QUANTITY, 0.6, 0.72, 0.5);
@@ -35,6 +36,12 @@ public class ArcEdges extends GLShaderPattern {
     // effect of the audio reactivity controls
     controls.setRange(TEControlTag.WOW1, 0.015, 0.001, 0.04);
 
+    controls.markUnused(controls.getLXControl(TEControlTag.XPOS));
+    controls.markUnused(controls.getLXControl(TEControlTag.YPOS));
+    controls.markUnused(controls.getLXControl(TEControlTag.SPIN));
+    controls.markUnused(controls.getLXControl(TEControlTag.ANGLE));
+    controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
+
     // register common controls with the UI
     addCommonControls();
 
@@ -42,40 +49,40 @@ public class ArcEdges extends GLShaderPattern {
     // to GLSL shaders.
     // NOTE: This buffer needs to be *exactly* large enough to contain
     // the number of line segments you're using.  No smaller, no bigger.
-    this.gl_segments = Buffers.newDirectFloatBuffer(LINE_COUNT * 4 * 4);
+    this.gl_segments = Buffers.newDirectFloatBuffer(MAX_LINE_COUNT * 4 * 4);
 
     // buffer to hold line descriptors taken from the vehicle
-    saved_lines = new float[LINE_COUNT][4];
+    saved_lines = new float[MAX_LINE_COUNT][4];
 
     // NOTE: To add more edges, you need to change LINE_COUNT so the
     // segment buffer will be the right size.
     // TODO - eventually, we'll want arcs on the fore/aft car ends too.
-    CarGeometryPatternTools.getPanelConnectedEdges(getModelTE(), "^S.*$", saved_lines, LINE_COUNT);
+    lineCount =
+        CarGeometryPatternTools.getAllEdgesOnSide(getModelTE(), -1, saved_lines, MAX_LINE_COUNT);
 
     // add the OpenGL shader and its frame-time setup function
     addShader(
-        "arcedges.fs",
-        new GLShaderFrameSetup() {
-          @Override
-          public void OnFrame(GLShader s) {
-            // Here, we update line segment geometry
-            // Shader uniforms associated with a context stay resident
-            // on the GPU,so we only need to set them when something changes.
-            if (updateGeometry) {
-              sendSegments(s, saved_lines, LINE_COUNT);
-              updateGeometry = false;
-            }
-          }
-        });
+        GLShader.config(lx)
+            .withFilename("arcedges.fs")
+            .withUniformSource(
+                (s) -> {
+                  // Here, we update line segment geometry
+                  // Shader uniforms associated with a context stay resident
+                  // on the GPU,so we only need to set them when something changes.
+                  if (updateGeometry) {
+                    sendSegments(s, saved_lines, lineCount);
+                    updateGeometry = false;
+                  }
+                }));
   }
 
   // store segment descriptors in our GL line segment buffer.
   void setUniformLine(int segNo, float x1, float y1, float x2, float y2) {
     // TE.log("setLine %d : %.4f %.4f, %.4f %.4f",segNo,x1,y1,x2,y2);
     gl_segments.position(segNo * 4);
-    gl_segments.put(-x1);
+    gl_segments.put(x1);
     gl_segments.put(y1);
-    gl_segments.put(-x2);
+    gl_segments.put(x2);
     gl_segments.put(y2);
     gl_segments.rewind();
   }
@@ -87,6 +94,7 @@ public class ArcEdges extends GLShaderPattern {
     for (int i = 0; i < nLines; i++) {
       setUniformLine(i, lines[i][0], lines[i][1], lines[i][2], lines[i][3]);
     }
+    s.setUniform("lineCount", nLines);
     s.setUniform("lines", gl_segments, 4);
   }
 }

@@ -19,6 +19,11 @@ public class TEVirtualOverlays extends LXComponent {
           .setDescription("Toggle whether vertex labels are visible")
           .setValue(false);
 
+  public final BooleanParameter edgeLabelsVisible =
+      new BooleanParameter("Edge Labels")
+          .setDescription("Toggle whether edge labels are visible")
+          .setValue(false);
+
   public final BooleanParameter panelLabelsVisible =
       new BooleanParameter("Panel Labels")
           .setDescription("Toggle whether panel labels are visible")
@@ -79,6 +84,7 @@ public class TEVirtualOverlays extends LXComponent {
 
     addParameter("vertexSpheresVisible", this.speakersVisible);
     addParameter("vertexLabelsVisible", this.vertexLabelsVisible);
+    addParameter("edgeLabelsVisible", this.edgeLabelsVisible);
     addParameter("panelLabelsVisible", this.panelLabelsVisible);
     addParameter("unknownPanelsVisible", this.unknownPanelsVisible);
     addParameter("opaqueBackPanelsVisible", this.opaqueBackPanelsVisible);

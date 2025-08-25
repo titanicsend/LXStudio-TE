@@ -1,7 +1,9 @@
 package titanicsend.pattern.pixelblaze;
 
-import java.io.*;
-import java.net.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 
 public class UrlFetcher {
   public static String fetch(String url) throws Exception {

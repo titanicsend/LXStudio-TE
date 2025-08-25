@@ -1,4 +1,5 @@
 #define MAX_LINE_COUNT 104
+
 uniform int lineCount;
 uniform vec4[MAX_LINE_COUNT] lines;
 
@@ -8,6 +9,10 @@ uniform vec4[MAX_LINE_COUNT] lines;
 // Noise settings:
 const float MaxLength = .1;
 const float Dumping = 10.0;
+
+float random(float x) {
+    return fract(sin(x) * 43758.5453123);
+}
 
 vec3 hash3(vec3 p) {
     p = vec3(dot(p, vec3(127.1, 311.7, 74.7)),
@@ -68,7 +73,7 @@ float normalizeScalar(float value, float max) {
 
 vec3 color(vec2 p) {
     // generate animated noise field
-    vec3 coord =  vec3(10.0 * p, iTime * 0.25);
+    vec3 coord =  vec3(10.0 * p, iTime * 0.3 + 0.2 * random(floor(p.y * 20.0)));
     float n = abs(noise(coord));
     n += 0.5 * abs(noise(coord * 2.0));
     n += 0.25 * abs(noise(coord * 4.0));
@@ -115,6 +120,9 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     //vec2 coord  = _getModelCoordinates().xy;
     vec2 q = fragCoord.xy / iResolution.xy;
     vec2 coord = 2.0 * q - 1.0;
+    // bouncy scaling
+    float impulse = pow(stemBass, 4.);
+    coord *= 1.0 + (levelReact / 10.0 * sin(TAU * impulse));
 
     vec3 col = color(coord);
     col = pow(col, vec3(0.75)); // gamma correction

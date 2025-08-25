@@ -10,6 +10,9 @@
 // override the default x/y offset control behavior
 #define TE_NOTRANSLATE
 
+#include <include/constants.fs>
+#include <include/colorspace.fs>
+
 vec3 mod289(vec3 x) {
     return x - floor(x * (1.0 / 289.0)) * 289.0;
 }
@@ -153,8 +156,8 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     noise = mix(1.15 * field, noise, iWow1);
     float gradient = mix(noise,mod((noise * levels),2.0),iWow1);
 
-    // Wow2 controls the mix of foreground color vs. gradient
-    vec3 col = noise * mix(iColorRGB, mix(iColorRGB, iColor2RGB,gradient), iWow2);
+    // Wow2 controls the mix of gradient vs foreground.
+    vec3 col = noise * mix(iColorRGB, getGradientColor(noise * noise), 1.0 - iWow2);
 
     fragColor = vec4(col, 1.0);
 }

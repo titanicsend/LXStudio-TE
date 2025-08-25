@@ -9,7 +9,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.yoffa.shader_engine.ShaderUtils;
-import titanicsend.util.TE;
 
 public class GLPreprocessorHelpers {
   /** Converts strings from control definition #pragmas to shader configuration opcode values */
@@ -223,7 +222,11 @@ public class GLPreprocessorHelpers {
           try {
             control.parameterId = TEControlTag.valueOf(tagName);
           } catch (IllegalArgumentException exception) {
-            TE.error("Unsupported tag name: %s", varName);
+            // Ignore #iUniforms with no corresponding tag as they are either typos, in which
+            // case the shader will not compile, or they correspond to additional custom uniforms
+            // supplied by a pattern's Java front-end.
+            // TE.log("Unsupported tag name: %s", varName);
+            continue;
           }
           control.opcode = ShaderConfigOpcode.SET_RANGE;
           control.name = control.parameterId.getLabel();

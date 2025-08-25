@@ -49,7 +49,8 @@ public class SketchDemo extends GLShaderPattern {
     // set the x-axis near the bottom of the car
     controls.setValue(TEControlTag.YPOS, 0.85);
 
-    controls.markUnused(controls.getLXControl(TEControlTag.WOW2));
+    controls.markUnused(controls.getLXControl(TEControlTag.FREQREACTIVITY));
+    controls.markUnused(controls.getLXControl(TEControlTag.QUANTITY));
 
     // register common controls with the UI
     addCommonControls();
@@ -78,58 +79,57 @@ public class SketchDemo extends GLShaderPattern {
     // in this case, will copy the current contents of the points array
     // to the native FloatBuffer and send it to the shader as an array uniform.
     addShader(
-        "single_line_dynamicdata.fs",
-        new GLShaderFrameSetup() {
-          @Override
-          public void OnFrame(GLShader s) {
-            float levelReact =
-                (float) getControls().getControl(TEControlTag.LEVELREACTIVITY).getValue();
-            float pullback = (float) getControls().getControl(TEControlTag.WOW1).getValue();
-            float nextDrawingThreshold =
-                1.0f / (float) getControls().getControl(TEControlTag.SPEED).getValue();
-            // for debugging: wire up a control directly to control progress.
-            // progress = (float) getControls().getControl(TEControlTag.WOW1).getValue();
+        GLShader.config(lx)
+            .withFilename("single_line_dynamicdata.fs")
+            .withUniformSource(this::setUniforms));
+  }
 
-            normalizedLevelCumulative += (bassLevel * levelReact);
+  private void setUniforms(GLShader s) {
+    float levelReact = (float) getControls().getControl(TEControlTag.LEVELREACTIVITY).getValue();
+    float pullback = (float) getControls().getControl(TEControlTag.WOW1).getValue();
+    float nextDrawingThreshold =
+        1.0f / (float) getControls().getControl(TEControlTag.SPEED).getValue();
+    // for debugging: wire up a control directly to control progress.
+    // progress = (float) getControls().getControl(TEControlTag.WOW1).getValue();
 
-            //            float normalizedLevel = eq.getNormalizedf() * levelReact;
-            //            normalizedLevelCumulative += normalizedLevel;
+    normalizedLevelCumulative += (bassLevel * levelReact);
 
-            if (progress > -0.9) {
-              normalizedLevelCumulative -= pullback;
-            }
-            progress = normalizedLevelCumulative / nextDrawingThreshold;
+    //            float normalizedLevel = eq.getNormalizedf() * levelReact;
+    //            normalizedLevelCumulative += normalizedLevel;
 
-            //            signalLogger.logSignalValues(
-            //                Arrays.asList(
-            //                    (float) bassLevel,
-            //                    bassLevelCumulative,
-            //                    squareLevel,
-            //                    squareLevelCumulative,
-            //                    normalizedLevel,
-            //                    normalizedLevelCumulative,
-            //                    peakLevel,
-            //                    peakLevelCumulative,
-            //                    pullback,
-            //                    progress,
-            //                    nextDrawingThreshold
-            //                )
-            //            );
+    if (progress > -0.9) {
+      normalizedLevelCumulative -= pullback;
+    }
+    progress = normalizedLevelCumulative / nextDrawingThreshold;
 
-            s.setUniform("currProgress", progress);
-            if (!hasSketchBeenPassed) {
-              SketchDataManager.SketchData currSketch = sketchMgr.sketches.get(currSketchIdx);
-              SketchDataManager.SketchData prevSketch = sketchMgr.sketches.get(prevSketchIdx);
-              setUniformPoints(s, currSketch, "curr");
-              setUniformPoints(s, prevSketch, "prev");
-              hasSketchBeenPassed = true;
-            }
+    //            signalLogger.logSignalValues(
+    //                Arrays.asList(
+    //                    (float) bassLevel,
+    //                    bassLevelCumulative,
+    //                    squareLevel,
+    //                    squareLevelCumulative,
+    //                    normalizedLevel,
+    //                    normalizedLevelCumulative,
+    //                    peakLevel,
+    //                    peakLevelCumulative,
+    //                    pullback,
+    //                    progress,
+    //                    nextDrawingThreshold
+    //                )
+    //            );
 
-            if (progress >= 1.0) {
-              swapDrawing();
-            }
-          }
-        });
+    s.setUniform("currProgress", progress);
+    if (!hasSketchBeenPassed) {
+      SketchDataManager.SketchData currSketch = sketchMgr.sketches.get(currSketchIdx);
+      SketchDataManager.SketchData prevSketch = sketchMgr.sketches.get(prevSketchIdx);
+      setUniformPoints(s, currSketch, "curr");
+      setUniformPoints(s, prevSketch, "prev");
+      hasSketchBeenPassed = true;
+    }
+
+    if (progress >= 1.0) {
+      swapDrawing();
+    }
   }
 
   @Override

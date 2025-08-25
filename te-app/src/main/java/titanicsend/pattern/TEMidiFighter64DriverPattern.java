@@ -5,14 +5,27 @@ import heronarts.lx.LXCategory;
 import heronarts.lx.blend.LXBlend;
 import heronarts.lx.blend.NormalBlend;
 import heronarts.lx.color.LXColor;
-import heronarts.lx.midi.*;
+import heronarts.lx.midi.LXMidiInput;
+import heronarts.lx.midi.LXMidiListener;
+import heronarts.lx.midi.LXMidiOutput;
+import heronarts.lx.midi.MidiNote;
+import heronarts.lx.midi.MidiNoteOn;
 import heronarts.lx.mixer.LXChannel;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.DiscreteParameter;
 import heronarts.lx.parameter.LXParameterListener;
 import titanicsend.color.TEColorType;
 import titanicsend.midi.MidiNames;
-import titanicsend.pattern.mf64.*;
+import titanicsend.pattern.mf64.MF64EdgeSparks;
+import titanicsend.pattern.mf64.MF64FlashPattern;
+import titanicsend.pattern.mf64.MF64Hearts;
+import titanicsend.pattern.mf64.MF64LoggerPattern;
+import titanicsend.pattern.mf64.MF64RandomPanel;
+import titanicsend.pattern.mf64.MF64RingPattern;
+import titanicsend.pattern.mf64.MF64Spinwheel;
+import titanicsend.pattern.mf64.MF64SpiralSquares;
+import titanicsend.pattern.mf64.MF64XWave;
+import titanicsend.pattern.mf64.TEMidiFighter64Subpattern;
 
 @LXCategory("Combo FG")
 public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiListener {
@@ -411,7 +424,7 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
   @Override
   public void onActive() {
     this.priorBlend = null;
-    LXChannel channel = this.getChannel();
+    LXChannel channel = this.getMixerChannel();
     if (channel != null) {
       // Set channel blend to Normal
       for (LXBlend blend : channel.blendMode.getObjects()) {
@@ -472,7 +485,7 @@ public class TEMidiFighter64DriverPattern extends TEPattern implements LXMidiLis
   @Override
   public void onInactive() {
     disconnect();
-    LXChannel channel = getChannel();
+    LXChannel channel = getMixerChannel();
     if (this.priorBlend != null & channel != null) {
       // Restore channel blend selection
       channel.blendMode.setValue(this.priorBlend);

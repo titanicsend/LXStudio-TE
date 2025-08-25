@@ -10,6 +10,11 @@
 // with no category, it's near the top.  When done testing, uncomment the following
 // line to put it in its proper place.
 #pragma LXCategory("Utility")
+#pragma TEControl.LEVELREACTIVITY.Disable
+#pragma TEControl.FREQREACTIVITY.Disable
+#pragma TEControl.WOWTRIGGER.Disable
+#pragma TEControl.WOW2.Disable
+#pragma TEControl.QUANTITY.Disable
 
 #include <include/constants.fs>
 #include <include/colorspace.fs>

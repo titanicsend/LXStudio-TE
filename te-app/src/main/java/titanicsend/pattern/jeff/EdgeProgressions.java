@@ -10,12 +10,21 @@ import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LinkedColorParameter;
 import heronarts.lx.model.LXPoint;
 import heronarts.lx.modulator.Click;
-import heronarts.lx.parameter.*;
+import heronarts.lx.parameter.BooleanParameter;
+import heronarts.lx.parameter.DiscreteParameter;
+import heronarts.lx.parameter.EnumParameter;
+import heronarts.lx.parameter.LXParameter;
+import heronarts.lx.parameter.ObjectParameter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Set;
 import titanicsend.color.TEColorType;
 import titanicsend.model.TEEdgeModel;
 import titanicsend.pattern.TEAudioPattern;
@@ -138,8 +147,8 @@ public class EdgeProgressions extends TEAudioPattern {
 
   public void runTEAudioPattern(double deltaMs) {
     int color = colorParam.getColor();
-    if (getChannel() != null) {
-      if (getChannel().blendMode.getObject().getClass().equals(MultiplyBlend.class)) {
+    if (getMixerChannel() != null) {
+      if (getMixerChannel().blendMode.getObject().getClass().equals(MultiplyBlend.class)) {
         // Operate in Mask mode
         setEdges(LXColor.BLACK);
         color = LXColor.WHITE;
@@ -180,6 +189,8 @@ public class EdgeProgressions extends TEAudioPattern {
 
   protected void loadScenes() {
     Gson gson = new Gson();
+    // TODO(look): verify these are up-to-date (esp after lighting build when stuff tends to get
+    //             shifted around a bit)
     JsonReader reader = new JsonReader(loadFile("resources/pattern/edgeSets.json"));
     EdgeSet[] edgeSetData = gson.fromJson(reader, EdgeSet[].class);
 

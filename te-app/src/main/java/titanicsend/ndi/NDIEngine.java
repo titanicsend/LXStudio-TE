@@ -3,84 +3,62 @@ package titanicsend.ndi;
 import heronarts.lx.LX;
 import heronarts.lx.LXComponent;
 import heronarts.lx.LXLoopTask;
+import heronarts.lx.parameter.BooleanParameter;
+import heronarts.lx.parameter.ObjectParameter;
 import java.util.ArrayList;
-import me.walkerknapp.devolay.*;
-import titanicsend.util.TE;
+import java.util.List;
+import me.walkerknapp.devolay.Devolay;
+import me.walkerknapp.devolay.DevolayFinder;
+import me.walkerknapp.devolay.DevolayReceiver;
+import me.walkerknapp.devolay.DevolaySource;
 
 public class NDIEngine extends LXComponent implements LXLoopTask {
-  public static final String PATH = "NDIEngine";
+
+  public static final String PATH = "ndi";
+  private static final String NO_SOURCES = "<NONE FOUND>";
+  private static final int SOURCE_REFRESH_INTERVAL = 1000;
+
   private static NDIEngine current;
-
-  private boolean isInitialized = false;
-  private boolean isEnabled = true;
-  private long time = 0;
-  private static final int sourceRefreshInterval = 1000;
-
-  public DevolaySource[] sources = new DevolaySource[0];
-  protected DevolayFinder finder;
 
   public static NDIEngine get() {
     return current;
   }
 
-  public void setEnabled(boolean enabled) {
-    isEnabled = enabled;
-  }
+  public class Selector extends ObjectParameter<String> {
 
-  public ArrayList<String> getSourceNames() {
-    // TODO: This should be refreshed when sources is updated, not on every method call.
-    ArrayList<String> sourceNames = new ArrayList<String>();
-    for (DevolaySource source : sources) {
-      sourceNames.add(source.getSourceName());
-    }
-    return sourceNames;
-  }
-
-  public void printSourceNames() {
-    for (DevolaySource source : sources) {
-      TE.log("NDI Source: %s", source.getSourceName());
-    }
-  }
-
-  /**
-   * Connect to the first source found with the given name.
-   *
-   * @param sourceName
-   * @param receiver
-   * @return True if the source is available and connection attempt was successful. False if the
-   *     source is not available.
-   */
-  public boolean connectByName(String sourceName, DevolayReceiver receiver) {
-    for (DevolaySource source : sources) {
-      String name = source.getSourceName();
-      if (name != null && name.contains(sourceName)) {
-        receiver.connect(source);
-        return true;
-      }
-    }
-    return false;
-  }
-
-  /**
-   * Connect to the source at the given index.
-   *
-   * @param index
-   * @param receiver
-   * @return True if the source is available and connection attempt was successful. False if the
-   *     source is not available.
-   */
-  public boolean connectByIndex(int index, DevolayReceiver receiver) {
-    if (receiver == null) {
-      return false;
+    public Selector() {
+      this("NDI Source");
+      selectors.add(this);
     }
 
-    if (sources != null && index < sources.length) {
-      receiver.connect(sources[index]);
-      return true;
+    public Selector(String label) {
+      super(label, selectorObjects, selectorOptions);
     }
-    receiver.connect(null);
-    return false;
+
+    @Override
+    public void dispose() {
+      selectors.remove(this);
+      super.dispose();
+    }
   }
+
+  public final BooleanParameter receiveActive =
+      new BooleanParameter("RX Active", true)
+          .setMappable(false)
+          .setDescription("Whether NDI engine listens for incoming streams");
+
+  private final DevolayFinder finder;
+  private double elapsed = SOURCE_REFRESH_INTERVAL;
+
+  // Known sources
+  private final List<String> sources = new ArrayList<>();
+
+  // Source Selector parameters that live on other components
+  private final List<Selector> selectors = new ArrayList<>();
+
+  // Object and String arrays for the Source Selector parameters
+  private String[] selectorObjects = {null};
+  private String[] selectorOptions = {NO_SOURCES};
 
   public NDIEngine(LX lx) {
     current = this;
@@ -89,45 +67,108 @@ public class NDIEngine extends LXComponent implements LXLoopTask {
     // may take a little time to complete, so it must be done before
     // we fire up the loop task.
     Devolay.loadLibraries();
-    finder = new DevolayFinder();
+    this.finder = new DevolayFinder();
 
-    // register NDIEngine so we can access it from patterns.
     lx.engine.registerComponent(PATH, this);
     lx.engine.addLoopTask(this);
   }
 
-  public void loop(double deltaMs) {
+  public Selector newSourceSelector() {
+    return new Selector();
+  }
 
-    // if globally disabled, do nothing
-    if (!isEnabled) return;
-
-    // On first frame...
-    if (!isInitialized) {
-
-      // initialize stuff
-
-      // set flag once initialization is complete
-      isInitialized = true;
-    }
-    // Once initial setup is complete, refresh list of sources
-    // periodically.
-    else {
-      if (finder != null) {
-        if (System.currentTimeMillis() - time > sourceRefreshInterval) {
-          sources = finder.getCurrentSources();
-          time = System.currentTimeMillis();
-        }
+  /**
+   * Connect to the first source found with the given name.
+   *
+   * @param name
+   * @param receiver
+   * @return True if the source is available and connection attempt was successful. False if the
+   *     source is not available.
+   */
+  public boolean connectByName(String name, DevolayReceiver receiver) {
+    for (DevolaySource source : this.finder.getCurrentSources()) {
+      String sourceName = source.getSourceName();
+      if (sourceName != null && sourceName.contains(name)) {
+        receiver.connect(source);
+        return true;
       }
-      // additional per frame runtime stuff, TBD as needed;
+    }
+    return false;
+  }
+
+  public void loop(double deltaMs) {
+    // Refresh list of sources periodically
+    this.elapsed += deltaMs;
+    if (this.elapsed >= SOURCE_REFRESH_INTERVAL && this.receiveActive.isOn()) {
+      this.elapsed = 0;
+      updateSources();
+    }
+  }
+
+  private void updateSources() {
+    // Every finder query returns new DevolaySource objects, so we'll just use the strings.
+    DevolaySource[] newSources = finder.getCurrentSources();
+    boolean changed = false;
+
+    // Add new sources and remove ones that no longer exist
+    List<String> toRemove = new ArrayList<>(this.sources);
+    for (DevolaySource s : newSources) {
+      String sourceName = s.getSourceName();
+      if (!toRemove.remove(sourceName)) {
+        this.sources.add(sourceName);
+        changed = true;
+      }
+    }
+    if (!toRemove.isEmpty()) {
+      this.sources.removeAll(toRemove);
+      changed = true;
+    }
+
+    // Push changes to parameters that live on other components
+    if (changed) {
+      updateSourceSelectors();
+    }
+  }
+
+  private void updateSourceSelectors() {
+    int numOptions = this.sources.size();
+    if (numOptions > 0) {
+      this.selectorObjects = new String[numOptions];
+      this.selectorOptions = new String[numOptions];
+    } else {
+      this.selectorObjects = new String[] {null};
+      this.selectorOptions = new String[] {NO_SOURCES};
+    }
+
+    int i = 0;
+    for (String s : this.sources) {
+      this.selectorObjects[i] = s;
+      this.selectorOptions[i] = s;
+      i++;
+    }
+
+    // Update all selectors to use the new list of options
+    for (Selector selector : this.selectors) {
+      // Remember the selected item...
+      final String selected = selector.getObject();
+
+      // Update the parameter's list
+      selector.setObjects(this.selectorObjects, this.selectorOptions);
+
+      // Restore the selected item
+      if (selected != null
+          && !selected.equals(selector.getObject())
+          && this.sources.contains(selected)) {
+        selector.setValue(selected);
+      }
     }
   }
 
   @Override
   public void dispose() {
-    super.dispose();
     // stop the finder thread
-    if (finder != null) {
-      finder.close();
-    }
+    finder.close();
+
+    super.dispose();
   }
 }

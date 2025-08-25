@@ -1,6 +1,21 @@
 package titanicsend.pattern.glengine;
 
-import static com.jogamp.opengl.GL.*;
+import static com.jogamp.opengl.GL.GL_CLAMP_TO_EDGE;
+import static com.jogamp.opengl.GL.GL_FLOAT;
+import static com.jogamp.opengl.GL.GL_INVALID_ENUM;
+import static com.jogamp.opengl.GL.GL_INVALID_FRAMEBUFFER_OPERATION;
+import static com.jogamp.opengl.GL.GL_INVALID_OPERATION;
+import static com.jogamp.opengl.GL.GL_INVALID_VALUE;
+import static com.jogamp.opengl.GL.GL_NEAREST;
+import static com.jogamp.opengl.GL.GL_NO_ERROR;
+import static com.jogamp.opengl.GL.GL_OUT_OF_MEMORY;
+import static com.jogamp.opengl.GL.GL_TEXTURE0;
+import static com.jogamp.opengl.GL.GL_TEXTURE_2D;
+import static com.jogamp.opengl.GL.GL_TEXTURE_MAG_FILTER;
+import static com.jogamp.opengl.GL.GL_TEXTURE_MIN_FILTER;
+import static com.jogamp.opengl.GL.GL_TEXTURE_WRAP_S;
+import static com.jogamp.opengl.GL.GL_TEXTURE_WRAP_T;
+import static titanicsend.pattern.glengine.GLShader.TEXTURE_UNIT_AUDIO;
 
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.GLAutoDrawable;
@@ -12,9 +27,10 @@ import heronarts.lx.LXLoopTask;
 import heronarts.lx.audio.GraphicMeter;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.color.LXSwatch;
-import heronarts.lx.model.LXModel;
+import heronarts.lx.parameter.BooleanParameter;
 import java.nio.FloatBuffer;
 import titanicsend.audio.AudioStems;
+import titanicsend.pattern.glengine.mixer.GLMixer;
 import titanicsend.pattern.yoffa.shader_engine.ShaderUtils;
 import titanicsend.util.TE;
 import titanicsend.util.TEMath;
@@ -23,28 +39,17 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
   public static final String PATH = "GLEngine";
   public static GLEngine current;
 
+  public final BooleanParameter gpuJavaEffects =
+      new BooleanParameter("Java Fx in GPU Mode", true)
+          .setDescription("Loop Java effects in GPU mode (on master channel only)");
+
   private final int[] audioTextureHandle = new int[1];
   private final int[] uniformBlockHandles = new int[2];
 
   // rendering canvas size.  May be changed
   // via the startup command line.
-  private static int xSize;
-  private static int ySize;
-  private static int maxPoints;
-
-  // Dimensions of mapped texture backbuffer.
-  //
-  // This buffer is never directly rendered by either the GPU or by Java
-  // Instead, the pixel locations corresponding to the lx model's LEDs are
-  // colored at frame time and the buffer is supplied as a read-only sampler
-  // to the shader system.
-  //
-  // So increasing the size of this buffer affects memory usage but does
-  // not affect rendering performance.  The default size is sufficient for
-  // even very large models, but can be increased if necessary.
-  // TODO - make this configurable per pattern or effect.
-  private static final int mappedBufferWidth = 640;
-  private static final int mappedBufferHeight = 640;
+  private final int width;
+  private final int height;
 
   // audio texture size and buffer
   private static final int audioTextureWidth = 512;
@@ -70,6 +75,7 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
   private static double trebleRatio = 0.0;
 
   // audio and related uniform block buffer parameters
+  private static final int MAX_AUDIO_STEMS = 5;
   private FloatBuffer perRunUniformBlock;
   private int perRunUniformBlockSize;
   private FloatBuffer perFrameUniformBlock;
@@ -79,37 +85,25 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
   public static final int perFrameUniformBlockBinding = 1;
 
   // Texture cache management
-  private TextureManager textureCache = null;
-  private boolean modelChanged = false;
+  public final TextureManager textureCache;
+
+  // GPU Mixer Engine
+  private GLMixer mixer;
 
   // Data and utility methods for the GL canvas/context.
   private GLAutoDrawable canvas = null;
   private GL4 gl4;
 
-  private LXModel model;
-
-  public LXModel getModel() {
-    return model;
-  }
-
   public GLAutoDrawable getCanvas() {
     return canvas;
   }
 
-  public static int getWidth() {
-    return xSize;
+  public int getWidth() {
+    return this.width;
   }
 
-  public static int getHeight() {
-    return ySize;
-  }
-
-  public static int getMappedBufferWidth() {
-    return mappedBufferWidth;
-  }
-
-  public static int getMappedBufferHeight() {
-    return mappedBufferHeight;
+  public int getHeight() {
+    return this.height;
   }
 
   // Utility methods to give java patterns access to the audio texture
@@ -124,40 +118,6 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
 
   public static int getAudioTextureHeight() {
     return audioTextureHeight;
-  }
-
-  /**
-   * Copy a model's normalized coordinates into a special texture for use by shaders. Must be called
-   * by the parent pattern or effect at least once before the first frame is rendered and Should be
-   * called by the pattern's frametime run() function on every frame for full Chromatik view
-   * support.
-   *
-   * @param model The model (view) to copy coordinates from
-   * @return The texture unit number that the view's coordinate texture is bound to.
-   */
-  public int useViewCoordinates(LXModel model) {
-    return textureCache.useViewCoordinates(model);
-  }
-
-  // Load a static texture from a file and bind it to the next available texture unit
-  // Returns the texture unit number. If the texture is already loaded, just increment
-  // the ref count and return the existing texture unit number.
-  public int useTexture(GL4 gl4, String textureName) {
-    return textureCache.useTexture(gl4, textureName);
-  }
-
-  public void releaseTexture(String textureName) {
-    textureCache.releaseTexture(textureName);
-  }
-
-  // Returns the next available texture unit number, either by reusing a released
-  // texture unit number or by allocating a new one.
-  public int getNextTextureUnit() {
-    return textureCache.getNextTextureUnit();
-  }
-
-  public int releaseTextureUnit(int textureUnit) {
-    return textureCache.releaseTextureUnit(textureUnit);
   }
 
   /**
@@ -182,6 +142,10 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     return meter.getSamples()[index];
   }
 
+  public void bindAudioTexture() {
+    bindTextureUnit(TEXTURE_UNIT_AUDIO, this.audioTextureHandle[0]);
+  }
+
   /**
    * Construct texture to hold audio fft and waveform data and bind it to texture unit 0 for the
    * entire run. Once done, every shader pattern can access the audio data texture with minimal
@@ -191,11 +155,21 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     // allocate backing buffer in native memory
     this.audioTextureData = GLBuffers.newDirectFloatBuffer(audioTextureHeight * audioTextureWidth);
 
-    // create texture and bind it to texture unit 0, where it will stay for the whole run
-    gl4.glActiveTexture(GL_TEXTURE0);
-    gl4.glEnable(GL_TEXTURE_2D);
+    // create texture and bind it to the dedicated texture unit
     gl4.glGenTextures(1, audioTextureHandle, 0);
-    gl4.glBindTexture(GL4.GL_TEXTURE_2D, audioTextureHandle[0]);
+    bindAudioTexture();
+
+    // allocate storage once
+    gl4.glTexImage2D(
+        GL4.GL_TEXTURE_2D,
+        0,
+        GL4.GL_R32F,
+        audioTextureWidth,
+        audioTextureHeight,
+        0,
+        GL4.GL_RED,
+        GL_FLOAT,
+        null);
 
     // configure texture coordinate handling
     // TODO - would GL_LINEAR filtering look more interesting here?
@@ -207,24 +181,24 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
 
   /** Update audio texture object with new fft and waveform data. This is called once per frame. */
   private void updateAudioTexture() {
-    // load frequency and waveform data into our texture buffer, fft data
-    // in the first row, normalized audio waveform data in the second.
+    // load frequency and waveform data into our texture buffer
     for (int n = 0; n < audioTextureWidth; n++) {
+      // fft data in the first row
       audioTextureData.put(n, getFrequencyData(n));
+      // normalized audio waveform data in the second row
       audioTextureData.put(n + audioTextureWidth, getWaveformData(n));
     }
 
-    // update audio texture on the GPU from our buffer
-    gl4.glActiveTexture(GL_TEXTURE0);
-    gl4.glBindTexture(GL_TEXTURE_2D, audioTextureHandle[0]);
+    bindAudioTexture();
 
-    gl4.glTexImage2D(
-        GL4.GL_TEXTURE_2D,
+    // update audio texture on the GPU from our buffer, *without* re-allocating
+    gl4.glTexSubImage2D(
+        GL_TEXTURE_2D,
         0,
-        GL4.GL_R32F,
+        0,
+        0,
         audioTextureWidth,
         audioTextureHeight,
-        0,
         GL4.GL_RED,
         GL_FLOAT,
         audioTextureData);
@@ -243,6 +217,12 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
 
     // store palette size (iPaletteSize)
     uniformBuffer.put((float) activeSwatch.colors.size());
+
+    // Move to the next 4-byte boundary
+    // NOTE: This is necessary to ensure that the palette colors array is properly
+    // aligned.  If you add more elements to the per-frame uniform block, you may need to
+    // adjust this padding to work with the new size.
+    uniformBuffer.position(uniformBuffer.position() + 3);
 
     // store palette colors
     for (int i = 0; i < n; i++) {
@@ -306,8 +286,8 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     perRunUniformBlock.put(3, 0f);
 
     // iResolution is the size of the canvas
-    perRunUniformBlock.put(4, (float) xSize);
-    perRunUniformBlock.put(5, (float) ySize);
+    perRunUniformBlock.put(4, (float) width);
+    perRunUniformBlock.put(5, (float) height);
 
     // Do the same thing for per frame uniforms
     // The items in the block are, in order:
@@ -322,12 +302,13 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     // 1 float for stemDrums
     // 1 float for stemVocals
     // 1 float for stemOther
+    // 1 float for stemDrumHits
     // 1 float for iPaletteSize
     // 20 floats (5 x 4) for the palette
     // VERY IMPORTANT NOTE: whatever order this buffer is loaded in MUST be replicated exactly
     // in the shader framework code's uniform block declaration. Otherwise, the uniforms will not
     // have the correct values in the shader.
-    this.perFrameUniformBlockSize = getUBOAlignedSize(32);
+    this.perFrameUniformBlockSize = getUBOAlignedSize(36);
     this.perFrameUniformBlock = GLBuffers.newDirectFloatBuffer(perFrameUniformBlockSize / 4);
 
     // Generate the uniform block buffers
@@ -386,8 +367,11 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     perFrameUniformBlock.put((float) bassRatio); // bassRatio
     perFrameUniformBlock.put((float) trebleRatio); // trebleRatio
     perFrameUniformBlock.put((float) volumeRatio); // volumeRatio
-    for (AudioStems.Stem stem : AudioStems.get().stems) {
-      perFrameUniformBlock.put((float) stem.getValue());
+
+    int stemCount = Math.min(MAX_AUDIO_STEMS, AudioStems.get().stems.size());
+    for (int i = 0; i < MAX_AUDIO_STEMS; i++) {
+      perFrameUniformBlock.put(
+          (i < stemCount) ? (float) AudioStems.get().stems.get(i).getValue() : 0f);
     }
 
     // set the palette size and colors
@@ -399,33 +383,69 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     gl4.glBufferSubData(GL4.GL_UNIFORM_BUFFER, 0, perFrameUniformBlockSize, perFrameUniformBlock);
   }
 
+  /**
+   * Check for an OpenGL error, which also resets the error code. Caution: an error detected here
+   * could be left over from an earlier GL call instead of being from the most recent call. To be
+   * certain, call it before and after your area of concern.
+   */
+  @SuppressWarnings("unused")
+  public void checkGLError() {
+    int err = this.gl4.glGetError();
+    if (err != GL_NO_ERROR) {
+      String errorString = getGLErrorString(err);
+      LX.error("GL Error: " + err + " (" + errorString + ")");
+    }
+  }
+
+  /** Helper method to convert GL error codes to readable strings */
+  private String getGLErrorString(int err) {
+    return switch (err) {
+      case GL_INVALID_ENUM -> "GL_INVALID_ENUM";
+      case GL_INVALID_VALUE -> "GL_INVALID_VALUE";
+      case GL_INVALID_OPERATION -> "GL_INVALID_OPERATION";
+      case GL4.GL_STACK_OVERFLOW -> "GL_STACK_OVERFLOW";
+      case GL4.GL_STACK_UNDERFLOW -> "GL_STACK_UNDERFLOW";
+      case GL_OUT_OF_MEMORY -> "GL_OUT_OF_MEMORY";
+      case GL_INVALID_FRAMEBUFFER_OPERATION -> "GL_INVALID_FRAMEBUFFER_OPERATION";
+      case GL4.GL_CONTEXT_LOST -> "GL_CONTEXT_LOST";
+      default -> "Unknown error code: " + err;
+    };
+  }
+
   public GLEngine(LX lx, int width, int height) {
     current = this;
+
+    addParameter("gpuJavaEffects", this.gpuJavaEffects);
+
     // The shape the user gives us affects the rendered aspect ratio,
     // but what really matters is that it needs to have room for the
     // largest number of points we're going to encounter during a run.
     // TODO - adjust buffer size & shape dynamically as the model changes.
     // TODO - this will require a lot of GPU memory management, so is
     // TODO - a longer-term goal.
-    xSize = width;
-    ySize = height;
+    this.width = width;
+    this.height = height;
 
-    maxPoints = xSize * ySize;
+    int maxPoints = this.width * this.height;
     TE.log(
         "GLEngine: Rendering canvas size: "
-            + xSize
+            + this.width
             + "x"
-            + ySize
+            + this.height
             + " = "
-            + GLEngine.maxPoints
+            + maxPoints
             + " total points");
 
     // register glEngine so we can access it from patterns.
     // and add it as an engine task for audio analysis and buffer management
     lx.engine.registerComponent(PATH, this);
-    lx.engine.addLoopTask(this);
+    lx.engine.addTask(this::initialize);
 
-    this.model = lx.getModel();
+    // Child engines
+    this.textureCache = new TextureManager(lx, this);
+    if (this.lx.engine.renderMode.gpu) {
+      this.mixer = new GLMixer(lx, this);
+    }
 
     // set up audio fft and waveform handling
     // TODO - strongly consider expanding the number of FFT bands.
@@ -435,54 +455,88 @@ public class GLEngine extends LXComponent implements LXLoopTask, LX.Listener {
     fftResampleFactor = meter.bands.length / 512f;
   }
 
-  @Override
-  public void modelGenerationChanged(LX lx, LXModel model) {
-    this.model = model;
-    this.modelChanged = true;
+  private void initialize() {
+    // On first frame...
+    // create and initialize offscreen drawable for gl rendering
+    canvas = ShaderUtils.createGLSurface(width, height);
+    canvas.display();
+    gl4 = canvas.getGL().getGL4();
+
+    // activate our context and do initialization tasks
+    canvas.getContext().makeCurrent();
+
+    // set up shared uniform blocks
+    initializeUniformBlocks();
+
+    // Initialize child engines
+    this.textureCache.initialize(this.gl4);
+    if (this.lx.engine.renderMode.gpu) {
+      this.mixer.initialize(this.gl4);
+    }
+
+    // set up the per-frame audio info texture
+    initializeAudioTexture();
+
+    // Run on every frame. The first run will be before the first mixer loop.
+    lx.engine.addLoopTask(this);
+  }
+
+  /**
+   * Helper method to activate a texture unit and bind a texture to it. In higher OpenGL versions
+   * (4.5+) this method is built-in.
+   *
+   * @param unit Texture unit to activate (0+)
+   * @param textureHandle Texture handle that should be bound to the unit
+   */
+  public void bindTextureUnit(int unit, int textureHandle) {
+    // Safety check that textureHandle was initialized
+    if (textureHandle < 0) {
+      throw new IllegalStateException(
+          "Texture has not been initialized, can not bind to unit " + unit);
+    }
+
+    this.gl4.glActiveTexture(GL_TEXTURE0 + unit);
+    this.gl4.glBindTexture(GL_TEXTURE_2D, textureHandle);
+  }
+
+  /**
+   * Helper method to unbind the current texture from a texture unit
+   *
+   * @param unit Texture unit to bind to "0"
+   */
+  public void unbindTextureUnit(int unit) {
+    bindTextureUnit(unit, 0);
   }
 
   public void loop(double deltaMs) {
-
-    // On first frame...
-    if (canvas == null) {
-      // create and initialize offscreen drawable for gl rendering
-      canvas = ShaderUtils.createGLSurface(xSize, ySize);
-      canvas.display();
-      gl4 = canvas.getGL().getGL4();
-
-      // activate our context and do initialization tasks
-      canvas.getContext().makeCurrent();
-
-      // set up shared uniform blocks
-      initializeUniformBlocks();
-
-      // set up the per-frame audio info texture
-      initializeAudioTexture();
-      textureCache = new TextureManager(gl4);
-
-      // start listening for model changes
-      lx.addListener(this);
-    }
-
     // activate our context and do per-frame tasks
     canvas.getContext().makeCurrent();
     updateAudioFrameData(deltaMs);
     updateAudioTexture();
     updatePerFrameUniforms();
 
-    if (modelChanged) {
-      // if the model has changed, discard all existing view coordinate textures
-      textureCache.clearCoordinateTextures();
-      modelChanged = false;
+    if (this.lx.engine.renderMode.gpu) {
+      this.mixer.loop(deltaMs);
     }
   }
 
+  @Override
   public void dispose() {
+    this.textureCache.dispose();
+
     // free GPU resources that we directly allocated
     if (GLContext.getCurrent() != null) {
       gl4.glDeleteTextures(audioTextureHandle.length, audioTextureHandle, 0);
       gl4.glDeleteBuffers(uniformBlockHandles.length, uniformBlockHandles, 0);
     }
+
+    ShaderUtils.disposeCompileVAO(this.gl4);
+
+    if (this.lx.engine.renderMode.gpu) {
+      this.mixer.dispose();
+    }
+
+    super.dispose();
   }
 
   // Static getters for per-frame audio parameters

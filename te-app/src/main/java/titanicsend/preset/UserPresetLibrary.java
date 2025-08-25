@@ -16,7 +16,11 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import titanicsend.util.TE;
 
 /** Contains presets for multiple components */
@@ -69,7 +73,8 @@ public class UserPresetLibrary implements LXSerializable {
 
   /** Retrieve a collection of presets for a given component (pattern, etc) */
   public UserPresetCollection get(LXPresetComponent component) {
-    return get(PresetEngine.getPresetName(component));
+    String clazz = PresetEngine.getPresetName(component);
+    return get(clazz);
   }
 
   public UserPresetCollection get(String clazz) {
@@ -96,10 +101,23 @@ public class UserPresetLibrary implements LXSerializable {
   }
 
   public void load(File file) {
+    load(file, true);
+  }
+
+  public void load(File file, boolean removeExisting) {
     TE.log("Loading user presets: %s", file.getPath());
     try (FileReader fr = new FileReader(file)) {
-      load(this.lx, new Gson().fromJson(fr, JsonObject.class));
-      this.file = file;
+      JsonObject obj = new Gson().fromJson(fr, JsonObject.class);
+      // For "Load", clear the patterns first
+      if (removeExisting) {
+        removeAll();
+      }
+      // For both "Import" and "Load", add all presets from file to collections
+      load(this.lx, obj);
+      // Do not change the current library file if this was an import
+      if (removeExisting) {
+        this.file = file;
+      }
     } catch (FileNotFoundException ex) {
       TE.error("User preset library not found: %s", file.getPath());
     } catch (IOException iox) {
@@ -116,17 +134,15 @@ public class UserPresetLibrary implements LXSerializable {
 
   @Override
   public void load(LX lx, JsonObject obj) {
-    removeAll();
-
     // Load collections
     JsonArray collectionsArray = obj.getAsJsonArray(KEY_COLLECTIONS);
     for (JsonElement patternElement : collectionsArray) {
       JsonObject patternObj = (JsonObject) patternElement;
-      loadCollection(patternObj, -1);
+      loadCollection(patternObj);
     }
   }
 
-  private void loadCollection(JsonObject patternObj, int index) {
+  private void loadCollection(JsonObject patternObj) {
     String clazz = patternObj.get(UserPresetCollection.KEY_CLASS).getAsString();
     // Find existing or create new
     // Existing are referenced by UI elements so we won't throw them away and recreate them.

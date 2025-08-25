@@ -1,22 +1,34 @@
 package titanicsend.pattern.ben;
 
+import heronarts.glx.ui.UI2dContainer;
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.DiscreteParameter;
-import heronarts.lx.parameter.LXParameter;
+import heronarts.lx.parameter.TriggerParameter;
+import heronarts.lx.studio.LXStudio;
+import heronarts.lx.studio.ui.device.UIDevice;
+import heronarts.lx.studio.ui.device.UIDeviceControls;
 import heronarts.lx.utils.LXUtils;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.Collectors;
 import titanicsend.app.TEVirtualColor;
 import titanicsend.model.TEEdgeModel;
 import titanicsend.model.TEVertex;
 import titanicsend.pattern.TEAudioPattern;
+import titanicsend.preset.UIUserPresetCollection;
+import titanicsend.ui.UIMFTControls;
 
 @LXCategory("Geometry Masks")
-public class BassLightning extends TEAudioPattern {
+public class BassLightning extends TEAudioPattern implements UIDeviceControls<BassLightning> {
 
   static <T> T randomItem(Collection<T> collection) {
     return collection.stream().skip((int) (collection.size() * Math.random())).findFirst().get();
@@ -175,9 +187,8 @@ public class BassLightning extends TEAudioPattern {
       new BooleanParameter("On Beat", false).setDescription("Trigger on each beat");
   public final BooleanParameter onBassParam =
       new BooleanParameter("On Bass", false).setDescription("Trigger on audio bass");
-  public final BooleanParameter trigger =
-      new BooleanParameter("Trigger", false)
-          .setMode(BooleanParameter.Mode.MOMENTARY)
+  public final TriggerParameter trigger =
+      new TriggerParameter("Trigger", this::makeBolt)
           .setDescription("Trigger a bolt of lightning manually");
   public final BooleanParameter allowLoopsParam =
       new BooleanParameter("Loops", true)
@@ -208,13 +219,6 @@ public class BassLightning extends TEAudioPattern {
     double r = Math.random();
     return r * r * delayParam.getValue();
     //		return 0;
-  }
-
-  @Override
-  public void onParameterChanged(LXParameter p) {
-    if (p == this.trigger && p.getValue() > 0.5) {
-      makeBolt();
-    }
   }
 
   private void makeBolt() {
@@ -295,5 +299,17 @@ public class BassLightning extends TEAudioPattern {
     //					colors[point.index] = LXColor.RED;
     //			}
     //		}
+  }
+
+  @Override
+  public void buildDeviceControls(LXStudio.UI ui, UIDevice uiDevice, BassLightning device) {
+    uiDevice.setLayout(UI2dContainer.Layout.HORIZONTAL, 2);
+
+    uiDevice.addChildren(
+        // Remote controls, MFT-layout
+        new UIMFTControls(ui, device, uiDevice.getContentHeight()),
+
+        // User Presets list
+        new UIUserPresetCollection(ui, device, uiDevice.getContentHeight()));
   }
 }

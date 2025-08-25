@@ -1,6 +1,12 @@
 package titanicsend.pattern.yoffa.shader_engine;
 
-import com.jogamp.opengl.*;
+import com.jogamp.opengl.DefaultGLCapabilitiesChooser;
+import com.jogamp.opengl.GL;
+import com.jogamp.opengl.GL4;
+import com.jogamp.opengl.GLAutoDrawable;
+import com.jogamp.opengl.GLCapabilities;
+import com.jogamp.opengl.GLDrawableFactory;
+import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.util.GLBuffers;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -29,6 +35,9 @@ public class ShaderUtils {
   public static final String SHADER_BODY_PLACEHOLDER = "{{%shader_body%}}";
   public static final Pattern PLACEHOLDER_FINDER = Pattern.compile("\\{%(.*?)(\\[(.*?)\\])??\\}");
 
+  // Global "compile VAO" for use during program validation
+  private static final int[] compileVao = new int[] {0};
+
   public static String loadResource(File file) {
     try {
       Scanner s = new Scanner(file, "UTF-8");
@@ -46,7 +55,7 @@ public class ShaderUtils {
   }
 
   /** Creates offscreen drawable OpenGL surface at the specified resolution */
-  public static GLAutoDrawable createGLSurface(int xResolution, int yResolution) {
+  public static GLAutoDrawable createGLSurface(int width, int height) {
     GLProfile glProfile = GLProfile.getGL4ES3();
     GLCapabilities glCapabilities = new GLCapabilities(glProfile);
     glCapabilities.setHardwareAccelerated(true);
@@ -63,8 +72,8 @@ public class ShaderUtils {
         factory.getDefaultDevice(),
         glCapabilities,
         new DefaultGLCapabilitiesChooser(),
-        xResolution,
-        yResolution);
+        width,
+        height);
   }
 
   public static String getVertexShaderTemplate() {
@@ -240,20 +249,25 @@ public class ShaderUtils {
    * @param gl4 an active OpenGL context
    * @param programId id to which the shader binary will be attached
    * @param shaderName filename (without path) of fragment shader
+   * @param tePreProcess whether to perform te pre-processing and merge with template shader
    */
-  public static void buildShader(GL4 gl4, int programId, String shaderName) {
+  public static void buildShader(GL4 gl4, int programId, String shaderName, boolean tePreProcess) {
     ArrayList<ShaderConfiguration> config = new ArrayList<>();
     String cacheName = getCacheFilename(shaderName);
     String shaderText = loadResource(SHADER_PATH + shaderName);
 
     String shaderBody;
     try {
-      GLPreprocessor glp = new GLPreprocessor();
-      // try the new way
-      try {
-        shaderBody = glp.preprocessShader(shaderText, config);
-      } catch (Exception e) {
-        throw new RuntimeException(e);
+      if (tePreProcess) {
+        GLPreprocessor glp = new GLPreprocessor();
+        // try the new way
+        try {
+          shaderBody = glp.preprocessShader(shaderText, config);
+        } catch (Exception e) {
+          throw new RuntimeException(e);
+        }
+      } else {
+        shaderBody = shaderText;
       }
 
       int vertexShaderId =
@@ -278,8 +292,36 @@ public class ShaderUtils {
     gl4.glLinkProgram(programId);
     validateStatus(gl4, programId, GL4.GL_LINK_STATUS);
 
+    // Must have a VAO bound to validate the program
+    bindCompileVAO(gl4);
+
     gl4.glValidateProgram(programId);
     validateStatus(gl4, programId, GL4.GL_VALIDATE_STATUS);
+
+    unbindCompileVAO(gl4);
+  }
+
+  private static void bindCompileVAO(GL4 gl4) {
+    if (compileVao[0] == 0) {
+      gl4.glGenVertexArrays(1, compileVao, 0);
+    }
+    gl4.glBindVertexArray(compileVao[0]);
+    // JKB note 7-12-25: A new problem has appeared. When a project file is
+    // manually opened after launch, the default framebuffer is not bound
+    // at pattern constructor time which causes a validation error.
+    // Binding it here to avoid errors:
+    gl4.glBindFramebuffer(GL.GL_DRAW_FRAMEBUFFER, 0);
+  }
+
+  private static void unbindCompileVAO(GL4 gl4) {
+    gl4.glBindVertexArray(0);
+  }
+
+  public static void disposeCompileVAO(GL4 gl4) {
+    if (compileVao[0] != 0) {
+      gl4.glDeleteVertexArrays(1, compileVao, 0);
+      compileVao[0] = 0;
+    }
   }
 
   private static void validateStatus(GL4 gl4, int id, int statusConstant) {

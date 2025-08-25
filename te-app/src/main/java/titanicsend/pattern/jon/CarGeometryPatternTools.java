@@ -76,25 +76,22 @@ public class CarGeometryPatternTools {
    * @return the number of edges actually retrieved
    */
   public static int getAllEdgesOnSide(
-      TEWholeModel model, float signum, float lines[][], int lineCount) {
+      TEWholeModel model, float signum, float[][] lines, int lineCount) {
     // signum is 1 for starboard side, -1 for port side (I think!)
 
     int edgeCount = 0;
     List<TEEdgeModel> edges = model.getEdges();
     for (TEEdgeModel edge : edges) {
       if (edge != null) {
-        LXPoint v1 = edge.points[0];
-        LXPoint v2 = edge.points[edge.points.length - 1];
         // if it's on the side we want, or directly on the centerline,
         // add it to the list of lines.
-        if (signum * v1.z > 0.0 || v1.z == 0.0) {
+        if (signum * edge.centroid.z >= 0.0) {
           getLineFromEdge(model, lines, edgeCount, edge.getId());
           edgeCount++;
           if (edgeCount >= lineCount) break;
         }
       }
     }
-    TE.log("getAllEdgesOnSide: found %d edges on side %f", edgeCount, signum);
     return edgeCount;
   }
 

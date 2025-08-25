@@ -2,7 +2,11 @@ package titanicsend.pattern.yoffa.shader_engine;
 
 import heronarts.lx.parameter.LXParameter;
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import titanicsend.pattern.glengine.GLPreprocessor;
 import titanicsend.pattern.glengine.ShaderConfiguration;
 
@@ -15,8 +19,10 @@ import titanicsend.pattern.glengine.ShaderConfiguration;
 public class FragmentShader {
   private final String shaderName;
   private final Map<Integer, String> channelToTexture;
-  private final List<LXParameter> parameters = new ArrayList<>();
   private final List<ShaderConfiguration> shaderConfig = new ArrayList<>();
+
+  private final List<LXParameter> mutableParameters = new ArrayList<>();
+  public final List<LXParameter> parameters = Collections.unmodifiableList(this.mutableParameters);
 
   public FragmentShader(File shaderFile, List<File> textureFiles) {
     String shaderBody;
@@ -50,7 +56,7 @@ public class FragmentShader {
             channelToTexture.put(config.textureChannel, new File(config.name).getPath());
             break;
           case ADD_LX_PARAMETER:
-            parameters.add(config.lxParameter);
+            mutableParameters.add(config.lxParameter);
             break;
           default:
             break;
@@ -69,9 +75,5 @@ public class FragmentShader {
 
   public List<ShaderConfiguration> getShaderConfig() {
     return shaderConfig;
-  }
-
-  public List<LXParameter> getParameters() {
-    return parameters;
   }
 }

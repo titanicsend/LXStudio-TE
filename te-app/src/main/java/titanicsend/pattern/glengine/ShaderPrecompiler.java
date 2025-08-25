@@ -1,14 +1,15 @@
 package titanicsend.pattern.glengine;
 
-import com.jogamp.opengl.*;
-import titanicsend.pattern.yoffa.shader_engine.*;
+import com.jogamp.opengl.GLAutoDrawable;
+import com.jogamp.opengl.GLContext;
+import titanicsend.pattern.yoffa.shader_engine.ShaderUtils;
 
 /** Checks shader cache and builds binaries for any changed or previously uncached shaders. */
 public class ShaderPrecompiler {
 
   // Can be any resolution -- we just need a context for the compiler
-  private static final int xResolution = 640;
-  private static final int yResolution = 480;
+  private static final int width = 640;
+  private static final int height = 480;
 
   /** Create and save binary versions of any shaders that need it. */
   public static void rebuildCache() {
@@ -22,7 +23,7 @@ public class ShaderPrecompiler {
     GLContext prevContext = GLContext.getCurrent();
 
     // set up just enough OpenGL machinery to let us compile and link
-    GLAutoDrawable surface = ShaderUtils.createGLSurface(xResolution, yResolution);
+    GLAutoDrawable surface = ShaderUtils.createGLSurface(width, height);
     surface.display();
     surface.getContext().makeCurrent();
 

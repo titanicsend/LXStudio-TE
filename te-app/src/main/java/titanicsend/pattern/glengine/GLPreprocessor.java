@@ -1,18 +1,28 @@
 package titanicsend.pattern.glengine;
 
-import static titanicsend.pattern.glengine.GLPreprocessorHelpers.*;
+import static titanicsend.pattern.glengine.GLPreprocessorHelpers.getFileName;
+import static titanicsend.pattern.glengine.GLPreprocessorHelpers.parseClassName;
+import static titanicsend.pattern.glengine.GLPreprocessorHelpers.parseControl;
+import static titanicsend.pattern.glengine.GLPreprocessorHelpers.parseIUniforms;
+import static titanicsend.pattern.glengine.GLPreprocessorHelpers.parseLXCategory;
+import static titanicsend.pattern.glengine.GLPreprocessorHelpers.parseTextures;
+import static titanicsend.pattern.glengine.GLPreprocessorHelpers.removeIUniformLines;
 
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.CompoundParameter;
 import heronarts.lx.parameter.LXParameter;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import titanicsend.pattern.yoffa.shader_engine.ShaderUtils;
-import titanicsend.pattern.yoffa.shader_engine.Uniforms;
+import titanicsend.pattern.yoffa.shader_engine.UniformNames;
 
 public class GLPreprocessor {
 
@@ -199,14 +209,14 @@ public class GLPreprocessor {
             finalShader
                 .append("uniform bool ")
                 .append(placeholderName)
-                .append(Uniforms.CUSTOM_SUFFIX)
+                .append(UniformNames.LX_PARAMETER_SUFFIX)
                 .append(";\n");
             addLXParameter(parameters, new BooleanParameter(placeholderName));
           } else {
             finalShader
                 .append("uniform float ")
                 .append(placeholderName)
-                .append(Uniforms.CUSTOM_SUFFIX)
+                .append(UniformNames.LX_PARAMETER_SUFFIX)
                 .append(";\n");
             Double[] rangeValues =
                 Arrays.stream(metadata.split(",")).map(Double::parseDouble).toArray(Double[]::new);
@@ -216,7 +226,7 @@ public class GLPreprocessor {
                     placeholderName, rangeValues[0], rangeValues[1], rangeValues[2]));
           }
         }
-        matcher.appendReplacement(shaderCode, placeholderName + Uniforms.CUSTOM_SUFFIX);
+        matcher.appendReplacement(shaderCode, placeholderName + UniformNames.LX_PARAMETER_SUFFIX);
       } catch (Exception e) {
         throw new RuntimeException("Problem parsing placeholder: " + matcher.group(0), e);
       }
