@@ -1,6 +1,6 @@
 {
   "version": "1.1.1-TE.5.GPU-SNAPSHOT",
-  "timestamp": 1756170284878,
+  "timestamp": 1756175463895,
   "fixtures": [
     {
       "jsonFixtureType": "TE/panel/FA",
@@ -74,7 +74,7 @@
         "flipBacking": true,
         "onCar": true
       },
-      "id": 216,
+      "id": 485560,
       "class": "heronarts.lx.structure.JsonFixture",
       "internal": {
         "modulationColor": 0,
@@ -4438,7 +4438,7 @@
         "scale": 1.0,
         "hasCustomPointSize": false,
         "pointSize": 5.0,
-        "selected": true,
+        "selected": false,
         "deactivate": false,
         "enabled": true,
         "brightness": 1.0,
@@ -11963,7 +11963,7 @@
         "scale": 1.0,
         "hasCustomPointSize": false,
         "pointSize": 5.0,
-        "selected": false,
+        "selected": true,
         "deactivate": false,
         "enabled": true,
         "brightness": 1.0,
