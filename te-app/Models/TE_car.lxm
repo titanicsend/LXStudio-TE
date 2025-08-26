@@ -1,6 +1,6 @@
 {
-  "version": "1.1.1-TE.1-SNAPSHOT",
-  "timestamp": 1756032147409,
+  "version": "1.1.1-TE.5.GPU-SNAPSHOT",
+  "timestamp": 1756170284878,
   "fixtures": [
     {
       "jsonFixtureType": "TE/panel/FA",
@@ -3836,7 +3836,7 @@
         "scale": 1.0,
         "hasCustomPointSize": false,
         "pointSize": 5.0,
-        "selected": true,
+        "selected": false,
         "deactivate": false,
         "enabled": true,
         "brightness": 1.0,
@@ -3938,8 +3938,8 @@
       "jsonFixtureType": "TE/edge/Edge26-28",
       "jsonParameters": {
         "points": 100,
-        "host": "10.7.3.12",
-        "output": 2,
+        "host": "10.7.101.32",
+        "output": 1,
         "ledOffset": 177,
         "artnetSequence": false,
         "reverse": false,
@@ -4110,8 +4110,8 @@
       "jsonFixtureType": "TE/edge/Edge26-111",
       "jsonParameters": {
         "points": 119,
-        "host": "10.7.3.12",
-        "output": 2,
+        "host": "10.7.101.32",
+        "output": 1,
         "ledOffset": 58,
         "artnetSequence": false,
         "reverse": true,
@@ -4411,8 +4411,8 @@
       "jsonFixtureType": "TE/edge/Edge28-111",
       "jsonParameters": {
         "points": 58,
-        "host": "10.7.3.12",
-        "output": 2,
+        "host": "10.7.101.32",
+        "output": 1,
         "ledOffset": 0,
         "artnetSequence": false,
         "reverse": false,
@@ -4438,7 +4438,7 @@
         "scale": 1.0,
         "hasCustomPointSize": false,
         "pointSize": 5.0,
-        "selected": false,
+        "selected": true,
         "deactivate": false,
         "enabled": true,
         "brightness": 1.0,
