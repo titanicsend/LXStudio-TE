@@ -57,6 +57,7 @@ public abstract class LXVirtualDiscreteParameter<T extends DiscreteParameter>
   public LXVirtualDiscreteParameter<T> setParameter(T parameter, boolean fireImmediately) {
     if (this.parameter != null) {
       this.parameter.removeListener(realParameterListener);
+      this.parameter.optionsChanged.removeListener(this.realOptionsChangedListener);
       if (this.parameter instanceof DisposableParameter) {
         ((DisposableParameter) this.parameter).unlistenDispose(disposeParameterListener);
       }
@@ -64,6 +65,7 @@ public abstract class LXVirtualDiscreteParameter<T extends DiscreteParameter>
     this.parameter = parameter;
     if (this.parameter != null) {
       this.parameter.addListener(realParameterListener);
+      this.parameter.optionsChanged.addListener(this.realOptionsChangedListener);
       if (this.parameter instanceof DisposableParameter) {
         ((DisposableParameter) this.parameter).listenDispose(disposeParameterListener);
       }
@@ -79,6 +81,11 @@ public abstract class LXVirtualDiscreteParameter<T extends DiscreteParameter>
         onRealParameterChanged();
       };
 
+  private final LXParameterListener realOptionsChangedListener =
+      (p) -> {
+        onRealOptionsChanged();
+      };
+
   private final DisposeListener disposeParameterListener =
       (p) -> {
         onRealParameterDisposed();
@@ -88,8 +95,14 @@ public abstract class LXVirtualDiscreteParameter<T extends DiscreteParameter>
     bang();
   }
 
+  protected void onRealOptionsChanged() {
+    // Relay optionsChanged event
+    this.optionsChanged.bang();
+  }
+
   protected void onRealParameterDisposed() {
     this.parameter.removeListener(realParameterListener);
+    this.parameter.optionsChanged.removeListener(this.realOptionsChangedListener);
     this.parameter = null;
   }
 
