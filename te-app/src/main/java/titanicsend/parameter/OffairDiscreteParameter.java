@@ -14,10 +14,9 @@ import titanicsend.model.justin.LXVirtualDiscreteParameter;
 /**
  * Wraps a discrete parameter and prevents the value from changing while the parent device is "live"
  */
-public class OffairDiscreteParameter<T extends DiscreteParameter>
-    extends LXVirtualDiscreteParameter<T> {
+public class OffairDiscreteParameter extends LXVirtualDiscreteParameter<DiscreteParameter> {
 
-  public OffairDiscreteParameter(String label, T parameter) {
+  public OffairDiscreteParameter(String label, DiscreteParameter parameter) {
     super(label, parameter);
   }
 

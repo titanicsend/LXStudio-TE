@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import titanicsend.color.TEColorParameter;
+import titanicsend.parameter.OffairDiscreteParameter;
+import titanicsend.parameter.UIOffairDiscreteParameter;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.preset.UIUserPresetSelector;
 import titanicsend.preset.UserPresetCollection;
@@ -148,6 +150,9 @@ public class UIMFTControls extends UI2dContainer implements LXParameterListener 
     } else if (param instanceof UserPresetCollection.Selector selector) {
       // Avoid command engine with userPreset selector, it bonks for unknown reasons
       return new UIUserPresetSelector(this.ui, selector);
+    } else if (param instanceof OffairDiscreteParameter offairParameter) {
+      // Avoid command engine with offair parameter, it could be a proxy to userPreset selector
+      return new UIOffairDiscreteParameter(ui, offairParameter);
     } else if (param instanceof BoundedParameter
         || param instanceof DiscreteParameter
         || param instanceof BoundedFunctionalParameter) {

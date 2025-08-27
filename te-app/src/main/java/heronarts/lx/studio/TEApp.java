@@ -110,6 +110,7 @@ import titanicsend.ndi.NDIOutShaderEffect;
 import titanicsend.ndi.NDIReceiverPattern;
 import titanicsend.osc.CrutchOSC;
 import titanicsend.oscremapper.OscRemapperPlugin;
+import titanicsend.parameter.UIOffairDiscreteParameter;
 import titanicsend.pattern.TEMidiFighter64DriverPattern;
 import titanicsend.pattern.TEPerformancePattern;
 import titanicsend.pattern.ben.Audio1;
@@ -839,6 +840,7 @@ public class TEApp extends LXStudio {
 
       LXStudio.Registry registry = (LXStudio.Registry) lx.registry;
       registry.addUIDeviceControls(UITEPerformancePattern.class);
+      registry.addUIParameterControl(UIOffairDiscreteParameter.class);
       registry.addUIParameterControl(UIUserPresetSelector.class);
       registry.addUIParameterControl(UITEColorControl.class);
 
