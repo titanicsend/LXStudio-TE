@@ -8,7 +8,6 @@ import heronarts.lx.parameter.LXListenableNormalizedParameter;
 import heronarts.lx.parameter.LXNormalizedParameter;
 import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.parameter.LXParameterListener;
-import heronarts.lx.structure.view.LXViewEngine;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,7 +17,6 @@ import titanicsend.parameter.OffairDiscreteParameter;
 import titanicsend.pattern.jon.TEControl;
 import titanicsend.pattern.jon.TEControlTag;
 import titanicsend.pattern.jon._CommonControlGetter;
-import titanicsend.preset.UserPresetCollection;
 import titanicsend.util.MissingControlsManager;
 import titanicsend.util.TE;
 
@@ -39,8 +37,8 @@ public class TECommonControls {
   public TEColorParameter color;
 
   // Wrapped parameters that cannot be changed while live
-  private OffairDiscreteParameter<UserPresetCollection.Selector> presetSelectorOffair;
-  private OffairDiscreteParameter<LXViewEngine.Selector> viewOffair;
+  private OffairDiscreteParameter presetSelectorOffair;
+  private OffairDiscreteParameter viewOffair;
 
   // Panic control courtesy of JKB's Rubix codebase
   public final BooleanParameter panic =
@@ -360,11 +358,11 @@ public class TECommonControls {
     TEColorParameter colorParam = registerColorControl(colorPrefix);
 
     // Wrap the Preset parameter to prevent it from being changed while live
-    this.presetSelectorOffair = new OffairDiscreteParameter<>("Preset", pat.presetSelector);
+    this.presetSelectorOffair = new OffairDiscreteParameter("Preset", pat.presetSelector);
     this.pattern.addParam(KEY_PRESET_SELECTOR_OFFAIR, this.presetSelectorOffair);
 
     // Wrap the View parameter to prevent it from being changed while live
-    this.viewOffair = new OffairDiscreteParameter<>("View", pat.view);
+    this.viewOffair = new OffairDiscreteParameter("View", pat.view);
     this.pattern.addParam(KEY_VIEW_OFFAIR, this.viewOffair);
   }
 
