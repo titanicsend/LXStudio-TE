@@ -82,8 +82,8 @@ public class GLPreprocessorHelpers {
 
     // the last character of token 0 is the integer channel identifier
     // valid channels are 1-9.  Channel 0 is reserved for audio input.
-    control.textureChannel = Integer.parseInt(line[0].substring(line[0].length() - 1));
-    if (control.textureChannel == 0) {
+    control.iChannel = Integer.parseInt(line[0].substring(line[0].length() - 1));
+    if (control.iChannel == 0) {
       throw new IllegalArgumentException(
           "iChannel0 is reserved for system audio. Use channels 1-9 for textures.");
     }

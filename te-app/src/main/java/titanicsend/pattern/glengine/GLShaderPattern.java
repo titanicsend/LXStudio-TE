@@ -86,7 +86,7 @@ public class GLShaderPattern extends TEPerformancePattern implements GpuDevice {
       this.modelChanged = false;
       LXModel m = getModel();
       for (TEShader shader : this.shaders) {
-        shader.setModelCoordinates(m);
+        shader.setModel(m);
       }
     }
 

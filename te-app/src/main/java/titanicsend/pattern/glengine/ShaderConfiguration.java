@@ -12,7 +12,7 @@ public class ShaderConfiguration {
   public double value;
   public double v1;
   public double v2;
-  public int textureChannel;
+  public int iChannel;
   public String name;
 
   @Override
@@ -32,8 +32,8 @@ public class ShaderConfiguration {
         + v1
         + ", v2="
         + v2
-        + ", textureChannel="
-        + textureChannel
+        + ", iChannel="
+        + iChannel
         + ", name='"
         + name
         + '\''
