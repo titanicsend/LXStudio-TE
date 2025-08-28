@@ -4,7 +4,6 @@ import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.parameter.CompoundParameter;
-import heronarts.lx.parameter.LXListenableNormalizedParameter;
 import heronarts.lx.studio.LXStudio.UI;
 import heronarts.lx.studio.ui.device.UIDevice;
 import heronarts.lx.studio.ui.device.UIDeviceControls;
@@ -27,8 +26,10 @@ public class DjLightsShowPattern extends DjLightsPattern
       new CompoundParameter("Brightness", 0.5).setDescription("Overall brightness (master dimmer)");
 
   // Use TEColorParameter for full palette/swatch integration
-  public final TEColorParameter color;
+  public final TEColorParameter colorL;
+  public final TEColorParameter colorR;
 
+  // Allow desaturation from TE color which is often full-saturation
   public final CompoundParameter saturation =
       new CompoundParameter("Saturation", 1.0)
           .setDescription("Additional saturation adjustment (0=grayscale, 1=full color)");
@@ -40,11 +41,17 @@ public class DjLightsShowPattern extends DjLightsPattern
     addParameter("pan", this.pan);
     addParameter("tilt", this.tilt);
     addParameter("focus", this.focus);
+
+    // JKB note: how about using "Dimmer" instead of brightness? It's a DMX channel on the fixture.
+    // Like this: addParameter("dimmer", this.dimmer);
     addParameter("brightness", this.brightness);
+
     addParameter(
-        "color",
-        this.color =
-            new TEColorParameter("Color").setDescription("Light color from palette/swatch"));
+        "colorL",
+        this.colorL = new TEColorParameter("ColorL").setDescription("Left DJ light color"));
+    addParameter(
+        "colorR",
+        this.colorR = new TEColorParameter("ColorR").setDescription("Right DJ light color"));
     addParameter("saturation", this.saturation);
 
     // Set defaults
@@ -52,18 +59,14 @@ public class DjLightsShowPattern extends DjLightsPattern
     this.focus.setValue(0.5);
 
     // Configure remote controls for MIDI/OSC mapping
-    this.setCustomRemoteControls(
-        new LXListenableNormalizedParameter[] {
-          this.pan,
-          this.tilt,
-          this.focus,
-          this.brightness,
-          this.color.offset,
-          this.color.hue,
-          this.color.saturation,
-          this.color.brightness,
-          this.saturation
-        });
+    this.setRemoteControls(
+        this.pan,
+        this.tilt,
+        this.focus,
+        this.brightness,
+        this.colorL.offset,
+        this.colorR.offset,
+        this.saturation);
   }
 
   /**
@@ -120,21 +123,26 @@ public class DjLightsShowPattern extends DjLightsPattern
     double panValue = this.pan.getNormalized();
     double tiltValue = this.tilt.getNormalized();
     double focusValue = this.focus.getNormalized();
+    // JKB note: use AdjStealth's Dimmer parameter instead?
     double brightnessValue = this.brightness.getNormalized();
     double saturationValue = this.saturation.getNormalized();
-
-    // Get color from TEColorParameter which handles palette/swatch integration
-    int baseColor = this.color.calcColor();
-
-    // Apply saturation adjustment
-    int adjustedColor = applySaturation(baseColor, saturationValue);
-
-    // Convert to RGBW with brightness applied
-    RGBWColor rgbw = new RGBWColor(adjustedColor, brightnessValue);
 
     // Apply to all beacon fixtures
     for (DmxModel d : this.modelTE.getDjLights()) {
       if (d instanceof AdjStealthModel) {
+
+        // Determine Left or Right DJ light by checking fixture tags
+        boolean isRight = d.model.tags.contains("right");
+
+        // Get color from TEColorParameter which handles palette/swatch integration
+        int baseColor = isRight ? this.colorR.calcColor() : this.colorL.calcColor();
+
+        // Apply saturation adjustment (further de-saturates the TE color)
+        int adjustedColor = applySaturation(baseColor, saturationValue);
+
+        // Convert to RGBW with brightness applied
+        RGBWColor rgbw = new RGBWColor(adjustedColor, brightnessValue);
+
         // Position controls
         setDmxNormalized(d, AdjStealthModel.INDEX_PAN, panValue);
         setDmxNormalized(d, AdjStealthModel.INDEX_TILT, tiltValue);
@@ -167,6 +175,6 @@ public class DjLightsShowPattern extends DjLightsPattern
 
   @Override
   public void buildDeviceControls(UI ui, UIDevice uiDevice, DjLightsShowPattern device) {
-    UIUtils.buildMftStyleDeviceControls(ui, uiDevice, device);
+    UIUtils.buildTEDeviceControls(ui, uiDevice, device);
   }
 }
