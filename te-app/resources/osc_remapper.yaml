@@ -38,7 +38,7 @@ destinations:
     filter: "/lx"
 
   - name: "MSHIP"
-    ip: "127.0.0.1"
+    ip: "10.128.1.1"
     port: 7002
     filter: "/mship"
 
@@ -47,10 +47,10 @@ destinations:
     port: 7003
     filter: "/lx"
 
-  - name: "LINKUP-TEST"
-    ip: "127.0.0.1"
-    port: 7007
-    filter: "/lx/palette,/lx/tempo"
+  - name: "lasers"
+    ip: "10.4.0.1"
+    port: 8000
+    filter: "/b/Master"
 
 # ================================
 # 2. OSC REMAPPINGS
