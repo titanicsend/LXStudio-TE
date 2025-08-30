@@ -2,7 +2,7 @@
   <configuration default="false" name="Titanic's End GPU" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="heronarts.lx.studio.TEApp" />
     <module name="te-app" />
-    <option name="PROGRAM_PARAMETERS" value="Projects/BM25_TE_8channel.lxp --resolution 1920x1080" />
+    <option name="PROGRAM_PARAMETERS" value="--resolution 1080x1400" />
     <option name="VM_PARAMETERS" value="-ea -XstartOnFirstThread -Djava.awt.headless=true -Dgpu" />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/te-app" />
     <method v="2">
