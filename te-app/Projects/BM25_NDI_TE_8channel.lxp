@@ -1,6 +1,6 @@
 {
   "version": "1.1.1-TE.5.GPU-SNAPSHOT",
-  "timestamp": 1756529553568,
+  "timestamp": 1756529934468,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -205,14 +205,14 @@
           "pointSize": 0.1,
           "selected": true,
           "deactivate": false,
-          "enabled": true,
+          "enabled": false,
           "brightness": 1.0,
           "identify": false,
           "mute": false,
           "solo": false,
           "tags": "ndi",
-          "heightPixels": 800,
-          "widthPixels": 800,
+          "heightPixels": 1080,
+          "widthPixels": 1080,
           "widthFt": 40.0,
           "heightFt": 40.0,
           "stream": "TitanicsEnd"
@@ -255,8 +255,7 @@
         },
         "children": {}
       }
-    ],
-    "file": "TE_car.lxm"
+    ]
   },
   "engine": {
     "id": 1,
@@ -2102,7 +2101,7 @@
           "label": "Mixer",
           "crossfader": 0.5131578947368421,
           "crossfaderBlendMode": 1,
-          "focusedChannel": 10,
+          "focusedChannel": 9,
           "focusedChannelAux": 9,
           "cueA": false,
           "cueB": false,
@@ -2130,7 +2129,7 @@
               "label": "Master",
               "fader": 1.0,
               "arm": false,
-              "selected": true,
+              "selected": false,
               "stopClips": false,
               "previewMode": 0,
               "previewMode/name": "PRE"
@@ -61399,9 +61398,9 @@
             },
             "parameters": {
               "label": "NDI",
-              "fader": 0.0,
+              "fader": 1.0,
               "arm": false,
-              "selected": false,
+              "selected": true,
               "stopClips": false,
               "enabled": true,
               "cue": false,
@@ -61513,7 +61512,7 @@
                   "te_color/blendMode": 0,
                   "te_color/blendMode/name": "OKLAB",
                   "te_color/offset": 0.0,
-                  "source": "",
+                  "source": "FOH-WINDOWS (Arena - Composition)",
                   "sources": 0,
                   "select": false,
                   "gain": 1.0,
@@ -62170,12 +62169,12 @@
         "animation": false,
         "camera": {
           "active": false,
-          "radius": 801.631141829366,
-          "theta": 181.99531809194013,
-          "phi": -2.4774894579313695,
-          "x": -6.407871252042241,
-          "y": 219.95271760225296,
-          "z": -206.29739044979215
+          "radius": 801.8396547484733,
+          "theta": 179.06715266173705,
+          "phi": -2.8996517136693,
+          "x": -26.777995732263662,
+          "y": 226.31814968585968,
+          "z": -319.0787176755257
         },
         "cue": [
           {
