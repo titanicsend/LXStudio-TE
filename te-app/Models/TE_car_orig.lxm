@@ -1,0 +1,103 @@
+{
+  "version": "1.1.1-TE.5.GPU-SNAPSHOT",
+  "timestamp": 1756517770564,
+  "fixtures": [
+    {
+      "id": 671546,
+      "class": "titanicsend.ndi.NDIOutFixture",
+      "internal": {
+        "modulationColor": 0,
+        "modulationControlsExpanded": true,
+        "modulationsExpanded": true
+      },
+      "parameters": {
+        "label": "NDI Out 1",
+        "x": -100.0,
+        "y": 500.0,
+        "z": 0.0,
+        "yaw": 0.0,
+        "pitch": 0.0,
+        "roll": 0.0,
+        "scale": 1.0,
+        "hasCustomPointSize": true,
+        "pointSize": 0.1,
+        "selected": true,
+        "deactivate": false,
+        "enabled": false,
+        "brightness": 1.0,
+        "identify": false,
+        "mute": false,
+        "solo": false,
+        "tags": "ndi",
+        "heightPixels": 1080,
+        "widthPixels": 1080,
+        "widthFt": 50.0,
+        "heightFt": 50.0,
+        "stream": "TitanicsEnd"
+      },
+      "children": {}
+    },
+    {
+      "jsonFixtureType": "TE/TE",
+      "jsonParameters": {
+        "artnetSequence": false,
+        "showBacking": true
+      },
+      "id": 671550,
+      "class": "heronarts.lx.structure.JsonFixture",
+      "internal": {
+        "modulationColor": 0,
+        "modulationControlsExpanded": true,
+        "modulationsExpanded": true
+      },
+      "parameters": {
+        "label": "TE 2",
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "yaw": 0.0,
+        "pitch": 0.0,
+        "roll": 0.0,
+        "scale": 1.0,
+        "hasCustomPointSize": false,
+        "pointSize": 5.0,
+        "selected": false,
+        "deactivate": false,
+        "enabled": false,
+        "brightness": 1.0,
+        "identify": false,
+        "mute": false,
+        "solo": false,
+        "tags": "",
+        "fixtureType": "TE/TE"
+      },
+      "children": {}
+    }
+  ],
+  "normalization": {
+    "normalizationMode": 0,
+    "normalizationMode/name": "AUTOMATIC",
+    "normalizationX": 0.0,
+    "normalizationY": 0.0,
+    "normalizationZ": 0.0,
+    "normalizationWidth": 1000.0,
+    "normalizationHeight": 1000.0,
+    "normalizationDepth": 1000.0
+  },
+  "labelConfig": {
+    "showFixtureLabels": false,
+    "fixtureLabelHorizontalAlignment": 1,
+    "fixtureLabelHorizontalAlignment/name": "CENTER",
+    "fixtureLabelVerticalAlignment": 1,
+    "fixtureLabelVerticalAlignment/name": "MIDDLE",
+    "fixtureLabelPositionX": 0,
+    "fixtureLabelPositionX/name": "POSITION",
+    "fixtureLabelPositionY": 0,
+    "fixtureLabelPositionY/name": "POSITION",
+    "fixtureLabelPositionZ": 0,
+    "fixtureLabelPositionZ/name": "POSITION",
+    "fixtureLabelOffsetX": 0.0,
+    "fixtureLabelOffsetY": 0.0,
+    "fixtureLabelOffsetZ": 0.0
+  }
+}
