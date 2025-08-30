@@ -1,6 +1,6 @@
 {
   "version": "1.1.1-TE.5.GPU-SNAPSHOT",
-  "timestamp": 1756529436965,
+  "timestamp": 1756529553568,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -205,7 +205,7 @@
           "pointSize": 0.1,
           "selected": true,
           "deactivate": false,
-          "enabled": false,
+          "enabled": true,
           "brightness": 1.0,
           "identify": false,
           "mute": false,
