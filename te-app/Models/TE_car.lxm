@@ -1,6 +1,6 @@
 {
   "version": "1.1.1-TE.5.GPU-SNAPSHOT",
-  "timestamp": 1756517770564,
+  "timestamp": 1756529556063,
   "fixtures": [
     {
       "id": 671546,
@@ -12,8 +12,8 @@
       },
       "parameters": {
         "label": "NDI Out 1",
-        "x": -100.0,
-        "y": 500.0,
+        "x": -200.0,
+        "y": 600.0,
         "z": 0.0,
         "yaw": 0.0,
         "pitch": 0.0,
@@ -23,16 +23,16 @@
         "pointSize": 0.1,
         "selected": true,
         "deactivate": false,
-        "enabled": false,
+        "enabled": true,
         "brightness": 1.0,
         "identify": false,
         "mute": false,
         "solo": false,
         "tags": "ndi",
-        "heightPixels": 1080,
-        "widthPixels": 1080,
-        "widthFt": 50.0,
-        "heightFt": 50.0,
+        "heightPixels": 800,
+        "widthPixels": 800,
+        "widthFt": 40.0,
+        "heightFt": 40.0,
         "stream": "TitanicsEnd"
       },
       "children": {}
@@ -63,7 +63,7 @@
         "pointSize": 5.0,
         "selected": false,
         "deactivate": false,
-        "enabled": false,
+        "enabled": true,
         "brightness": 1.0,
         "identify": false,
         "mute": false,
