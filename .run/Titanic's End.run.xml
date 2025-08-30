@@ -3,7 +3,7 @@
     <option name="ALTERNATIVE_JRE_PATH" value="temurin-21" />
     <option name="MAIN_CLASS_NAME" value="heronarts.lx.studio.TEApp" />
     <module name="te-app" />
-    <option name="PROGRAM_PARAMETERS" value="Projects/BM2024_TE.lxp" />
+    <option name="PROGRAM_PARAMETERS" value="Projects/BM25_TE_8channel.lxp" />
     <option name="VM_PARAMETERS" value="-ea -XstartOnFirstThread -Djava.awt.headless=true " />
     <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/te-app" />
     <method v="2">
