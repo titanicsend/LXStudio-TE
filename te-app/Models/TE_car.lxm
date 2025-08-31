@@ -1,6 +1,6 @@
 {
   "version": "1.1.1-TE.5.GPU-SNAPSHOT",
-  "timestamp": 1756529556063,
+  "timestamp": 1756530390648,
   "fixtures": [
     {
       "id": 671546,
@@ -21,7 +21,7 @@
         "scale": 1.0,
         "hasCustomPointSize": true,
         "pointSize": 0.1,
-        "selected": true,
+        "selected": false,
         "deactivate": false,
         "enabled": true,
         "brightness": 1.0,
@@ -61,7 +61,7 @@
         "scale": 1.0,
         "hasCustomPointSize": false,
         "pointSize": 5.0,
-        "selected": false,
+        "selected": true,
         "deactivate": false,
         "enabled": true,
         "brightness": 1.0,
