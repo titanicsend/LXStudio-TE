@@ -14,8 +14,11 @@ import heronarts.lx.midi.MidiControlChange;
 import heronarts.lx.midi.MidiNote;
 import heronarts.lx.midi.MidiNoteOn;
 import heronarts.lx.midi.MidiPitchBend;
+import heronarts.lx.midi.surface.LXMidiParameterControl;
 import heronarts.lx.midi.surface.LXMidiSurface;
+import heronarts.lx.parameter.EnumParameter;
 import heronarts.lx.parameter.LXListenableNormalizedParameter;
+import heronarts.lx.parameter.LXParameter;
 import heronarts.lx.utils.ObservableList;
 import java.util.List;
 import titanicsend.app.effectmgr.GlobalEffectManager;
@@ -249,11 +252,24 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   private boolean isBankA = false;
   private boolean isDAW = false;
 
+  public final EnumParameter<LXMidiParameterControl.Mode> faderMode =
+      new EnumParameter<>("Fader Mode", LXMidiParameterControl.Mode.SCALE)
+          .setDescription("Fader behavior when controlling parameters");
+
+  private final LXMidiParameterControl[] faders = new LXMidiParameterControl[NUM_FADERS];
+
   // Constructor
 
   public EffectsMiniLab3(LX lx, LXMidiInput input, LXMidiOutput output) {
     super(lx, input, output);
     this.effectManager = GlobalEffectManager.get();
+
+    for (int i = 0; i < NUM_FADERS; i++) {
+      this.faders[i] = new LXMidiParameterControl();
+    }
+    updateFaderMode();
+
+    addSetting("faderMode", this.faderMode);
   }
 
   // Connection
@@ -296,6 +312,8 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   private void register() {
     this.isRegistered = true;
 
+    registerFaders();
+
     int slotIndex = 0;
     for (Slot<? extends LXDeviceComponent> slot : this.effectManager.slots) {
       setSlot(slotIndex++, slot);
@@ -313,6 +331,8 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
 
   private void unregister() {
     this.isRegistered = false;
+
+    unregisterFaders();
 
     this.effectManager.slots.removeListener(this.slotsListener);
     this.effectManager.triggerSlots.removeListener(this.triggerSlotsListener);
@@ -466,6 +486,37 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     int padIndex = slotToPadIndex(slotIndex);
     if (padIndex >= 0 && padIndex < NUM_PADS) {
       sendPadColor(padIndex);
+    }
+  }
+
+  // Faders
+
+  @Override
+  public void onParameterChanged(LXParameter p) {
+    super.onParameterChanged(p);
+    if (p == this.faderMode) {
+      updateFaderMode();
+    }
+  }
+
+  private void updateFaderMode() {
+    final LXMidiParameterControl.Mode mode = this.faderMode.getEnum();
+    for (LXMidiParameterControl fader : this.faders) {
+      fader.setMode(mode);
+    }
+  }
+
+  private void registerFaders() {
+    // Global Audio gain
+    this.faders[0].setTarget(this.lx.engine.audio.meter.gain);
+
+    // Example: Global Audio Stems gain
+    // this.faders[0].setTarget(AudioStems.get().gain);
+  }
+
+  private void unregisterFaders() {
+    for (LXMidiParameterControl fader : this.faders) {
+      fader.setTarget(null);
     }
   }
 
@@ -686,7 +737,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     // Faders
     for (int i = 0; i < NUM_FADERS; i++) {
       if (number == FADER_CCs[i] || number == ARTURIA_FADER_CCs[i]) {
-        faderReceived(i, value);
+        faderReceived(cc, i, value);
         return;
       }
     }
@@ -714,7 +765,10 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
     parameterSetValue(knob, value);
   }
 
-  private void faderReceived(int fader, int value) {
+  private void faderReceived(MidiControlChange cc, int fader, int value) {
+    this.faders[fader].setValue(cc);
+
+    // Broadcast for FYI but not really needed
     globalParameterSetValue(fader, value);
   }
 
@@ -881,6 +935,7 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   /** Set the value of a global parameter */
   private void globalParameterSetValue(int globalParamIndex, int value) {
     verbose("Global Parameter " + globalParamIndex + ": set to " + value);
+    // Nothing to do here, we already set the value through the LXMidiParameterControl fader
   }
 
   // Virtual Slot <--> Pad Mapping (to use the 4 pads aligned with the rows of knobs)
