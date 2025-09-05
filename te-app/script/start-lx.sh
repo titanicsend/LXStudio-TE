@@ -14,7 +14,7 @@ MODULE_NAME="te-app"
 pushd $APP_MODULE_DIR
 MODULE_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
 
-LXP="${APP_MODULE_DIR}/Projects/BM2024_TE.lxp"
+LXP="${APP_MODULE_DIR}/Projects/BM2024_TE_Misha.lxp"
 JAR_FILE="${APP_MODULE_DIR}/target/${MODULE_NAME}-${MODULE_VERSION}-jar-with-dependencies.jar"
 
 # Burning man: Activate driving safety pattern if FOH is not up
