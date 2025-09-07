@@ -18,6 +18,7 @@ public class OffairDiscreteParameter extends LXVirtualDiscreteParameter<Discrete
 
   public OffairDiscreteParameter(String label, DiscreteParameter parameter) {
     super(label, parameter);
+    this.setIncrementMode(IncrementMode.RELATIVE);
   }
 
   /**
