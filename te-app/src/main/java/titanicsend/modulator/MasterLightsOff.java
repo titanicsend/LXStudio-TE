@@ -23,9 +23,9 @@ import java.time.LocalTime;
  * Detects if the master fader is moved up by something else, in which case it displays a dialog to
  * alert the user to the alarm status.
  */
-@LXModulator.Global("Lights Off Alarm")
+@LXModulator.Global("Master Lights Off")
 @LXCategory("Utility")
-public class LightsOffAlarm extends LXModulator implements UIModulatorControls<LightsOffAlarm> {
+public class MasterLightsOff extends LXModulator implements UIModulatorControls<MasterLightsOff> {
 
   public final CompoundParameter startTime =
       new CompoundParameter("StartTime", 7, 0, 24)
@@ -66,11 +66,11 @@ public class LightsOffAlarm extends LXModulator implements UIModulatorControls<L
 
   private long lastDialogDisplay = 0;
 
-  public LightsOffAlarm() {
-    this("Lights Off Alarm");
+  public MasterLightsOff() {
+    this("Master Lights Off");
   }
 
-  public LightsOffAlarm(String label) {
+  public MasterLightsOff(String label) {
     super(label);
 
     addParameter("startTime", this.startTime);
@@ -181,7 +181,7 @@ public class LightsOffAlarm extends LXModulator implements UIModulatorControls<L
     updateAlarmLevel();
     this.lastParameterValue = getParameterValue();
 
-    LX.log("Lights Off Alarm STARTED at " + LocalTime.now());
+    LX.log("Master Lights Off STARTED at " + LocalTime.now());
     showDialog();
   }
 
@@ -189,7 +189,7 @@ public class LightsOffAlarm extends LXModulator implements UIModulatorControls<L
     this.alarm = false;
     this.alarmLevel = 0;
 
-    LX.log("Lights Off Alarm FINISHED at " + LocalTime.now());
+    LX.log("Master Lights Off FINISHED at " + LocalTime.now());
   }
 
   private void updateAlarmLevel() {
@@ -214,7 +214,7 @@ public class LightsOffAlarm extends LXModulator implements UIModulatorControls<L
         && this.enableDialog.isOn()
         && dialogTimeElapsed()) {
       LX.warning(
-          "User tried to raise the master fader while it was suppressed by Lights Off Alarm");
+          "User tried to raise the master fader while it was suppressed by Master Lights Off");
       showDialog();
     }
     this.lastParameterValue = parameterValue;
@@ -243,7 +243,7 @@ public class LightsOffAlarm extends LXModulator implements UIModulatorControls<L
     this.lastDialogDisplay = System.currentTimeMillis();
     if (this.lx instanceof GLX glx) {
       glx.ui.showContextDialogMessage(
-          "WARNING! LightsOffAlarm is lowering the master fader to zero.");
+          "WARNING! Master Lights Off is lowering the master fader to zero.");
     }
   }
 
@@ -251,21 +251,21 @@ public class LightsOffAlarm extends LXModulator implements UIModulatorControls<L
 
   @Override
   public void buildModulatorControls(
-      LXStudio.UI ui, UIModulator uiModulator, LightsOffAlarm lightsOffAlarm) {
+      LXStudio.UI ui, UIModulator uiModulator, MasterLightsOff modulator) {
     uiModulator.setLayout(UI2dContainer.Layout.VERTICAL, 2);
     uiModulator.addChildren(
-        newRow("Start Time (hour of day)", newDoubleBox(lightsOffAlarm.startTime)),
-        newRow("End Time (hour of day)", newDoubleBox(lightsOffAlarm.endTime)),
-        newRow("Movement Duration (sec)", newDoubleBox(lightsOffAlarm.movementDuration)),
+        newRow("Start Time (hour of day)", newDoubleBox(modulator.startTime)),
+        newRow("End Time (hour of day)", newDoubleBox(modulator.endTime)),
+        newRow("Movement Duration (sec)", newDoubleBox(modulator.movementDuration)),
         newRow(
             "Dialog",
-            newButton(lightsOffAlarm.enableDialog)
+            newButton(modulator.enableDialog)
                 .setActiveLabel("Enabled")
                 .setInactiveLabel("Disabled")),
-        newRow("Dialog Frequency", newDoubleBox(lightsOffAlarm.dialogFrequencySec)),
+        newRow("Dialog Frequency", newDoubleBox(modulator.dialogFrequencySec)),
         newRow(
             "Alarm",
-            new UIIndicator(ui, lightsOffAlarm.alarmIndicator)
+            new UIIndicator(ui, modulator.alarmIndicator)
                 .setClickable(false)
                 .setTriggerable(false)
                 .setY(2)));
