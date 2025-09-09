@@ -1,5 +1,7 @@
 package titanicsend.oscremapper;
 
+import com.google.errorprone.annotations.FormatMethod;
+import com.google.errorprone.annotations.FormatString;
 import heronarts.lx.LX;
 
 /** Logging utility for the OscRemapper plugin */
@@ -20,28 +22,33 @@ public class LOG {
     return loggingEnabled;
   }
 
-  public static void debug(String message, Object... arguments) {
+  @FormatMethod
+  public static void debug(@FormatString String message, Object... arguments) {
     if (loggingEnabled) {
       LX.log(PREFIX + String.format(message, arguments));
     }
   }
 
   /** Log startup/important messages that should always be shown */
-  public static void startup(String message, Object... arguments) {
+  @FormatMethod
+  public static void startup(@FormatString String message, Object... arguments) {
     LX.log(PREFIX + String.format(message, arguments));
   }
 
-  public static void error(String message, Object... arguments) {
+  @FormatMethod
+  public static void error(@FormatString String message, Object... arguments) {
     // Always show errors regardless of logging state
     LX.error(PREFIX + String.format(message, arguments));
   }
 
-  public static void error(Exception e, String message, Object... arguments) {
+  @FormatMethod
+  public static void error(Exception e, @FormatString String message, Object... arguments) {
     // Always show errors regardless of logging state
     LX.error(e, PREFIX + String.format(message, arguments));
   }
 
-  public static void warning(String message, Object... arguments) {
+  @FormatMethod
+  public static void warning(@FormatString String message, Object... arguments) {
     // Always show warnings regardless of logging state
     LX.warning(PREFIX + String.format(message, arguments));
   }
