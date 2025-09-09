@@ -18,7 +18,8 @@ public class AudioStemsPlugin implements LXStudio.Plugin {
 
   @Override
   public void initialize(LX lx) {
-    lx.engine.registerComponent("audioStems", this.audioStems = new AudioStems(lx));
+    this.audioStems = new AudioStems(lx);
+    lx.engine.registerComponent("audioStems", this.audioStems);
 
     // This will get picked up by the package import, no need to directly add.
     // lx.registry.addModulator(AudioStemModulator.class);
