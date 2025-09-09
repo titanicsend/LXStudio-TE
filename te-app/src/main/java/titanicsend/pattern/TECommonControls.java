@@ -341,11 +341,8 @@ public class TECommonControls {
 
     this.pattern.addParam("panic", this.panic);
 
-    String colorPrefix = "";
-    if (missingControls != null && !missingControls.uses_palette) {
-      colorPrefix = "[x] ";
-    }
-    TEColorParameter colorParam = registerColorControl(colorPrefix);
+    this.color = new TEColorParameter(TEGradientSource.get(), "Color").setDescription("TE Color");
+    this.pattern.addParam("te_color", this.color);
 
     // Wrap the Preset parameter to prevent it from being changed while live
     this.presetSelectorOffair = new OffairDiscreteParameter("Preset", pat.presetSelector);
@@ -371,35 +368,25 @@ public class TECommonControls {
   /** Set remote controls in order they will appear on the midi surfaces */
   protected void setRemoteControls() {
     this.pattern.setCustomRemoteControls(
-        new LXListenableNormalizedParameter[] {
-          getControl(TEControlTag.LEVELREACTIVITY).control,
-          getControl(TEControlTag.FREQREACTIVITY).control,
-          this.viewOffair,
-          getControl(TEControlTag.SPEED).control,
-          getControl(TEControlTag.XPOS).control,
-          getControl(TEControlTag.YPOS).control,
-          getControl(TEControlTag.QUANTITY).control,
-          getControl(TEControlTag.SIZE).control,
-          getControl(TEControlTag.ANGLE).control,
-          getControl(TEControlTag.SPIN).control,
-          this.panic,
-          this.presetSelectorOffair,
-          getControl(TEControlTag.WOW1).control,
-          getControl(TEControlTag.WOW2).control,
-          getControl(TEControlTag.WOWTRIGGER).control,
-          this.color.offset,
-          this.pattern.captureDefaults
-          // To be SHIFT, not implemented yet
-        });
-  }
-
-  protected TEColorParameter registerColorControl(String prefix) {
-    color =
-        new TEColorParameter(TEGradientSource.get(), prefix + "Color").setDescription("TE Color");
-    // "addParameter(java.lang.String, heronarts.lx.parameter.LXParameter)' has protected access in
-    // 'heronarts.lx.LXComponent'"
-    this.pattern.addParam("te_color", color);
-    return color;
+        getControl(TEControlTag.LEVELREACTIVITY).control,
+        getControl(TEControlTag.FREQREACTIVITY).control,
+        this.viewOffair,
+        getControl(TEControlTag.SPEED).control,
+        getControl(TEControlTag.XPOS).control,
+        getControl(TEControlTag.YPOS).control,
+        getControl(TEControlTag.QUANTITY).control,
+        getControl(TEControlTag.SIZE).control,
+        getControl(TEControlTag.ANGLE).control,
+        getControl(TEControlTag.SPIN).control,
+        this.panic,
+        this.presetSelectorOffair,
+        getControl(TEControlTag.WOW1).control,
+        getControl(TEControlTag.WOW2).control,
+        getControl(TEControlTag.WOWTRIGGER).control,
+        this.color.offset,
+        this.pattern.captureDefaults
+        // To be SHIFT, not implemented yet
+        );
   }
 
   /**
