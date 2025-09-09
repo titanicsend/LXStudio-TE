@@ -282,49 +282,41 @@ public class TECommonControls {
   }
 
   private static LXListenableNormalizedParameter updateParam(
-      LXListenableNormalizedParameter oldControl,
-      String label,
-      double value,
-      double v0,
-      double v1) {
-    LXListenableNormalizedParameter newControl;
-    if (oldControl instanceof CompoundParameter) {
-      newControl =
-          (CompoundParameter)
-              new CompoundParameter(label, value, v0, v1)
-                  .setNormalizationCurve(((CompoundParameter) oldControl).getNormalizationCurve())
-                  .setExponent(oldControl.getExponent())
-                  .setDescription(oldControl.getDescription())
-                  .setPolarity(oldControl.getPolarity())
-                  .setUnits(oldControl.getUnits());
-    } else if (oldControl instanceof BoundedParameter) {
-      newControl =
-          (BoundedParameter)
-              new BoundedParameter(label, value, v0, v1)
-                  .setNormalizationCurve(((BoundedParameter) oldControl).getNormalizationCurve())
-                  .setExponent(oldControl.getExponent())
-                  .setDescription(oldControl.getDescription())
-                  .setPolarity(oldControl.getPolarity())
-                  .setUnits(oldControl.getUnits());
-    } else if (oldControl instanceof BooleanParameter) {
-      newControl =
-          (BooleanParameter)
-              new BooleanParameter(label)
-                  .setMode(((BooleanParameter) oldControl).getMode())
-                  .setDescription(oldControl.getDescription())
-                  .setUnits(oldControl.getUnits());
-    } else if (oldControl instanceof DiscreteParameter) {
-      newControl =
-          (DiscreteParameter)
-              new DiscreteParameter(label, ((DiscreteParameter) oldControl).getOptions())
-                  .setIncrementMode(((DiscreteParameter) oldControl).getIncrementMode())
-                  .setDescription(oldControl.getDescription())
-                  .setUnits(oldControl.getUnits());
-    } else {
-      TE.error("Unrecognized control type in TE Common Control " + oldControl.getClass().getName());
-      return oldControl;
+      LXListenableNormalizedParameter old, String label, double value, double v0, double v1) {
+    switch (old) {
+      case CompoundParameter compound -> {
+        return new CompoundParameter(label, value, v0, v1)
+            .setNormalizationCurve(compound.getNormalizationCurve())
+            .setExponent(old.getExponent())
+            .setDescription(old.getDescription())
+            .setPolarity(old.getPolarity())
+            .setUnits(old.getUnits());
+      }
+      case BoundedParameter bounded -> {
+        return new BoundedParameter(label, value, v0, v1)
+            .setNormalizationCurve(bounded.getNormalizationCurve())
+            .setExponent(old.getExponent())
+            .setDescription(old.getDescription())
+            .setPolarity(old.getPolarity())
+            .setUnits(old.getUnits());
+      }
+      case BooleanParameter bool -> {
+        return new BooleanParameter(label)
+            .setMode(bool.getMode())
+            .setDescription(old.getDescription())
+            .setUnits(old.getUnits());
+      }
+      case DiscreteParameter discrete -> {
+        return new DiscreteParameter(label, discrete.getOptions())
+            .setIncrementMode(discrete.getIncrementMode())
+            .setDescription(old.getDescription())
+            .setUnits(old.getUnits());
+      }
+      default -> {
+        TE.error("Unrecognized control type in TE Common Control " + old.getClass().getName());
+        return old;
+      }
     }
-    return newControl;
   }
 
   /**
