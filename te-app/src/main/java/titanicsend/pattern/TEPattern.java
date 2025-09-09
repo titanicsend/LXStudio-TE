@@ -254,10 +254,10 @@ public abstract class TEPattern extends DmxPattern {
   /** Set all current parameter values as the defaults for this pattern instance */
   public void captureDefaults() {
     for (LXParameter p : this.getParameters()) {
-      if (p instanceof LXListenableParameter
+      if (p instanceof LXListenableParameter lXListenableParameter
           && !isHiddenControl(p)
           && !p.getPath().equals(KEY_PRESET_SELECTOR)) {
-        captureDefault((LXListenableParameter) p);
+        captureDefault(lXListenableParameter);
       }
     }
   }
@@ -274,7 +274,9 @@ public abstract class TEPattern extends DmxPattern {
     } else {
       // Use base value for modulated parameters
       double value =
-          p instanceof CompoundParameter ? ((CompoundParameter) p).getBaseValue() : p.getValue();
+          p instanceof CompoundParameter compoundParameter
+              ? compoundParameter.getBaseValue()
+              : p.getValue();
       this.defaults.put(p.getPath(), value);
       ((LXListenableParameter) p).reset(value);
     }
