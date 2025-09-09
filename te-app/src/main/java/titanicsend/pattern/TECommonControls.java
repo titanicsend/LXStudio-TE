@@ -42,10 +42,9 @@ public class TECommonControls {
 
   // Panic control courtesy of JKB's Rubix codebase
   public final BooleanParameter panic =
-      (BooleanParameter)
-          new BooleanParameter("PANIC", false)
-              .setDescription("Panic! Moves parameters into a visible range")
-              .setMode(BooleanParameter.Mode.MOMENTARY);
+      new BooleanParameter("PANIC", false)
+          .setDescription("Panic! Moves parameters into a visible range")
+          .setMode(BooleanParameter.Mode.MOMENTARY);
 
   private final LXParameterListener panicListener =
       (p) -> {
@@ -66,99 +65,94 @@ public class TECommonControls {
   }
 
   public void buildDefaultControlList() {
-    LXListenableNormalizedParameter p;
-
-    p =
+    setControl(
+        TEControlTag.LEVELREACTIVITY,
         new CompoundParameter(TEControlTag.LEVELREACTIVITY.getLabel(), 0.1, 0, 1)
-            .setDescription("Level Reactivity");
-    setControl(TEControlTag.LEVELREACTIVITY, p);
+            .setDescription("Level Reactivity"));
 
-    p =
+    setControl(
+        TEControlTag.FREQREACTIVITY,
         new CompoundParameter(TEControlTag.FREQREACTIVITY.getLabel(), 0.1, 0, 1)
-            .setDescription("Frequency Reactivity");
-    setControl(TEControlTag.FREQREACTIVITY, p);
+            .setDescription("Frequency Reactivity"));
 
-    p =
+    setControl(
+        TEControlTag.SPEED,
         new CompoundParameter(TEControlTag.SPEED.getLabel(), 0.5, -4.0, 4.0)
             .setPolarity(LXParameter.Polarity.BIPOLAR)
             .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
             .setExponent(1.75)
-            .setDescription("Speed");
-    setControl(TEControlTag.SPEED, p);
+            .setDescription("Speed"));
 
-    p =
+    setControl(
+        TEControlTag.XPOS,
         new CompoundParameter(TEControlTag.XPOS.getLabel(), 0, -1.0, 1.0)
             .setPolarity(LXParameter.Polarity.BIPOLAR)
             .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
-            .setDescription("X Position");
-    setControl(TEControlTag.XPOS, p);
+            .setDescription("X Position"));
 
-    p =
+    setControl(
+        TEControlTag.YPOS,
         new CompoundParameter(TEControlTag.YPOS.getLabel(), 0, -1.0, 1.0)
             .setPolarity(LXParameter.Polarity.BIPOLAR)
             .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
-            .setDescription("Y Position");
-    setControl(TEControlTag.YPOS, p);
+            .setDescription("Y Position"));
 
-    p = new CompoundParameter(TEControlTag.SIZE.getLabel(), 1, 0.01, 5.0).setDescription("Size");
-    setControl(TEControlTag.SIZE, p);
+    setControl(
+        TEControlTag.SIZE,
+        new CompoundParameter(TEControlTag.SIZE.getLabel(), 1, 0.01, 5.0).setDescription("Size"));
 
-    p =
+    setControl(
+        TEControlTag.QUANTITY,
         new CompoundParameter(TEControlTag.QUANTITY.getLabel(), 0.5, 0, 1.0)
-            .setDescription("Quantity");
-    setControl(TEControlTag.QUANTITY, p);
+            .setDescription("Quantity"));
 
-    p =
-        (CompoundParameter)
-            new CompoundParameter(TEControlTag.SPIN.getLabel(), 0, -1.0, 1.0)
-                .setPolarity(LXParameter.Polarity.BIPOLAR)
-                .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
-                .setExponent(2)
-                .setDescription("Spin");
+    setControl(
+        TEControlTag.SPIN,
+        new CompoundParameter(TEControlTag.SPIN.getLabel(), 0, -1.0, 1.0)
+            .setPolarity(LXParameter.Polarity.BIPOLAR)
+            .setNormalizationCurve(BoundedParameter.NormalizationCurve.BIAS_CENTER)
+            .setExponent(2)
+            .setDescription("Spin"));
 
-    setControl(TEControlTag.SPIN, p);
-
-    p =
+    setControl(
+        TEControlTag.BRIGHTNESS,
         new CompoundParameter(TEControlTag.BRIGHTNESS.getLabel(), 1.0, 0.0, 1.0)
-            .setDescription("Brightness");
-    setControl(TEControlTag.BRIGHTNESS, p);
+            .setDescription("Brightness"));
 
-    p = new CompoundParameter(TEControlTag.WOW1.getLabel(), 0, 0, 1.0).setDescription("Wow 1");
-    setControl(TEControlTag.WOW1, p);
+    setControl(
+        TEControlTag.WOW1,
+        new CompoundParameter(TEControlTag.WOW1.getLabel(), 0, 0, 1.0).setDescription("Wow 1"));
 
-    p = new CompoundParameter(TEControlTag.WOW2.getLabel(), 0, 0, 1.0).setDescription("Wow 2");
-    setControl(TEControlTag.WOW2, p);
+    setControl(
+        TEControlTag.WOW2,
+        new CompoundParameter(TEControlTag.WOW2.getLabel(), 0, 0, 1.0).setDescription("Wow 2"));
 
-    p =
+    setControl(
+        TEControlTag.WOWTRIGGER,
         new BooleanParameter(TEControlTag.WOWTRIGGER.getLabel(), false)
             .setMode(BooleanParameter.Mode.MOMENTARY)
-            .setDescription("Trigger WoW effects");
-    setControl(TEControlTag.WOWTRIGGER, p);
+            .setDescription("Trigger WoW effects"));
 
-    p =
+    setControl(
+        TEControlTag.TWIST,
         new BooleanParameter(TEControlTag.TWIST.getLabel(), false)
             .setMode(BooleanParameter.Mode.TOGGLE)
-            .setDescription("Twist (axis swap)");
-    setControl(TEControlTag.TWIST, p);
+            .setDescription("Twist (axis swap)"));
 
     // in degrees for display 'cause more people think about it that way
-    p =
-        (LXListenableNormalizedParameter)
-            new TECommonAngleParameter(
-                    this.pattern,
-                    this.pattern.spinRotor,
-                    TEControlTag.ANGLE.getLabel(),
-                    0,
-                    -Math.PI,
-                    Math.PI)
-                .setDescription("Static Rotation Angle")
-                .setPolarity(LXParameter.Polarity.BIPOLAR)
-                .setWrappable(true)
-                .setFormatter(
-                    (v) -> {
-                      return Double.toString(Math.toDegrees(v));
-                    });
-    setControl(TEControlTag.ANGLE, p);
+    setControl(
+        TEControlTag.ANGLE,
+        new TECommonAngleParameter(
+                this.pattern,
+                this.pattern.spinRotor,
+                TEControlTag.ANGLE.getLabel(),
+                0,
+                -Math.PI,
+                Math.PI)
+            .setDescription("Static Rotation Angle")
+            .setPolarity(LXParameter.Polarity.BIPOLAR)
+            .setWrappable(true)
+            .setFormatter((v) -> Double.toString(Math.toDegrees(v))));
   }
 
   public TEControl getControl(TEControlTag tag) {
