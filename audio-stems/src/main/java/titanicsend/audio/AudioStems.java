@@ -1,5 +1,7 @@
 package titanicsend.audio;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -16,8 +18,8 @@ import heronarts.lx.parameter.ObjectParameter;
 import heronarts.lx.utils.LXUtils;
 import heronarts.lx.utils.ObservableList;
 import java.io.File;
-import java.io.FileReader;
 import java.io.InputStream;
+import java.io.Reader;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
@@ -123,7 +125,7 @@ public class AudioStems extends LXComponent implements LXOscListener {
 
     // Load from file
     if (file.exists()) {
-      try (FileReader fr = new FileReader(file)) {
+      try (Reader fr = Files.newBufferedReader(file.toPath(), UTF_8)) {
         JsonObject obj = new Gson().fromJson(fr, JsonObject.class);
         if (obj.has(KEY_STEMS)) {
           JsonArray stemsArray = obj.getAsJsonArray(KEY_STEMS);
