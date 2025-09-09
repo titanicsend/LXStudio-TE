@@ -1,48 +1,49 @@
 package titanicsend.oscremapper;
 
+import com.google.errorprone.annotations.FormatMethod;
+import com.google.errorprone.annotations.FormatString;
 import heronarts.lx.LX;
 
 /** Logging utility for the OscRemapper plugin */
 public class LOG {
 
   private static final String PREFIX = "[OscRemapper] ";
-  private static boolean loggingEnabled = false;
+  private static boolean verbose = false;
 
-  /** Set whether logging is enabled */
-  public static void setEnabled(boolean enabled) {
-    loggingEnabled = enabled;
+  public static void setVerbose(boolean enabled) {
+    verbose = enabled;
     // Always log the state change
     LX.log(PREFIX + "Logging " + (enabled ? "ENABLED" : "DISABLED"));
   }
 
-  /** Check if logging is currently enabled */
-  public static boolean isEnabled() {
-    return loggingEnabled;
+  public static boolean isVerbose() {
+    return verbose;
   }
 
-  public static void debug(String message, Object... arguments) {
-    if (loggingEnabled) {
+  @FormatMethod
+  public static void debug(@FormatString String message, Object... arguments) {
+    if (verbose) {
       LX.log(PREFIX + String.format(message, arguments));
     }
   }
 
-  /** Log startup/important messages that should always be shown */
-  public static void startup(String message, Object... arguments) {
+  @FormatMethod
+  public static void startup(@FormatString String message, Object... arguments) {
     LX.log(PREFIX + String.format(message, arguments));
   }
 
-  public static void error(String message, Object... arguments) {
-    // Always show errors regardless of logging state
+  @FormatMethod
+  public static void error(@FormatString String message, Object... arguments) {
     LX.error(PREFIX + String.format(message, arguments));
   }
 
-  public static void error(Exception e, String message, Object... arguments) {
-    // Always show errors regardless of logging state
+  @FormatMethod
+  public static void error(Exception e, @FormatString String message, Object... arguments) {
     LX.error(e, PREFIX + String.format(message, arguments));
   }
 
-  public static void warning(String message, Object... arguments) {
-    // Always show warnings regardless of logging state
+  @FormatMethod
+  public static void warning(@FormatString String message, Object... arguments) {
     LX.warning(PREFIX + String.format(message, arguments));
   }
 }
