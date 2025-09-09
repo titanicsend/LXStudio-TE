@@ -169,6 +169,6 @@ public class BeaconEverythingPattern extends BeaconPattern
 
   @Override
   public void buildDeviceControls(UI ui, UIDevice uiDevice, BeaconEverythingPattern device) {
-    UIUtils.buildMftStyleDeviceControls(ui, uiDevice, device);
+    UIUtils.buildTEDeviceControls(ui, uiDevice, device);
   }
 }

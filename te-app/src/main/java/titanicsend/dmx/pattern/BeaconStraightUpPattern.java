@@ -66,6 +66,6 @@ public class BeaconStraightUpPattern extends BeaconPattern
 
   @Override
   public void buildDeviceControls(UI ui, UIDevice uiDevice, BeaconStraightUpPattern device) {
-    UIUtils.buildMftStyleDeviceControls(ui, uiDevice, device);
+    UIUtils.buildTEDeviceControls(ui, uiDevice, device);
   }
 }
