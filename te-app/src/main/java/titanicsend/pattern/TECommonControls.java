@@ -192,11 +192,10 @@ public class TECommonControls {
   }
 
   /**
-   * Sets a new getter function (an object implementing the _CommonControlGetter interface) for
-   * specified tag's control.
+   * Sets a new getter function for specified tag's control.
    *
-   * @param tag
-   * @param getFn
+   * @param tag - tag for control to set
+   * @param getFn - an object implementing the `_CommonControlGetter` interface
    */
   public TECommonControls setGetterFunction(TEControlTag tag, _CommonControlGetter getFn) {
     controlList.get(tag).getFn = getFn;
@@ -207,7 +206,7 @@ public class TECommonControls {
    * Get current value of control specified by tag by calling the tag's configured getter function
    * (and NOT by directly calling the control's getValue() function)
    *
-   * @param tag
+   * @param tag - tag for control to set
    */
   protected double getValue(TEControlTag tag) {
     TEControl ctl = controlList.get(tag);
