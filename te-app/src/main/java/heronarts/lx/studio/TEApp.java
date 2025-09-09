@@ -93,7 +93,7 @@ import titanicsend.lx.DirectorAPCminiMk2;
 import titanicsend.lx.EffectsMiniLab3;
 import titanicsend.model.TEWholeModel;
 import titanicsend.model.TEWholeModelDynamic;
-import titanicsend.modulator.LightsOffAlarm;
+import titanicsend.modulator.MasterLightsOff;
 import titanicsend.modulator.dmx.Dmx16bitModulator;
 import titanicsend.modulator.dmx.DmxDirectorColorModulator;
 import titanicsend.modulator.dmx.DmxDualRangeModulator;
@@ -533,7 +533,7 @@ public class TEApp extends LXStudio {
       lx.registry.addModulator(DmxDirectorColorModulator.class);
       lx.registry.addModulator(DmxDualRangeModulator.class);
       lx.registry.addModulator(DmxRangeModulator.class);
-      lx.registry.addModulator(LightsOffAlarm.class);
+      lx.registry.addModulator(MasterLightsOff.class);
       lx.registry.addModulator(MultiplierModulator.class);
 
       // Output modulators
