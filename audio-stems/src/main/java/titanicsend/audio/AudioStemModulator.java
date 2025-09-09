@@ -147,8 +147,9 @@ public class AudioStemModulator extends LXModulator
   }
 
   /*
-   * UIModulatorControls<>
+   * UIModulatorControls
    */
+  @Override
   public void buildModulatorControls(
       LXStudio.UI ui, UIModulator uiModulator, AudioStemModulator modulator) {
 
