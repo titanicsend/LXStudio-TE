@@ -165,7 +165,7 @@ public class TECommonControls {
     return controlList.get(tag);
   }
 
-  public OffairDiscreteParameter<UserPresetCollection.Selector> getPresetSelectorOffair() {
+  public OffairDiscreteParameter getPresetSelectorOffair() {
     return this.presetSelectorOffair;
   }
 
