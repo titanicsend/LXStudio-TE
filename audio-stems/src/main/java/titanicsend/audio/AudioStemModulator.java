@@ -1,6 +1,5 @@
 package titanicsend.audio;
 
-import heronarts.glx.ui.UI2dComponent;
 import heronarts.glx.ui.UI2dContainer;
 import heronarts.glx.ui.UI2dContainer.Position;
 import heronarts.glx.ui.component.UIKnob;
@@ -163,23 +162,15 @@ public class AudioStemModulator extends LXModulator
     this.addColumn(
         controls,
         50.0f,
-        new UI2dComponent[] {
-          this.newDropMenu(this.stem), this.newKnob(this.outputMode).setPosition(0, 6)
-        });
-
+        this.newDropMenu(this.stem),
+        this.newKnob(this.outputMode).setPosition(0, 6));
+    this.addColumn(controls, UIKnob.WIDTH, this.newKnob(this.emaMs), this.newKnob(this.waveshape));
     this.addColumn(
-        controls,
-        UIKnob.WIDTH,
-        new UI2dComponent[] {this.newKnob(this.emaMs), this.newKnob(this.waveshape)});
-
-    this.addColumn(
-        controls,
-        UIKnob.WIDTH + 18,
-        new UI2dComponent[] {this.newKnob(this.slope), this.newKnob(this.accRate)});
+        controls, UIKnob.WIDTH + 18, this.newKnob(this.slope), this.newKnob(this.accRate));
 
     UIMeter meter = UIMeter.newVerticalMeter(ui, this, 12, 2 * UIKnob.HEIGHT);
 
-    this.addColumn(controls, UIKnob.WIDTH, new UI2dComponent[] {meter});
+    this.addColumn(controls, UIKnob.WIDTH, meter);
 
     controls.addToContainer(uiModulator, Position.LEFT);
   }
