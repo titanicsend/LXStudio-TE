@@ -17,35 +17,35 @@
 destinations:
   # filter paths defined in CrutchOSC:
   # https://github.com/titanicsend/LXStudio-TE/blob/ce0b925f178d442faaf6d31e5409186f65161f25/te-app/src/main/java/titanicsend/osc/CrutchOSC.java#L45
-  - name: "iPad - Cue"
-    ip: "10.100.0.201"
-    port: 7890
-    filter: "/lx/focus"
-
-  - name: "iPad - Aux"
-    ip: "10.100.0.202"
-    port: 7890
-    filter: "/lx/focus"
+#  - name: "iPad - Cue"
+#    ip: "10.100.0.201"
+#    port: 7890
+#    filter: "/lx/focus"
+#
+#  - name: "iPad - Aux"
+#    ip: "10.100.0.202"
+#    port: 7890
+#    filter: "/lx/focus"
 
   - name: "Resolume Mapped"
     ip: "127.0.0.1"
     port: 7000
     filter: "/composition"
 
-  - name: "TouchDesigner Raw LX"
+  - name: "TD-MagicLaser"
     ip: "127.0.0.1"
     port: 7891
-    filter: "/lx"
+    filter: "/lx/mixer/channel/8/fader"
 
-  - name: "MSHIP"
-    ip: "10.128.1.1"
-    port: 7002
-    filter: "/mship"
-
-  - name: "MSHIP-Identity"
-    ip: "127.0.0.1"
-    port: 7003
-    filter: "/lx"
+#  - name: "MSHIP"
+#    ip: "10.128.1.1"
+#    port: 7002
+#    filter: "/mship"
+#
+#  - name: "MSHIP-Identity"
+#    ip: "127.0.0.1"
+#    port: 7003
+#    filter: "/lx"
 
   - name: "lasers"
     ip: "10.4.0.1"
