@@ -9,7 +9,7 @@ import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.glengine.GLShaderEffect;
 
 @LXCategory("Titanics End")
-public class ShaderEdgeGlow extends GLShaderEffect {
+public class EdgeGlowShaderEffect extends GLShaderEffect {
 
   // Edge detect controls
   public final BoundedParameter edgeThreshold =
@@ -42,7 +42,7 @@ public class ShaderEdgeGlow extends GLShaderEffect {
       new CompoundParameter("Mix", 1.0, 0.0, 1.0)
           .setDescription("Blend of the effect over source");
 
-  public ShaderEdgeGlow(LX lx) {
+  public EdgeGlowShaderEffect(LX lx) {
     super(lx);
 
     addParameter("threshold", this.edgeThreshold);

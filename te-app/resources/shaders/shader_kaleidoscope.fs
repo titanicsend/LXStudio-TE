@@ -1,11 +1,12 @@
 // Kaleidoscope post-effect shader (TE)
 // Reads from iDst and remaps UV into mirrored angular wedges.
 #define TE_EFFECTSHADER
-// NOTE: do NOT define TE_NOPOSTPROCESSING here (post chain must exist)
+#define TE_NOPOSTPROCESSING
 
 uniform sampler2D iDst;
 
 // Controls
+uniform float mixAmt;     // 0.0 = original image, 1.0 = full kaleidoscope
 uniform int   segments;   // >= 1
 uniform float angle;      // global wedge rotation (radians)
 uniform float rotate;     // texture rotation inside wedges (radians)
@@ -28,6 +29,10 @@ vec2 rot(vec2 p, float a) {
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     vec2 res = texSize();
     vec2 uv  = fragCoord / res;
+
+    // Sample original pixel
+    ivec2 origCoord = ivec2(clamp(fragCoord, vec2(0.0), res - 1.0));
+    vec4 original = texelFetch(iDst, origCoord, 0);
 
     // Shift to center in normalized space
     vec2 cuv = uv - center;
@@ -62,15 +67,17 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     // Sample with clamping
     vec2 texel = sampleUV * res;
     ivec2 ip = ivec2(clamp(texel, vec2(0.0), res - 1.0));
-    vec4 src = texelFetch(iDst, ip, 0);
+    vec4 kaleidoscope = texelFetch(iDst, ip, 0);
 
     // Optional edge feather near image bounds (fade to black)
     if (featherPx > 0.0) {
         float fx = min(fragCoord.x, res.x - fragCoord.x);
         float fy = min(fragCoord.y, res.y - fragCoord.y);
         float f  = clamp(min(fx, fy) / featherPx, 0.0, 1.0);
-        src.rgb *= f;
+        kaleidoscope.rgb *= f;
     }
 
-    fragColor = src;
+    // Mix between original and kaleidoscope effect
+    // mixAmt = 0.0: show original, mixAmt = 1.0: show kaleidoscope
+    fragColor = mix(original, kaleidoscope, mixAmt);
 }

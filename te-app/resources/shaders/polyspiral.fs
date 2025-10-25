@@ -1,3 +1,4 @@
+#define TE_NOPOSTPROCESSING
 
 #ifdef SHADER_TOY
 #iUniform color3 iColorRGB=vec3(.964,.144,.519)

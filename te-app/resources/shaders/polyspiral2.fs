@@ -1,3 +1,5 @@
+#define TE_NOPOSTPROCESSING
+
 #pragma name "PolySpiral2"
 #iUniform color3 iColorRGB=vec3(.964,.144,.519)
 #iUniform color3 iColor2RGB=vec3(.226,.046,.636)

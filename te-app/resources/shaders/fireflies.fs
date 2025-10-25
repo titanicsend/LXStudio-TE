@@ -1,3 +1,5 @@
+#define TE_NOPOSTPROCESSING
+
 // generate 2D rotation matrix
 mat2 r2d(float a) {
     float c=cos(a),s=sin(a);

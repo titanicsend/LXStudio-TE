@@ -1,6 +1,7 @@
 // Hue Orbit post-effect (TE)
 // Rotate hue in HSL; optional lightness preservation and saturation gain.
 #define TE_EFFECTSHADER
+#define TE_NOPOSTPROCESSING
 
 uniform sampler2D iDst;
 

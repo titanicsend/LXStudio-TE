@@ -10,7 +10,7 @@ import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.glengine.GLShaderEffect;
 
 @LXCategory("Titanics End")
-public class ShaderHueOrbit extends GLShaderEffect {
+public class HueOrbitShaderEffect extends GLShaderEffect {
 
   public final CompoundParameter angle =
       new CompoundParameter("Angle", 0.0)
@@ -29,7 +29,7 @@ public class ShaderHueOrbit extends GLShaderEffect {
       new BoundedParameter("Sat Gain", 1.0, 0.0, 2.0)
           .setDescription("Scale saturation after rotation");
 
-  public ShaderHueOrbit(LX lx) {
+  public HueOrbitShaderEffect(LX lx) {
     super(lx);
 
     addParameter("angle", this.angle);

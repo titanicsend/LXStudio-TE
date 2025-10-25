@@ -1,6 +1,7 @@
 // Edge Glow / Outline post-effect (TE)
 // Detect edges (Sobel on luma), blur the edge mask, add glow, and mix over source.
 #define TE_EFFECTSHADER
+#define TE_NOPOSTPROCESSING
 
 uniform sampler2D iDst;
 

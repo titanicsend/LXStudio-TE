@@ -9,7 +9,7 @@ import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.glengine.GLShaderEffect;
 
 @LXCategory("Titanics End")
-public class ShaderPosterizeSolarize extends GLShaderEffect {
+public class PosterizeSolarizeShaderEffect extends GLShaderEffect {
 
   public final BoundedParameter levels =
       new BoundedParameter("Levels", 6, 2, 32)
@@ -31,7 +31,7 @@ public class ShaderPosterizeSolarize extends GLShaderEffect {
       new BooleanParameter("Preserve Luma", true)
           .setDescription("Quantize in luma space to reduce banding artifacts");
 
-  public ShaderPosterizeSolarize(LX lx) {
+  public PosterizeSolarizeShaderEffect(LX lx) {
     super(lx);
 
     addParameter("levels", this.levels);

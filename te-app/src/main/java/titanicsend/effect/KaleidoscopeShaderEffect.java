@@ -10,7 +10,7 @@ import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.glengine.GLShaderEffect;
 
 @LXCategory("Titanics End")
-public class ShaderKaleidoscope extends GLShaderEffect {
+public class KaleidoscopeShaderEffect extends GLShaderEffect {
 
   // Number of mirrored wedges (>= 1)
   public final BoundedParameter segments =
@@ -53,7 +53,12 @@ public class ShaderKaleidoscope extends GLShaderEffect {
       new BoundedParameter("Feather", 0.0, 0.0, 20.0)
           .setDescription("Feather edges to black near frame bounds (pixels)");
 
-  public ShaderKaleidoscope(LX lx) {
+  // Effect blend amount (0 = original, 1 = full kaleidoscope)
+  public final CompoundParameter mix =
+      new CompoundParameter("Mix", 1.0, 0.0, 1.0)
+          .setDescription("Mix: 0 = original image, 1 = full kaleidoscope");
+
+    public KaleidoscopeShaderEffect(LX lx) {
     super(lx);
 
     addParameter("segments", this.segments);
@@ -64,6 +69,7 @@ public class ShaderKaleidoscope extends GLShaderEffect {
     addParameter("y", this.y);
     addParameter("mirror", this.mirror);
     addParameter("feather", this.edgeFeather);
+    addParameter("mix", this.mix);
 
     this.segments.setValue(6);
     this.angle.setValue(0.0);
@@ -73,6 +79,7 @@ public class ShaderKaleidoscope extends GLShaderEffect {
     this.y.setValue(0.5);
     this.mirror.setValue(true);
     this.edgeFeather.setValue(0.0);
+    this.mix.setValue(1.0);
 
     addShader(
         GLShader.config(lx)
@@ -88,6 +95,7 @@ public class ShaderKaleidoscope extends GLShaderEffect {
     shader.setUniform("center", this.x.getValuef(), this.y.getValuef());
     shader.setUniform("mirror", this.mirror.isOn() ? 1 : 0);
     shader.setUniform("featherPx", this.edgeFeather.getValuef());
+    shader.setUniform("mixAmt", this.mix.getValuef());
   }
 
   @Override

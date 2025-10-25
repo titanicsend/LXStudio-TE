@@ -1,6 +1,7 @@
 // Posterize / Solarize post-effect (TE)
 // Quantizes tones; optional solarization by inverting above a luma threshold.
 #define TE_EFFECTSHADER
+#define TE_NOPOSTPROCESSING
 
 uniform sampler2D iDst;
 

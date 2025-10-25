@@ -1,6 +1,15 @@
 # Project Launch and Debug
 This document provides specifications for launching and debugging the LXStudio-TE project. It outlines the necessary steps, tools, and procedures to ensure successful project initialization and troubleshooting.
 
+
+## Quick Start
+```powershell
+cd te-app
+mvn compile
+mvn package -DskipTests
+java -ea -Dgpu -cp target\te-app-0.3.0-SNAPSHOT-jar-with-dependencies.jar heronarts.lx.studio.TEApp --resolution 780x1080
+```
+
 ## Prerequisites
 
 Before launching the TE application, ensure you have:
@@ -37,6 +46,8 @@ mvn package -DskipTests
 ```
 
 This creates: `target/te-app-0.3.0-SNAPSHOT-jar-with-dependencies.jar`
+
+> **Note:** Any time you modify Java source files you must rerun `mvn package -DskipTests` so the runnable JAR reflects your changes before launching the app.
 
 **Note:** The build takes approximately 1-2 minutes and may show warnings (these are non-critical).
 

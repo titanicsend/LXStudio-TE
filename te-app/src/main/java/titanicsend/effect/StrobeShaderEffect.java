@@ -24,7 +24,7 @@ import titanicsend.pattern.glengine.GLShader;
 import titanicsend.pattern.glengine.GLShaderEffect;
 
 @LXCategory("Titanics End")
-public class ShaderStrobe extends GLShaderEffect {
+public class StrobeShaderEffect extends GLShaderEffect {
 
     // Parameters (mirroring original StrobeEffect)
     public final ObjectParameter<LXWaveshape> waveshape =
@@ -90,7 +90,7 @@ public class ShaderStrobe extends GLShaderEffect {
                                 }
                             }));
 
-    public ShaderStrobe(LX lx) {
+        public StrobeShaderEffect(LX lx) {
         super(lx);
 
         addParameter("waveshape", this.waveshape);
