@@ -4,9 +4,8 @@ This document provides specifications for launching and debugging the LXStudio-T
 
 ## Quick Start
 ```powershell
-cd te-app
-mvn compile
-mvn package -DskipTests
+# cd te-app
+mvn compile package -DskipTests
 java -ea -Dgpu -cp target\te-app-0.3.0-SNAPSHOT-jar-with-dependencies.jar heronarts.lx.studio.TEApp --resolution 780x1080
 ```
 

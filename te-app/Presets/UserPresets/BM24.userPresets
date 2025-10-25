@@ -15996,25 +15996,6 @@
               }
             },
             "deviceVersion": -1,
-            "remoteControls": [
-              "/te_level",
-              "/te_freq",
-              "/viewOffair",
-              "/te_speed",
-              "/te_xpos",
-              "/te_ypos",
-              "/te_quantity",
-              "/te_size",
-              "/te_angle",
-              "/te_spin",
-              "/panic",
-              "/presetOffair",
-              "/te_wow1",
-              "/te_wow2",
-              "/te_wowtrigger",
-              "/te_color/offset",
-              "/setDefaults"
-            ],
             "effects": [],
             "defaults": {
               "midiFilter/enabled": 1.0,
@@ -29647,7 +29628,143 @@
     },
     {
       "clazz": "titanicsend.pattern.glengine.StarField2",
-      "presets": []
+      "presets": [
+        {
+          "label": "sina 10-25-25 10:50",
+          "presetObj": {
+            "id": 285312,
+            "class": "titanicsend.pattern.glengine.StarField2",
+            "internal": {
+              "modulationColor": 0,
+              "modulationControlsExpanded": true,
+              "modulationsExpanded": true,
+              "expanded": true,
+              "expandedCue": true,
+              "expandedAux": true,
+              "modulationExpanded": false
+            },
+            "parameters": {
+              "label": "StarField2",
+              "midiFilter/enabled": true,
+              "midiFilter/channel": 16,
+              "midiFilter/channel/name": "OMNI",
+              "midiFilter/minNote": 0,
+              "midiFilter/noteRange": 128,
+              "midiFilter/minVelocity": 1,
+              "midiFilter/velocityRange": 127,
+              "view": 0,
+              "viewPriority": 0,
+              "enabled": true,
+              "recall": false,
+              "launch": false,
+              "compositeBlend": 0,
+              "compositeLevel": 1.0,
+              "hasCustomCycleTime": false,
+              "customCycleTimeSecs": 60.0,
+              "autoMute": true,
+              "cueActive": false,
+              "auxActive": false,
+              "setDefaults": false,
+              "te_speed": 0.13588152584316937,
+              "te_xpos": 0.0,
+              "te_ypos": 0.0,
+              "te_size": 0.006299999793991447,
+              "te_quantity": 0.8733333332464099,
+              "te_spin": 0.0,
+              "te_brightness": 1.0,
+              "te_wow1": 0.0,
+              "te_wow2": 0.1,
+              "te_wowtrigger": false,
+              "te_angle": 0.0,
+              "te_level": 0.1,
+              "te_freq": 0.1,
+              "te_twist": false,
+              "panic": false,
+              "te_color/brightness": 0.0,
+              "te_color/saturation": 100.0,
+              "te_color/hue": 0.0,
+              "te_color/solidSource": 1,
+              "te_color/solidSource/name": "NORMAL",
+              "te_color/blendMode": 0,
+              "te_color/blendMode/name": "OKLAB",
+              "te_color/offset": 0.0,
+              "compositeMode": 0
+            },
+            "children": {
+              "modulation": {
+                "id": 285313,
+                "class": "heronarts.lx.modulation.LXModulationEngine",
+                "internal": {
+                  "modulationColor": 0,
+                  "modulationControlsExpanded": true,
+                  "modulationsExpanded": true
+                },
+                "parameters": {
+                  "label": "Modulation"
+                },
+                "children": {},
+                "modulators": [],
+                "modulations": [],
+                "triggers": []
+              }
+            },
+            "deviceVersion": -1,
+            "remoteControls": [
+              "/te_level",
+              "/te_freq",
+              "/viewOffair",
+              "/te_speed",
+              "/te_xpos",
+              "/te_ypos",
+              "/te_quantity",
+              "/te_size",
+              "/te_angle",
+              "/te_spin",
+              "/panic",
+              "/presetOffair",
+              "/te_wow1",
+              "/te_wow2",
+              "/te_wowtrigger",
+              "/te_color/offset",
+              "/setDefaults"
+            ],
+            "effects": [],
+            "defaults": {
+              "midiFilter/enabled": 1.0,
+              "midiFilter/channel": 16.0,
+              "midiFilter/minNote": 0.0,
+              "midiFilter/noteRange": 128.0,
+              "midiFilter/minVelocity": 1.0,
+              "midiFilter/velocityRange": 127.0,
+              "setDefaults": 0.0,
+              "te_speed": 0.13588152584316937,
+              "te_xpos": 0.0,
+              "te_ypos": 0.0,
+              "te_size": 0.006299999793991447,
+              "te_quantity": 0.8733333332464099,
+              "te_spin": 0.0,
+              "te_brightness": 1.0,
+              "te_wow1": 0.0,
+              "te_wow2": 0.1,
+              "te_wowtrigger": 0.0,
+              "te_angle": 0.0,
+              "te_level": 0.1,
+              "te_freq": 0.1,
+              "te_twist": 0.0,
+              "panic": 0.0,
+              "te_color": NaN,
+              "te_color/brightness": 0.0,
+              "te_color/saturation": 100.0,
+              "te_color/hue": 0.0,
+              "te_color/solidSource": 1.0,
+              "te_color/blendMode": 0.0,
+              "te_color/offset": 0.0,
+              "presetOffair": 0.0,
+              "viewOffair": 0.0
+            }
+          }
+        }
+      ]
     },
     {
       "clazz": "titanicsend.pattern.glengine.StemTriangleInfinity",
@@ -34997,7 +35114,7 @@
           }
         },
         {
-          "label": "sina 10-22-25 11:15",
+          "label": "sina 10-25-25 10:21",
           "presetObj": {
             "id": 638035,
             "class": "titanicsend.pattern.glengine.DatsaMoire",
@@ -35076,25 +35193,6 @@
               }
             },
             "deviceVersion": -1,
-            "remoteControls": [
-              "/te_level",
-              "/te_freq",
-              "/viewOffair",
-              "/te_speed",
-              "/te_xpos",
-              "/te_ypos",
-              "/te_quantity",
-              "/te_size",
-              "/te_angle",
-              "/te_spin",
-              "/panic",
-              "/presetOffair",
-              "/te_wow1",
-              "/te_wow2",
-              "/te_wowtrigger",
-              "/te_color/offset",
-              "/setDefaults"
-            ],
             "effects": [],
             "defaults": {
               "midiFilter/enabled": 1.0,
@@ -40370,25 +40468,6 @@
               }
             },
             "deviceVersion": -1,
-            "remoteControls": [
-              "/te_level",
-              "/te_freq",
-              "/viewOffair",
-              "/te_speed",
-              "/te_xpos",
-              "/te_ypos",
-              "/te_quantity",
-              "/te_size",
-              "/te_angle",
-              "/te_spin",
-              "/panic",
-              "/presetOffair",
-              "/te_wow1",
-              "/te_wow2",
-              "/te_wowtrigger",
-              "/te_color/offset",
-              "/setDefaults"
-            ],
             "effects": [],
             "defaults": {
               "midiFilter/enabled": 1.0,
@@ -40647,25 +40726,6 @@
               }
             },
             "deviceVersion": -1,
-            "remoteControls": [
-              "/te_level",
-              "/te_freq",
-              "/viewOffair",
-              "/te_speed",
-              "/te_xpos",
-              "/te_ypos",
-              "/te_quantity",
-              "/te_size",
-              "/te_angle",
-              "/te_spin",
-              "/panic",
-              "/presetOffair",
-              "/te_wow1",
-              "/te_wow2",
-              "/te_wowtrigger",
-              "/te_color/offset",
-              "/setDefaults"
-            ],
             "effects": [],
             "defaults": {
               "midiFilter/enabled": 1.0,
@@ -44087,7 +44147,256 @@
     },
     {
       "clazz": "titanicsend.pattern.glengine.Icemelt",
-      "presets": []
+      "presets": [
+        {
+          "label": "sina 10-25-25 10:58",
+          "presetObj": {
+            "id": 877609,
+            "class": "titanicsend.pattern.glengine.Icemelt",
+            "internal": {
+              "modulationColor": 0,
+              "modulationControlsExpanded": true,
+              "modulationsExpanded": true,
+              "expanded": true,
+              "expandedCue": true,
+              "expandedAux": true,
+              "modulationExpanded": true
+            },
+            "parameters": {
+              "label": "Icemelt",
+              "midiFilter/enabled": true,
+              "midiFilter/channel": 16,
+              "midiFilter/channel/name": "OMNI",
+              "midiFilter/minNote": 0,
+              "midiFilter/noteRange": 128,
+              "midiFilter/minVelocity": 1,
+              "midiFilter/velocityRange": 127,
+              "view": 0,
+              "viewPriority": 0,
+              "enabled": true,
+              "recall": false,
+              "launch": false,
+              "compositeBlend": 0,
+              "compositeLevel": 1.0,
+              "hasCustomCycleTime": false,
+              "customCycleTimeSecs": 60.0,
+              "autoMute": false,
+              "cueActive": false,
+              "auxActive": false,
+              "setDefaults": false,
+              "te_speed": 0.15853570475200307,
+              "te_xpos": 0.0,
+              "te_ypos": 0.0,
+              "te_size": 1.0,
+              "te_quantity": 0.6,
+              "te_spin": 0.0,
+              "te_brightness": 1.0,
+              "te_wow1": 0.0,
+              "te_wow2": 0.0,
+              "te_wowtrigger": false,
+              "te_angle": 0.0,
+              "te_level": 0.1,
+              "te_freq": 0.1,
+              "te_twist": false,
+              "panic": false,
+              "te_color/brightness": 97.64706420898438,
+              "te_color/saturation": 84.73895263671875,
+              "te_color/hue": 60.853084564208984,
+              "te_color/solidSource": 1,
+              "te_color/solidSource/name": "NORMAL",
+              "te_color/blendMode": 0,
+              "te_color/blendMode/name": "OKLAB",
+              "te_color/offset": 0.0,
+              "compositeMode": 0
+            },
+            "children": {
+              "modulation": {
+                "id": 877610,
+                "class": "heronarts.lx.modulation.LXModulationEngine",
+                "internal": {
+                  "modulationColor": 0,
+                  "modulationControlsExpanded": true,
+                  "modulationsExpanded": true
+                },
+                "parameters": {
+                  "label": "Modulation"
+                },
+                "children": {},
+                "modulators": [
+                  {
+                    "id": 877625,
+                    "class": "titanicsend.audio.AudioStemModulator",
+                    "internal": {
+                      "modulationColor": 0,
+                      "modulationControlsExpanded": true,
+                      "modulationsExpanded": true
+                    },
+                    "parameters": {
+                      "label": "Audio Stem",
+                      "running": true,
+                      "trigger": false,
+                      "reset": false,
+                      "midiSource/index": 0,
+                      "midiFilter/enabled": true,
+                      "midiFilter/channel": 16,
+                      "midiFilter/channel/name": "OMNI",
+                      "midiFilter/minNote": 0,
+                      "midiFilter/noteRange": 128,
+                      "midiFilter/minVelocity": 1,
+                      "midiFilter/velocityRange": 127,
+                      "stem": 1,
+                      "emaMs": 0.0,
+                      "outputMode": 0,
+                      "outputMode/name": "ENERGY",
+                      "accRate": 0.2,
+                      "shape": 0,
+                      "slope": 1.0
+                    },
+                    "children": {}
+                  }
+                ],
+                "modulations": [
+                  {
+                    "source": {
+                      "id": 877625,
+                      "path": "/modulation/modulator/1"
+                    },
+                    "target": {
+                      "componentId": 877609,
+                      "parameterPath": "te_speed",
+                      "path": "/te_speed"
+                    },
+                    "id": 877626,
+                    "class": "heronarts.lx.modulation.LXCompoundModulation",
+                    "internal": {
+                      "modulationColor": 0,
+                      "modulationControlsExpanded": true,
+                      "modulationsExpanded": true
+                    },
+                    "parameters": {
+                      "label": "LX",
+                      "enabled": true,
+                      "polarity": 0,
+                      "polarity/name": "UNIPOLAR",
+                      "range": 0.09333333373069763
+                    },
+                    "children": {}
+                  }
+                ],
+                "triggers": []
+              }
+            },
+            "deviceVersion": -1,
+            "remoteControls": [
+              "/te_level",
+              "/te_freq",
+              "/viewOffair",
+              "/te_speed",
+              "/te_xpos",
+              "/te_ypos",
+              "/te_quantity",
+              "/te_size",
+              "/te_angle",
+              "/te_spin",
+              "/panic",
+              "/presetOffair",
+              "/te_wow1",
+              "/te_wow2",
+              "/te_wowtrigger",
+              "/te_color/offset",
+              "/setDefaults"
+            ],
+            "effects": [
+              {
+                "id": 877622,
+                "class": "titanicsend.effect.EdgeGlowShaderEffect",
+                "internal": {
+                  "modulationColor": 0,
+                  "modulationControlsExpanded": true,
+                  "modulationsExpanded": true,
+                  "expanded": true,
+                  "expandedCue": true,
+                  "expandedAux": true,
+                  "modulationExpanded": false
+                },
+                "parameters": {
+                  "label": "EdgeGlowShader",
+                  "midiFilter/enabled": true,
+                  "midiFilter/channel": 16,
+                  "midiFilter/channel/name": "OMNI",
+                  "midiFilter/minNote": 0,
+                  "midiFilter/noteRange": 128,
+                  "midiFilter/minVelocity": 1,
+                  "midiFilter/velocityRange": 127,
+                  "view": 0,
+                  "viewPriority": 0,
+                  "enabled": true,
+                  "locked": false,
+                  "threshold": 0.0499999985098839,
+                  "edgeGain": 3.126666678581386,
+                  "radius": 12.906666815280914,
+                  "blur": 0.75999999884516,
+                  "strength": 1.6133333437144757,
+                  "edgeOnly": true,
+                  "mix": 0.9466666681692004
+                },
+                "children": {
+                  "modulation": {
+                    "id": 877623,
+                    "class": "heronarts.lx.modulation.LXModulationEngine",
+                    "internal": {
+                      "modulationColor": 0,
+                      "modulationControlsExpanded": true,
+                      "modulationsExpanded": true
+                    },
+                    "parameters": {
+                      "label": "Modulation"
+                    },
+                    "children": {},
+                    "modulators": [],
+                    "modulations": [],
+                    "triggers": []
+                  }
+                },
+                "deviceVersion": -1
+              }
+            ],
+            "defaults": {
+              "midiFilter/enabled": 1.0,
+              "midiFilter/channel": 16.0,
+              "midiFilter/minNote": 0.0,
+              "midiFilter/noteRange": 128.0,
+              "midiFilter/minVelocity": 1.0,
+              "midiFilter/velocityRange": 127.0,
+              "setDefaults": 0.0,
+              "te_speed": 0.15853570475200307,
+              "te_xpos": 0.0,
+              "te_ypos": 0.0,
+              "te_size": 1.0,
+              "te_quantity": 0.6,
+              "te_spin": 0.0,
+              "te_brightness": 1.0,
+              "te_wow1": 0.0,
+              "te_wow2": 0.0,
+              "te_wowtrigger": 0.0,
+              "te_angle": 0.0,
+              "te_level": 0.1,
+              "te_freq": 0.1,
+              "te_twist": 0.0,
+              "panic": 0.0,
+              "te_color": NaN,
+              "te_color/brightness": 97.64706420898438,
+              "te_color/saturation": 84.73895263671875,
+              "te_color/hue": 60.853084564208984,
+              "te_color/solidSource": 1.0,
+              "te_color/blendMode": 0.0,
+              "te_color/offset": 0.0,
+              "presetOffair": 0.0,
+              "viewOffair": 0.0
+            }
+          }
+        }
+      ]
     },
     {
       "clazz": "titanicsend.ndi.NDIReceiverPattern",
@@ -44343,7 +44652,7 @@
               "te_freq": 0.1,
               "te_twist": 0.0,
               "panic": 0.0,
-              "te_color": NaN,
+              "te_color": "NaN",
               "te_color/brightness": 84.31372833251953,
               "te_color/saturation": 90.69767761230469,
               "te_color/hue": 260.30767822265625,
@@ -44478,7 +44787,7 @@
               "te_freq": 0.4933333475142717,
               "te_twist": 0.0,
               "panic": 0.0,
-              "te_color": NaN,
+              "te_color": "NaN",
               "te_color/brightness": 84.31372833251953,
               "te_color/saturation": 90.69767761230469,
               "te_color/hue": 260.30767822265625,
@@ -44613,7 +44922,7 @@
               "te_freq": 0.4933333475142717,
               "te_twist": 0.0,
               "panic": 0.0,
-              "te_color": NaN,
+              "te_color": "NaN",
               "te_color/brightness": 84.31372833251953,
               "te_color/saturation": 90.69767761230469,
               "te_color/hue": 260.30767822265625,
@@ -44748,7 +45057,7 @@
               "te_freq": 0.4933333475142717,
               "te_twist": 0.0,
               "panic": 0.0,
-              "te_color": NaN,
+              "te_color": "NaN",
               "te_color/brightness": 84.31372833251953,
               "te_color/saturation": 90.69767761230469,
               "te_color/hue": 260.30767822265625,
@@ -44883,7 +45192,7 @@
               "te_freq": 0.4933333475142717,
               "te_twist": 0.0,
               "panic": 0.0,
-              "te_color": NaN,
+              "te_color": "NaN",
               "te_color/brightness": 84.31372833251953,
               "te_color/saturation": 90.69767761230469,
               "te_color/hue": 260.30767822265625,

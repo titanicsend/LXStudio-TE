@@ -1,13 +1,15 @@
 package titanicsend.app.effectmgr;
 
-import heronarts.lx.effect.StrobeEffect;
 import heronarts.lx.parameter.BooleanParameter;
 import heronarts.lx.parameter.LXListenableNormalizedParameter;
 import heronarts.lx.parameter.TriggerParameter;
 import titanicsend.effect.DistortEffect;
+import titanicsend.effect.EdgeGlowShaderEffect;
 import titanicsend.effect.ExplodeEffect;
-import titanicsend.effect.RandomStrobeEffect;
-import titanicsend.effect.SimplifyEffect;
+import titanicsend.effect.HueOrbitShaderEffect;
+import titanicsend.effect.KaleidoscopeShaderEffect;
+import titanicsend.effect.PixelizationShaderEffect;
+import titanicsend.effect.StrobeShaderEffect;
 import titanicsend.effect.SustainEffect;
 import titanicsend.pattern.ben.BassLightning;
 import titanicsend.pattern.jon.FxLaserCharge;
@@ -25,9 +27,9 @@ public abstract class TEGlobalEffects {
 
     // Effect slots (pad + knobs)
 
-    // 0: Random Strobe
+    // 0 - StrobeShader
     manager.allocateSlot(
-        new Slot<RandomStrobeEffect>() {
+        new Slot<StrobeShaderEffect>() {
           @Override
           protected LXListenableNormalizedParameter _getLevelParameter() {
             return device.depth;
@@ -39,24 +41,8 @@ public abstract class TEGlobalEffects {
           }
         });
 
-    // 1 - Strobe
+    // 1 - Explode
     manager.allocateSlot(
-        new Slot<StrobeEffect>() {
-          @Override
-          protected LXListenableNormalizedParameter _getLevelParameter() {
-            return device.depth;
-          }
-
-          @Override
-          protected LXListenableNormalizedParameter _getSecondaryParameter() {
-            return device.speed;
-          }
-        });
-
-    // 2 - Explode
-    manager.allocateSlot(
-        // TODO: separate effect slots for "sync" version? How to handle "trigger"
-        //  (feels more similar to FX patterns like BassLightning / SpaceExplosion)
         new Slot<ExplodeEffect>() {
           @Override
           protected LXListenableNormalizedParameter _getLevelParameter() {
@@ -74,21 +60,7 @@ public abstract class TEGlobalEffects {
           }
         });
 
-    // 3 - Simplify
-    manager.allocateSlot(
-        new Slot<SimplifyEffect>() {
-          @Override
-          protected LXListenableNormalizedParameter _getLevelParameter() {
-            return device.amount;
-          }
-
-          @Override
-          protected LXListenableNormalizedParameter _getSecondaryParameter() {
-            return device.gain;
-          }
-        });
-
-    // 4 - Sustain
+    // 2 - Sustain
     manager.allocateSlot(
         new Slot<SustainEffect>() {
           @Override
@@ -97,7 +69,7 @@ public abstract class TEGlobalEffects {
           }
         });
 
-    // 5 - Distort
+    // 3 - Distort
     manager.allocateSlot(
         new Slot<DistortEffect>() {
           @Override
@@ -107,50 +79,81 @@ public abstract class TEGlobalEffects {
 
           @Override
           protected LXListenableNormalizedParameter _getSecondaryParameter() {
-            return device.size; // or speed?
+            return device.size;
+          }
+        });
+
+    // 4 - HueOrbit
+    manager.allocateSlot(
+        new Slot<HueOrbitShaderEffect>() {
+          @Override
+          protected LXListenableNormalizedParameter _getLevelParameter() {
+            return device.angle;
+          }
+
+          @Override
+          protected LXListenableNormalizedParameter _getSecondaryParameter() {
+            return device.depth;
+          }
+        });
+
+    // 5 - Kaleidoscope
+    manager.allocateSlot(
+        new Slot<KaleidoscopeShaderEffect>() {
+          @Override
+          protected LXListenableNormalizedParameter _getLevelParameter() {
+            return device.mix;
+          }
+
+          @Override
+          protected LXListenableNormalizedParameter _getSecondaryParameter() {
+            return device.segments;
+          }
+        });
+
+    // 6 - Pixelization
+    manager.allocateSlot(
+        new Slot<PixelizationShaderEffect>() {
+          @Override
+          protected LXListenableNormalizedParameter _getLevelParameter() {
+            return device.size;
+          }
+
+          @Override
+          protected LXListenableNormalizedParameter _getSecondaryParameter() {
+            return device.separation;
+          }
+        });
+
+    // 7 - EdgeGlow
+    manager.allocateSlot(
+        new Slot<EdgeGlowShaderEffect>() {
+          @Override
+          protected LXListenableNormalizedParameter _getLevelParameter() {
+            return device.mix;
+          }
+
+          @Override
+          protected LXListenableNormalizedParameter _getSecondaryParameter() {
+            return device.glowStrength;
+          }
+
+          @Override
+          protected BooleanParameter _getTriggerParameter() {
+            return device.edgeOnly;
           }
         });
 
     // Trigger slots
 
-    // 19 (4th white key from right) - FxLaserCharge "Slow" (requires preset!)
+    // 16 (9th key from right) - Explode trigger
     manager.allocateTriggerSlot(
-        19,
-        new Slot<FxLaserCharge>("Slow") {
+        16,
+        new Slot<ExplodeEffect>() {
           @Override
           protected LXListenableNormalizedParameter _getLevelParameter() {
-            return device.getControls().getLXControl(TEControlTag.WOW2);
-          }
-
-          @Override
-          protected BooleanParameter _getTriggerParameter() {
-            return (BooleanParameter) device.getControls().getLXControl(TEControlTag.WOWTRIGGER);
-          }
-        });
-
-    // 21 (3rd white key from right) - FxLaserCharge "Fast" (requires preset!)
-    manager.allocateTriggerSlot(
-        21,
-        new Slot<FxLaserCharge>("Fast") {
-          @Override
-          protected LXListenableNormalizedParameter _getLevelParameter() {
-            return device.getControls().getLXControl(TEControlTag.WOW2);
-          }
-
-          @Override
-          protected BooleanParameter _getTriggerParameter() {
-            return (BooleanParameter) device.getControls().getLXControl(TEControlTag.WOWTRIGGER);
-          }
-        });
-
-    // Example of non-linear allocation:
-    // 22 (3rd to last key) - Bass Lightning
-    manager.allocateTriggerSlot(
-        23,
-        new Slot<BassLightning>() {
-          @Override
-          protected LXListenableNormalizedParameter _getLevelParameter() {
-            return device.energy;
+            // Optional visualization source; not required for trigger to work
+            return device.depth;
           }
 
           @Override
@@ -158,5 +161,6 @@ public abstract class TEGlobalEffects {
             return device.trigger;
           }
         });
+
   }
 }

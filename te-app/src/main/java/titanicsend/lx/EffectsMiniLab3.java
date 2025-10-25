@@ -249,7 +249,8 @@ public class EffectsMiniLab3 extends LXMidiSurface implements LXMidiSurface.Bidi
   private boolean isRegistered = false;
   private boolean shiftOn = false;
 
-  private boolean isBankA = false;
+  // Default to Bank A so the top-row knobs control slots 0-3 on startup
+  private boolean isBankA = true;
   private boolean isDAW = false;
 
   public final EnumParameter<LXMidiParameterControl.Mode> faderMode =
