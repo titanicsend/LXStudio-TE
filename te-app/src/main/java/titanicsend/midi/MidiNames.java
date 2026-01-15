@@ -1,7 +1,5 @@
 package titanicsend.midi;
 
-import titanicsend.lx.DirectorAPCminiMk2;
-
 public class MidiNames {
 
   // We use both Bomebox Direct MIDI and Bomebox Virtual MIDI Ports

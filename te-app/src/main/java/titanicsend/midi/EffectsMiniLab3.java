@@ -1,4 +1,4 @@
-package titanicsend.lx;
+package titanicsend.midi;
 
 import static heronarts.lx.midi.LXSysexMessage.END_SYSEX;
 import static heronarts.lx.midi.LXSysexMessage.START_SYSEX;

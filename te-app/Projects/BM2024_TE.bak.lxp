@@ -60047,14 +60047,14 @@
         ],
         "surfaces": [
           {
-            "class": "titanicsend.lx.DirectorAPCminiMk2",
+            "class": "titanicsend.midi.DirectorAPCminiMk2",
             "name": "Director",
             "settings": {
               "faderMode": 2
             }
           },
           {
-            "class": "titanicsend.lx.APC40Mk2",
+            "class": "titanicsend.midi.APC40Mk2",
             "name": "FoH: APC40 mkII",
             "settings": {
               "masterFaderEnabled": true,

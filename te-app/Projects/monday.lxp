@@ -37968,7 +37968,7 @@
         ],
         "surfaces": [
           {
-            "class": "titanicsend.lx.DirectorAPCminiMk2",
+            "class": "titanicsend.midi.DirectorAPCminiMk2",
             "name": "Director",
             "settings": {
               "faderMode": 2

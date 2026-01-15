@@ -14,7 +14,7 @@
  * @author Mark C. Slee <mark@heronarts.com>
  * @author Justin K. Belcher <justin@jkb.studio>
  */
-package titanicsend.lx;
+package titanicsend.midi;
 
 import static java.lang.Thread.sleep;
 

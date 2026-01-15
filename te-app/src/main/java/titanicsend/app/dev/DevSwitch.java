@@ -29,6 +29,7 @@ import titanicsend.dmx.DmxEngine;
 import titanicsend.dmx.model.AdjStealthModel;
 import titanicsend.dmx.model.BeaconModel;
 import titanicsend.lasercontrol.TELaserTask;
+import titanicsend.midi.APC40Mk2;
 import titanicsend.midi.MidiNames;
 import titanicsend.osc.CrutchOSC;
 import titanicsend.osc.TEResolumeGradientPublisher;
@@ -552,8 +553,8 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
       if (isTESurface(surface)) {
         surface.enabled.setValue(enabled);
 
-        if (surface instanceof titanicsend.lx.APC40Mk2) {
-          ((titanicsend.lx.APC40Mk2) surface).performanceLock.setValue(true);
+        if (surface instanceof APC40Mk2) {
+          ((APC40Mk2) surface).performanceLock.setValue(true);
         } else if (surface instanceof heronarts.lx.midi.surface.APC40Mk2) {
           ((heronarts.lx.midi.surface.APC40Mk2) surface).performanceLock.setValue(true);
         }
@@ -577,7 +578,7 @@ public class DevSwitch extends LXComponent implements LXSerializable, LX.Project
 
   /** Returns TRUE for normal surfaces that should be enabled for TE production */
   private boolean isTESurface(LXMidiSurface surface) {
-    return surface instanceof titanicsend.lx.APC40Mk2
+    return surface instanceof APC40Mk2
         // || surface instanceof heronarts.lx.midi.surface.APCminiMk2
         // || surface instanceof DirectorAPCminiMk2
         // || surface instanceof studio.jkb.supermod.APCminiMk2

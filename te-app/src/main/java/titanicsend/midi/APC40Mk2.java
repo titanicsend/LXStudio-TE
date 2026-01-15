@@ -1,4 +1,4 @@
-package titanicsend.lx;
+package titanicsend.midi;
 
 import heronarts.lx.LX;
 import heronarts.lx.midi.LXMidiInput;
