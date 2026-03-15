@@ -1,14 +1,10 @@
 package titanicsend.pattern.piemonte;
 
-import static titanicsend.util.TEColor.TRANSPARENT;
-
 import heronarts.lx.LX;
 import heronarts.lx.LXCategory;
 import heronarts.lx.color.LXColor;
 import heronarts.lx.model.LXModel;
 import heronarts.lx.model.LXPoint;
-import heronarts.lx.modulator.SawLFO;
-import heronarts.lx.parameter.FunctionalParameter;
 import heronarts.lx.parameter.LXParameter;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,36 +22,27 @@ import titanicsend.pattern.yoffa.framework.TEShaderView;
 @LXCategory("Mothership")
 public class MothershipAfterglow extends TEPerformancePattern {
 
-  private final SawLFO phase =
-      new SawLFO(
-          0,
-          1,
-          new FunctionalParameter() {
-            public double getValue() {
-              return 3000 / getSpeed();
-            }
-          });
-
+  private double phase = 0;
   private Map<Integer, Float> sidePhaseOffsets = new HashMap<>();
   private Random random = new Random();
 
   public MothershipAfterglow(LX lx) {
     super(lx, TEShaderView.ALL_POINTS);
 
-    startModulator(this.phase);
-
-    controls.setRange(TEControlTag.SPEED, 1, 0, 1);
+    controls.setRange(TEControlTag.SPEED, 0.5, -1, 1);
 
     controls
         .setRange(TEControlTag.SIZE, 5, 1, 20)
         .setUnits(TEControlTag.SIZE, LXParameter.Units.INTEGER);
 
-    controls.setRange(TEControlTag.QUANTITY, 0.5, 0, 1.0);
+    controls
+        .setRange(TEControlTag.QUANTITY, 1, 1, 10)
+        .setUnits(TEControlTag.QUANTITY, LXParameter.Units.INTEGER);
 
     // randomness - default to full randomization so sides fire at different times
     controls.setRange(TEControlTag.WOW1, 1.0, 0.0, 1.0);
 
-    controls.setRange(TEControlTag.WOW2, 1.0, 1.0, 10.0);
+    controls.setRange(TEControlTag.WOW2, 0.5, 0, 1.0);
 
     controls.markUnused(controls.getLXControl(TEControlTag.ANGLE));
     controls.markUnused(controls.getLXControl(TEControlTag.XPOS));
@@ -68,15 +55,13 @@ public class MothershipAfterglow extends TEPerformancePattern {
 
   @Override
   protected void runTEAudioPattern(double deltaMs) {
-    float phase = this.phase.getValuef();
+    // Accumulate phase manually so negative speed reverses direction
+    phase += (deltaMs / 3000.0) * getSpeed();
+    phase = phase - Math.floor(phase); // wrap to 0..1
     int dotSize = (int) getSize();
-    float fadeDistance = (float) getQuantity();
-    int numPulses = (int) getWow2();
+    int numPulses = (int) getQuantity();
+    float fadeDistance = (float) getWow2();
     float randomness = (float) getWow1();
-
-    for (LXPoint point : model.points) {
-      colors[point.index] = TRANSPARENT;
-    }
 
     int baseColor = calcColor();
 
@@ -91,7 +76,7 @@ public class MothershipAfterglow extends TEPerformancePattern {
 
         for (int pulseNum = 0; pulseNum < numPulses; pulseNum++) {
           float pulseOffset = (float) pulseNum / numPulses;
-          float adjustedPhase = (phase + pulseOffset + sidePhaseOffset) % 1.0f;
+          float adjustedPhase = (float) ((phase + pulseOffset + sidePhaseOffset) % 1.0);
 
           float travelDistance = adjustedPhase * fadeDistance;
 
