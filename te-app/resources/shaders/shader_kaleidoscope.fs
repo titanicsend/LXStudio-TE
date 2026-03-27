@@ -15,24 +15,12 @@ uniform vec2  center;     // normalized [0..1] center
 uniform int   mirror;     // 1 = reflective fold, 0 = wrap
 uniform float featherPx;  // fade to black near frame edges (pixels)
 
-// Helpers
-vec2 texSize() {
-    return vec2(textureSize(iDst, 0));
-}
-
-// Rotate a vector by radians
-vec2 rot(vec2 p, float a) {
-    float s = sin(a), c = cos(a);
-    return mat2(c, -s, s, c) * p;
-}
-
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
-    vec2 res = texSize();
+    vec2 res = iResolution;
     vec2 uv  = fragCoord / res;
 
-    // Sample original pixel
-    ivec2 origCoord = ivec2(clamp(fragCoord, vec2(0.0), res - 1.0));
-    vec4 original = texelFetch(iDst, origCoord, 0);
+    // Sample original pixel via the indirection map
+    vec4 original = _getMappedPixel(iDst, ivec2(fragCoord));
 
     // Shift to center in normalized space
     vec2 cuv = uv - center;
@@ -64,10 +52,9 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     // Back to cartesian around center
     vec2 sampleUV = center + rr * vec2(cos(a), sin(a));
 
-    // Sample with clamping
-    vec2 texel = sampleUV * res;
-    ivec2 ip = ivec2(clamp(texel, vec2(0.0), res - 1.0));
-    vec4 kaleidoscope = texelFetch(iDst, ip, 0);
+    // Sample via the indirection map at the remapped coordinates
+    ivec2 sampleCoord = ivec2(clamp(sampleUV * res, vec2(0.0), res - 1.0));
+    vec4 kaleidoscope = _getMappedPixel(iDst, sampleCoord);
 
     // Optional edge feather near image bounds (fade to black)
     if (featherPx > 0.0) {
@@ -78,6 +65,5 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
     }
 
     // Mix between original and kaleidoscope effect
-    // mixAmt = 0.0: show original, mixAmt = 1.0: show kaleidoscope
     fragColor = mix(original, kaleidoscope, mixAmt);
 }

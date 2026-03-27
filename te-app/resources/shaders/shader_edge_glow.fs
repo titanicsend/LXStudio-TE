@@ -18,25 +18,24 @@ float luma(vec3 c) {
     return dot(c, vec3(0.299, 0.587, 0.114));
 }
 
-vec3 sampleOffset(vec2 uv, vec2 offset, vec2 invRes) {
-    vec2 coord = clamp(uv + offset * invRes, vec2(0.0), vec2(1.0));
-    return texture(iDst, coord).rgb;
+vec3 sampleAt(ivec2 coord) {
+    return _getMappedPixel(iDst, coord).rgb;
 }
 
-float sobelEdge(vec2 uv, vec2 invRes) {
-    vec3 tl = sampleOffset(uv, vec2(-1.0, -1.0), invRes);
-    vec3 tc = sampleOffset(uv, vec2( 0.0, -1.0), invRes);
-    vec3 tr = sampleOffset(uv, vec2( 1.0, -1.0), invRes);
-    vec3 ml = sampleOffset(uv, vec2(-1.0,  0.0), invRes);
-    vec3 mc = sampleOffset(uv, vec2( 0.0,  0.0), invRes);
-    vec3 mr = sampleOffset(uv, vec2( 1.0,  0.0), invRes);
-    vec3 bl = sampleOffset(uv, vec2(-1.0,  1.0), invRes);
-    vec3 bc = sampleOffset(uv, vec2( 0.0,  1.0), invRes);
-    vec3 br = sampleOffset(uv, vec2( 1.0,  1.0), invRes);
+float sobelEdge(vec2 uv) {
+    // uv is in [0..1] normalized coords; convert to pixel coords for sampling
+    vec2 res = iResolution;
+    ivec2 p = ivec2(uv * res);
 
-    float tlL = luma(tl), tcL = luma(tc), trL = luma(tr);
-    float mlL = luma(ml), mcL = luma(mc), mrL = luma(mr);
-    float blL = luma(bl), bcL = luma(bc), brL = luma(br);
+    float tlL = luma(sampleAt(p + ivec2(-1, -1)));
+    float tcL = luma(sampleAt(p + ivec2( 0, -1)));
+    float trL = luma(sampleAt(p + ivec2( 1, -1)));
+    float mlL = luma(sampleAt(p + ivec2(-1,  0)));
+    float mcL = luma(sampleAt(p + ivec2( 0,  0)));
+    float mrL = luma(sampleAt(p + ivec2( 1,  0)));
+    float blL = luma(sampleAt(p + ivec2(-1,  1)));
+    float bcL = luma(sampleAt(p + ivec2( 0,  1)));
+    float brL = luma(sampleAt(p + ivec2( 1,  1)));
 
     float gx = (trL + 2.0 * mrL + brL) - (tlL + 2.0 * mlL + blL);
     float gy = (blL + 2.0 * bcL + brL) - (tlL + 2.0 * tcL + trL);
@@ -45,10 +44,12 @@ float sobelEdge(vec2 uv, vec2 invRes) {
     return clamp(edgeGain * mag - edgeThreshold, 0.0, 1.0);
 }
 
-float radialBlurMask(vec2 uv, vec2 invRes, float radiusPx, float blurSoftness) {
+float radialBlurMask(vec2 uv, float radiusPx, float blurSoftness) {
     if (radiusPx <= 0.5) {
-        return sobelEdge(uv, invRes);
+        return sobelEdge(uv);
     }
+
+    vec2 invRes = 1.0 / iResolution;
 
     const int DIRS = 8;
     vec2 dirs[DIRS] = vec2[](
@@ -65,7 +66,7 @@ float radialBlurMask(vec2 uv, vec2 invRes, float radiusPx, float blurSoftness) {
     float acc = 0.0;
     float wsum = 0.0;
 
-    float center = sobelEdge(uv, invRes);
+    float center = sobelEdge(uv);
     acc += center;
     wsum += 1.0;
 
@@ -75,7 +76,7 @@ float radialBlurMask(vec2 uv, vec2 invRes, float radiusPx, float blurSoftness) {
         float distPx = t * radiusPx;
         for (int d = 0; d < DIRS; ++d) {
             vec2 sampleUV = clamp(uv + dirs[d] * (distPx * invRes), vec2(0.0), vec2(1.0));
-            acc += sobelEdge(sampleUV, invRes) * w;
+            acc += sobelEdge(sampleUV) * w;
             wsum += w;
         }
     }
@@ -84,14 +85,14 @@ float radialBlurMask(vec2 uv, vec2 invRes, float radiusPx, float blurSoftness) {
 }
 
 void mainImage(out vec4 fragColor, in vec2 fragCoord) {
-    vec2 res = vec2(textureSize(iDst, 0));
-    vec2 invRes = 1.0 / res;
-    vec2 uv = (fragCoord + 0.5) * invRes;
+    vec2 res = iResolution;
+    vec2 uv = fragCoord / res;
     uv = clamp(uv, vec2(0.0), vec2(1.0));
 
-    vec4 src = texture(iDst, uv);
+    // Sample the original pixel via the indirection map
+    vec4 src = _getMappedPixel(iDst, ivec2(fragCoord));
 
-    float mask = radialBlurMask(uv, invRes, glowRadiusPx, blurAmt);
+    float mask = radialBlurMask(uv, glowRadiusPx, blurAmt);
 
     vec3 edgeColor = src.rgb;
     vec3 glow = edgeColor * (mask * glowStrength);
