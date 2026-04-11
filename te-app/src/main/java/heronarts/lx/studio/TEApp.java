@@ -161,6 +161,7 @@ import titanicsend.pattern.justin.GammaTestPattern;
 import titanicsend.pattern.justin.MothershipDrivingPattern;
 import titanicsend.pattern.justin.TEGradientPattern;
 import titanicsend.pattern.justin.TESolidPattern;
+import titanicsend.pattern.justin.TestMothershipWindow;
 import titanicsend.pattern.justin.TwoColorPattern;
 import titanicsend.pattern.look.PolySpiral;
 import titanicsend.pattern.look.SigmoidDanceAudioLevels;
@@ -505,6 +506,7 @@ public class TEApp extends LXStudio {
       lx.registry.addPattern(TwoColorPattern.class);
       lx.registry.addPattern(MothershipDrivingPattern.class);
       lx.registry.addPattern(GammaTestPattern.class);
+      lx.registry.addPattern(TestMothershipWindow.class);
 
       // Midi surface names for use with BomeBox
       lx.engine.midi.registerSurface(APC40Mk2.class);
