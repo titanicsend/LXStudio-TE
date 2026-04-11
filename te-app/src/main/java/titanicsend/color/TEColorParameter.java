@@ -140,6 +140,16 @@ public class TEColorParameter extends ColorParameter implements GradientUtils.Gr
     return (TEColorParameter) super.setDescription(description);
   }
 
+  public TEColorParameter setColorSource(ColorSource colorSource) {
+    this.colorSource.setValue(colorSource);
+    return this;
+  }
+
+  public TEColorParameter setBlendMode(BlendMode blendMode) {
+    this.blendMode.setValue(blendMode);
+    return this;
+  }
+
   @Override
   public LXListenableNormalizedParameter getRemoteControl() {
     return this.offset;
