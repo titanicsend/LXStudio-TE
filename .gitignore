@@ -38,3 +38,6 @@ Logs/
 
 .agent_logs/*
 **log
+
+# Agent tooling (persists across branches)
+.agent/

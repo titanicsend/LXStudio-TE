@@ -208,7 +208,9 @@ public class NDIOutShader extends GLShader implements GLShader.UniformSource {
     if (isInitialized()) {
       this.FBOs.dispose();
       this.PBOs.dispose();
-      this.ndiSender.close();
+      if (this.ndiSender != null) {
+        this.ndiSender.close();
+      }
     }
     super.dispose();
   }
