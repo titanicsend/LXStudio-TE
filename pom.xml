@@ -205,13 +205,6 @@
 			</dependency>
 
 			<dependency>
-				<groupId>org.junit.jupiter</groupId>
-				<artifactId>junit-jupiter</artifactId>
-				<version>${junit-jupiter.version}</version>
-				<scope>test</scope>
-			</dependency>
-
-			<dependency>
 				<groupId>org.openjdk.nashorn</groupId>
 				<artifactId>nashorn-core</artifactId>
 				<version>15.4</version>
@@ -277,6 +270,21 @@
 				<groupId>studio.jkb</groupId>
 				<artifactId>supermod</artifactId>
 				<version>${supermod.version}</version>
+			</dependency>
+
+			<!-- build dependencies -->
+			<dependency>
+				<groupId>com.google.errorprone</groupId>
+				<artifactId>error_prone_annotations</artifactId>
+				<version>${error-prone.version}</version>
+			</dependency>
+
+			<!-- test dependencies -->
+			<dependency>
+				<groupId>org.junit.jupiter</groupId>
+				<artifactId>junit-jupiter</artifactId>
+				<version>${junit-jupiter.version}</version>
+				<scope>test</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

@@ -16,26 +16,25 @@
 	<inceptionYear>2025</inceptionYear>
 
 	<dependencies>
-		<!-- LX Core Dependencies -->
 		<dependency>
 			<groupId>com.heronarts</groupId>
 			<artifactId>lx</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>com.heronarts</groupId>
 			<artifactId>glx</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>com.heronarts</groupId>
 			<artifactId>glxstudio</artifactId>
 		</dependency>
-
-		<!-- YAML Configuration Support -->
 		<dependency>
 			<groupId>org.yaml</groupId>
 			<artifactId>snakeyaml</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.errorprone</groupId>
+			<artifactId>error_prone_annotations</artifactId>
 		</dependency>
 	</dependencies>
 

@@ -51,17 +51,14 @@ public class OscRemapperPlugin implements LXStudio.Plugin {
   public OscRemapperPlugin(LX lx, Path configPath) {
     this.lx = lx;
     this.configPath = configPath;
-    LOG.startup("OscRemapperPlugin(LX) constructor called - version: " + loadVersion());
-    LOG.startup("Using config path: " + configPath);
+    LOG.startup("OscRemapperPlugin(LX) constructor called - version: %s", loadVersion());
+    LOG.startup("Using config path: %s", configPath);
 
     // Load configuration from YAML file
     this.config = ConfigLoader.loadConfig(configPath);
     LOG.startup(
-        "Loaded configuration with "
-            + this.config.getDestinations().size()
-            + " destinations and "
-            + this.config.getRemappings().size()
-            + " remappings");
+        "Loaded configuration with %d destinations and %d remappings",
+        this.config.getDestinations().size(), this.config.getRemappings().size());
 
     // Set up transmission listener for OSC remapping
     this.transmissionListener = new OscRemapperTransmissionListener(this.lx, this.config);
@@ -79,7 +76,7 @@ public class OscRemapperPlugin implements LXStudio.Plugin {
     // Listen for logging parameter changes
     this.remapperLoggingEnabled.addListener(
         p -> {
-          LOG.setEnabled(this.remapperLoggingEnabled.isOn());
+          LOG.setVerbose(this.remapperLoggingEnabled.isOn());
         });
   }
 

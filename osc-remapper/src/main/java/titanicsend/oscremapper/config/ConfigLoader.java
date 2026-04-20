@@ -25,7 +25,7 @@ public class ConfigLoader {
   /** Load configuration from specified path */
   public static RemapperConfig loadConfig(Path configPath) {
     try {
-      LOG.startup("Loading OSC Remapper config from: " + configPath.toAbsolutePath());
+      LOG.startup("Loading OSC Remapper config from: %s", configPath.toAbsolutePath());
 
       if (!Files.exists(configPath)) {
         LOG.error("Config file not found: %s", configPath.toAbsolutePath());
@@ -35,11 +35,8 @@ public class ConfigLoader {
       try (InputStream inputStream = new FileInputStream(configPath.toFile())) {
         RemapperConfig config = parseYamlConfig(inputStream);
         LOG.startup(
-            "Successfully parsed YAML config with "
-                + config.getDestinations().size()
-                + " destinations and "
-                + config.getRemappings().size()
-                + " remappings");
+            "Successfully parsed YAML config with %d destinations and %d remappings",
+            config.getDestinations().size(), config.getRemappings().size());
         return config;
       }
 
@@ -99,8 +96,8 @@ public class ConfigLoader {
       // Handle remappings section
       Object remappingsData = rootMap.get("remappings");
       LOG.debug(
-          "Remappings data type: "
-              + (remappingsData != null ? remappingsData.getClass().getSimpleName() : "null"));
+          "Remappings data type: %s",
+          (remappingsData != null ? remappingsData.getClass().getSimpleName() : "null"));
 
       if (remappingsData instanceof Map) {
         @SuppressWarnings("unchecked")
@@ -114,16 +111,11 @@ public class ConfigLoader {
           // All remappings must be arrays (even for single destinations)
           if (!(targetData instanceof List)) {
             LOG.error(
-                "Remapping for '"
-                    + source
-                    + "' must be an array. Found: "
-                    + targetData.getClass().getSimpleName());
+                "Remapping for '%s' must be an array. Found: %s",
+                source, targetData.getClass().getSimpleName());
             LOG.error(
-                "Use format: '"
-                    + source
-                    + ": [\"destination\"]' instead of '"
-                    + source
-                    + ": \"destination\"'");
+                "Use format: '%s: [\"destination\"]' instead of '%s: \"destination\"'",
+                source, source);
             continue; // Skip this invalid mapping
           }
 
@@ -155,18 +147,13 @@ public class ConfigLoader {
 
     config.setDestinations(destinations);
     config.setRemappings(remappings);
-    LOG.debug(
-        "Loaded " + destinations.size() + " destinations and " + remappings.size() + " remappings");
+    LOG.debug("Loaded %d destinations and %d remappings", destinations.size(), remappings.size());
 
     // Log destinations
     for (RemapperConfig.Destination destination : destinations) {
       LOG.debug(
-          "destination: "
-              + destination.getName()
-              + " -> "
-              + destination.getIp()
-              + ":"
-              + destination.getPort());
+          "destination: %s -> %s:%d",
+          destination.getName(), destination.getIp(), destination.getPort());
     }
 
     // Log final remappings (after loop filtering)
@@ -208,14 +195,7 @@ public class ConfigLoader {
       destination.setFilter(filter);
 
       LOG.debug(
-          "Destination properties: name="
-              + name
-              + ", ip="
-              + ip
-              + ", port="
-              + port
-              + ", filter="
-              + filter);
+          "Destination properties: name=%s, ip=%s, port=%d, filter=%s", name, ip, port, filter);
 
       return destination;
 
@@ -285,11 +265,8 @@ public class ConfigLoader {
       // Rule: Wildcard sources don't support multiple destinations
       if (destinations.size() > 1) {
         LOG.error(
-            "Wildcard source '"
-                + source
-                + "' cannot have multiple destinations ("
-                + destinations.size()
-                + " found)");
+            "Wildcard source '%s' cannot have multiple destinations (%d found)",
+            source, destinations.size());
         LOG.error("Wildcard mappings must be 1:1. Found destinations: %s", destinations);
         return false;
       }
@@ -298,11 +275,8 @@ public class ConfigLoader {
       String destination = destinations.get(0);
       if (!destination.endsWith("/*")) {
         LOG.error(
-            "Wildcard source '"
-                + source
-                + "' must map to wildcard destination, found: '"
-                + destination
-                + "'");
+            "Wildcard source '%s' must map to wildcard destination, found: '%s'",
+            source, destination);
         LOG.error("Use format: '/lx/tempo/*' -> ['/remote/tempo/*']");
         return false;
       }
