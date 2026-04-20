@@ -234,12 +234,12 @@ public class ConfigLoader {
   /** Get integer value from map with default */
   private static int getInt(Map<String, Object> map, String key, int defaultValue) {
     Object value = map.get(key);
-    if (value instanceof Number) {
-      return ((Number) value).intValue();
+    if (value instanceof Number number) {
+      return number.intValue();
     }
-    if (value instanceof String) {
+    if (value instanceof String string) {
       try {
-        return Integer.parseInt((String) value);
+        return Integer.parseInt(string);
       } catch (NumberFormatException e) {
         LOG.error("Invalid integer value for %s: %s", key, value);
       }
