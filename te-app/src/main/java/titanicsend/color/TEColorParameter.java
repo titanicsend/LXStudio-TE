@@ -36,7 +36,7 @@ public class TEColorParameter extends ColorParameter implements GradientUtils.Gr
   private final ColorSource COLOR_SOURCE_DEFAULT = ColorSource.NORMAL;
 
   public final EnumParameter<ColorSource> colorSource =
-      new EnumParameter<ColorSource>("ColorSource", COLOR_SOURCE_DEFAULT) {
+      new EnumParameter<ColorSource>("Source", COLOR_SOURCE_DEFAULT) {
         @Override
         public LXParameter reset() {
           // JKB: Don't worry about this, just avoiding a minor bug

@@ -356,6 +356,6 @@ public class BeaconGamePattern extends BeaconPattern
 
   @Override
   public void buildDeviceControls(LXStudio.UI ui, UIDevice uiDevice, BeaconGamePattern device) {
-    UIUtils.buildMftStyleDeviceControls(ui, uiDevice, device);
+    UIUtils.buildTEDeviceControls(ui, uiDevice, device);
   }
 }
