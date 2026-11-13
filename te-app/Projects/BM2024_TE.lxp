@@ -1,6 +1,6 @@
 {
   "version": "1.1.1-TE.5.GPU-SNAPSHOT",
-  "timestamp": 1794541489018,
+  "timestamp": 1794546623340,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -1792,7 +1792,7 @@
           "scale": 1.0,
           "hasCustomPointSize": false,
           "pointSize": 5.0,
-          "selected": true,
+          "selected": false,
           "deactivate": false,
           "enabled": true,
           "brightness": 1.0,
@@ -1853,11 +1853,11 @@
         "jsonParameters": {
           "xOffset": 8.680485725402832,
           "yOffset": 6.0,
-          "strand1host": "10.7.11.113",
+          "strand1host": "10.7.1.13",
           "strand1output": 1,
-          "strand2host": "10.7.11.113",
+          "strand2host": "10.7.1.13",
           "strand2output": 2,
-          "strand3host": "10.7.11.113",
+          "strand3host": "10.7.1.13",
           "strand3output": 3,
           "artnetSequence": false,
           "showBacking": true,
@@ -2693,11 +2693,11 @@
         "jsonParameters": {
           "xOffset": 18.10432243347168,
           "yOffset": 6.0,
-          "strand1host": "10.7.19.111",
+          "strand1host": "10.7.11.123",
           "strand1output": 1,
-          "strand2host": "10.7.19.111",
+          "strand2host": "10.7.11.123",
           "strand2output": 2,
-          "strand3host": "10.7.19.111",
+          "strand3host": "10.7.11.123",
           "strand3output": 3,
           "artnetSequence": false,
           "showBacking": true,
@@ -2881,7 +2881,7 @@
         "jsonParameters": {
           "xOffset": 15.387300491333008,
           "yOffset": 6.0,
-          "strand1host": "10.7.19.111",
+          "strand1host": "10.7.11.123",
           "strand1output": 4,
           "artnetSequence": false,
           "showBacking": true,
@@ -2906,7 +2906,7 @@
           "scale": 1.0,
           "hasCustomPointSize": false,
           "pointSize": 5.0,
-          "selected": false,
+          "selected": true,
           "deactivate": false,
           "enabled": true,
           "brightness": 1.0,
@@ -3518,7 +3518,7 @@
         "jsonFixtureType": "TE/edge/Edge10-11",
         "jsonParameters": {
           "points": 188,
-          "host": "10.7.11.120",
+          "host": "10.7.101.17",
           "output": 1,
           "ledOffset": 234,
           "artnetSequence": false,
@@ -3690,7 +3690,7 @@
         "jsonFixtureType": "TE/edge/Edge11-98",
         "jsonParameters": {
           "points": 105,
-          "host": "10.7.11.120",
+          "host": "10.7.101.17",
           "output": 1,
           "ledOffset": 129,
           "artnetSequence": false,
@@ -10656,7 +10656,7 @@
         "jsonFixtureType": "TE/edge/Edge98-100",
         "jsonParameters": {
           "points": 129,
-          "host": "10.7.11.120",
+          "host": "10.7.101.17",
           "output": 1,
           "ledOffset": 0,
           "artnetSequence": false,
@@ -62249,10 +62249,10 @@
                   "te_color/blendMode/name": "OKLAB",
                   "te_color/offset": 0.0,
                   "Energy": 0.0,
-                  "Double Speed": false,
-                  "Double Layer": false,
                   "Width": 0.5,
                   "Glow": 0.1,
+                  "Double Speed": false,
+                  "Double Layer": false,
                   "compositeMode": 0
                 },
                 "children": {
@@ -64976,9 +64976,9 @@
         "animation": false,
         "camera": {
           "active": false,
-          "radius": 757.3647544831933,
-          "theta": 3.92948666960001,
-          "phi": 0.18370761047117412,
+          "radius": 723.8109263647137,
+          "theta": 14.382492072880268,
+          "phi": -12.718270792858675,
           "x": -37.51195030368399,
           "y": 204.45437783002853,
           "z": 68.22097625024617
