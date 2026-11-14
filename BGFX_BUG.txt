@@ -1,0 +1,33 @@
+#
+# A fatal error has been detected by the Java Runtime Environment:
+#
+#  SIGSEGV (0xb) at pc=0x0000000130437a00, pid=80968, tid=83983
+#
+# JRE version: OpenJDK Runtime Environment Temurin-21.0.7+6 (21.0.7+6) (build 21.0.7+6-LTS)
+# Java VM: OpenJDK 64-Bit Server VM Temurin-21.0.7+6 (21.0.7+6-LTS, mixed mode, sharing, tiered, compressed oops, compressed class ptrs, g1 gc, bsd-aarch64)
+# Problematic frame:
+# C  [libbgfx.dylib+0xba00]  bgfx::Context::renderThread(bx::Thread*, void*)+0x1788
+#
+# No core dump will be written. Core dumps have been disabled. To enable core dumping, try "ulimit -c unlimited" before starting Java again
+#
+# An error report file with more information is saved as:
+# /Users/te/src/code/LXStudio-TE/te-app/hs_err_pid80968.log
+[8338.327s][warning][os] Loading hsdis library failed
+[LX 2026/11/12 22:15:19] [I/O] Retrying /10.7.100.1:6454 in 1600ms (13 consecutive failures)
+[LX 2026/11/12 22:15:19] [I/O] Retrying /10.7.21.211:6454 in 1600ms (13 consecutive failures)
+[LX 2026/11/12 22:15:19] [I/O] Retrying /10.7.1.20:6454 in 1600ms (13 consecutive failures)
+[LX 2026/11/12 22:15:19] [I/O] Retrying /10.7.1.21:6454 in 1600ms (13 consecutive failures)
+[LX 2026/11/12 22:15:19] [I/O] Retrying /10.7.1.23:6454 in 1600ms (13 consecutive failures)
+[LX 2026/11/12 22:15:19] [I/O] Retrying /10.7.17.120:6454 in 1600ms (13 consecutive failures)
+[LX 2026/11/12 22:15:19] [I/O] Retrying /10.7.17.121:6454 in 1600ms (13 consecutive failures)
+[LX 2026/11/12 22:15:19] [I/O] Retrying /10.7.2.10:6454 in 1600ms (13 consecutive failures)
+[LX 2026/11/12 22:15:19] [I/O] Retrying /10.7.20.220:6454 in 1600ms (13 consecutive failures)
+#
+# If you would like to submit a bug report, please visit:
+#   https://github.com/adoptium/adoptium-support/issues
+# The crash happened outside the Java Virtual Machine in native code.
+# See problematic frame for where to report the bug.
+#
+
+Process finished with exit code 134 (interrupted by signal 6:SIGABRT)
+
