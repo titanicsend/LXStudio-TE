@@ -1,6 +1,6 @@
 {
   "version": "1.1.1-TE.5.GPU-SNAPSHOT",
-  "timestamp": 1794727963902,
+  "timestamp": 1794728630450,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -4163,7 +4163,7 @@
         "jsonFixtureType": "TE/edge/Edge26-99",
         "jsonParameters": {
           "points": 120,
-          "host": "10.7.3.20",
+          "host": "10.7.101.12",
           "output": 2,
           "ledOffset": 242,
           "artnetSequence": false,
@@ -4249,7 +4249,7 @@
         "jsonFixtureType": "TE/edge/Edge26-102",
         "jsonParameters": {
           "points": 61,
-          "host": "10.7.3.20",
+          "host": "10.7.101.12",
           "output": 2,
           "ledOffset": 181,
           "artnetSequence": false,
@@ -4276,7 +4276,7 @@
           "scale": 1.0,
           "hasCustomPointSize": false,
           "pointSize": 5.0,
-          "selected": false,
+          "selected": true,
           "deactivate": false,
           "enabled": true,
           "brightness": 1.0,
@@ -5824,7 +5824,7 @@
           "scale": 1.0,
           "hasCustomPointSize": false,
           "pointSize": 5.0,
-          "selected": true,
+          "selected": false,
           "deactivate": false,
           "enabled": true,
           "brightness": 1.0,
@@ -10742,7 +10742,7 @@
         "jsonFixtureType": "TE/edge/Edge99-101",
         "jsonParameters": {
           "points": 68,
-          "host": "10.7.3.20",
+          "host": "10.7.101.12",
           "output": 2,
           "ledOffset": 0,
           "artnetSequence": false,
@@ -10785,7 +10785,7 @@
         "jsonFixtureType": "TE/edge/Edge99-102",
         "jsonParameters": {
           "points": 113,
-          "host": "10.7.3.20",
+          "host": "10.7.101.12",
           "output": 2,
           "ledOffset": 68,
           "artnetSequence": false,
@@ -62248,11 +62248,11 @@
                   "te_color/blendMode": 0,
                   "te_color/blendMode/name": "OKLAB",
                   "te_color/offset": 0.0,
-                  "Double Layer": false,
-                  "Double Speed": false,
-                  "Width": 0.5,
                   "Glow": 0.1,
                   "Energy": 0.0,
+                  "Double Layer": false,
+                  "Width": 0.5,
+                  "Double Speed": false,
                   "compositeMode": 0
                 },
                 "children": {
