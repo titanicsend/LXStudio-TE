@@ -1,6 +1,6 @@
 {
   "version": "1.1.1-TE.5.GPU-SNAPSHOT",
-  "timestamp": 1794720839861,
+  "timestamp": 1794727963902,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -5824,7 +5824,7 @@
           "scale": 1.0,
           "hasCustomPointSize": false,
           "pointSize": 5.0,
-          "selected": false,
+          "selected": true,
           "deactivate": false,
           "enabled": true,
           "brightness": 1.0,
@@ -5840,8 +5840,8 @@
         "jsonFixtureType": "TE/edge/Edge39-101",
         "jsonParameters": {
           "points": 129,
-          "host": "10.7.101.12",
-          "output": 1,
+          "host": "10.7.18.112",
+          "output": 2,
           "ledOffset": 93,
           "artnetSequence": false,
           "reverse": false,
@@ -5883,8 +5883,8 @@
         "jsonFixtureType": "TE/edge/Edge39-121",
         "jsonParameters": {
           "points": 93,
-          "host": "10.7.101.12",
-          "output": 1,
+          "host": "10.7.18.112",
+          "output": 2,
           "ledOffset": 0,
           "artnetSequence": false,
           "reverse": true,
@@ -6313,8 +6313,8 @@
         "jsonFixtureType": "TE/edge/Edge44-101",
         "jsonParameters": {
           "points": 185,
-          "host": "10.7.101.12",
-          "output": 1,
+          "host": "10.7.18.112",
+          "output": 2,
           "ledOffset": 222,
           "artnetSequence": false,
           "reverse": true,
@@ -10812,7 +10812,7 @@
           "scale": 1.0,
           "hasCustomPointSize": false,
           "pointSize": 5.0,
-          "selected": true,
+          "selected": false,
           "deactivate": false,
           "enabled": true,
           "brightness": 1.0,
