@@ -1,6 +1,6 @@
 {
   "version": "1.1.1-TE.5.GPU-SNAPSHOT",
-  "timestamp": 1794720191424,
+  "timestamp": 1794720839861,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -4163,7 +4163,7 @@
         "jsonFixtureType": "TE/edge/Edge26-99",
         "jsonParameters": {
           "points": 120,
-          "host": "10.7.3.10",
+          "host": "10.7.3.20",
           "output": 2,
           "ledOffset": 242,
           "artnetSequence": false,
@@ -4249,7 +4249,7 @@
         "jsonFixtureType": "TE/edge/Edge26-102",
         "jsonParameters": {
           "points": 61,
-          "host": "10.7.3.10",
+          "host": "10.7.3.20",
           "output": 2,
           "ledOffset": 181,
           "artnetSequence": false,
@@ -6340,7 +6340,7 @@
           "scale": 1.0,
           "hasCustomPointSize": false,
           "pointSize": 5.0,
-          "selected": true,
+          "selected": false,
           "deactivate": false,
           "enabled": true,
           "brightness": 1.0,
@@ -10742,7 +10742,7 @@
         "jsonFixtureType": "TE/edge/Edge99-101",
         "jsonParameters": {
           "points": 68,
-          "host": "10.7.3.10",
+          "host": "10.7.3.20",
           "output": 2,
           "ledOffset": 0,
           "artnetSequence": false,
@@ -10785,7 +10785,7 @@
         "jsonFixtureType": "TE/edge/Edge99-102",
         "jsonParameters": {
           "points": 113,
-          "host": "10.7.3.10",
+          "host": "10.7.3.20",
           "output": 2,
           "ledOffset": 68,
           "artnetSequence": false,
@@ -10812,7 +10812,7 @@
           "scale": 1.0,
           "hasCustomPointSize": false,
           "pointSize": 5.0,
-          "selected": false,
+          "selected": true,
           "deactivate": false,
           "enabled": true,
           "brightness": 1.0,
@@ -64977,7 +64977,7 @@
         "camera": {
           "active": false,
           "radius": 597.536918739542,
-          "theta": 0.5680254623293877,
+          "theta": 0.48994287848472595,
           "phi": -2.3384348147083074,
           "x": -37.51195030368399,
           "y": 204.45437783002853,
