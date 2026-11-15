@@ -1,6 +1,6 @@
 {
   "version": "1.1.1-TE.5.GPU-SNAPSHOT",
-  "timestamp": 1794718115263,
+  "timestamp": 1794720191424,
   "model": {
     "id": 2,
     "class": "heronarts.lx.structure.LXStructure",
@@ -2122,7 +2122,7 @@
           "scale": 1.0,
           "hasCustomPointSize": false,
           "pointSize": 5.0,
-          "selected": true,
+          "selected": false,
           "deactivate": false,
           "enabled": true,
           "brightness": 1.0,
@@ -5840,7 +5840,7 @@
         "jsonFixtureType": "TE/edge/Edge39-101",
         "jsonParameters": {
           "points": 129,
-          "host": "10.7.100.13",
+          "host": "10.7.101.12",
           "output": 1,
           "ledOffset": 93,
           "artnetSequence": false,
@@ -5883,7 +5883,7 @@
         "jsonFixtureType": "TE/edge/Edge39-121",
         "jsonParameters": {
           "points": 93,
-          "host": "10.7.100.13",
+          "host": "10.7.101.12",
           "output": 1,
           "ledOffset": 0,
           "artnetSequence": false,
@@ -6313,7 +6313,7 @@
         "jsonFixtureType": "TE/edge/Edge44-101",
         "jsonParameters": {
           "points": 185,
-          "host": "10.7.100.13",
+          "host": "10.7.101.12",
           "output": 1,
           "ledOffset": 222,
           "artnetSequence": false,
@@ -6340,7 +6340,7 @@
           "scale": 1.0,
           "hasCustomPointSize": false,
           "pointSize": 5.0,
-          "selected": false,
+          "selected": true,
           "deactivate": false,
           "enabled": true,
           "brightness": 1.0,
@@ -64977,8 +64977,8 @@
         "camera": {
           "active": false,
           "radius": 597.536918739542,
-          "theta": 1.8159803226590157,
-          "phi": -12.14951307256706,
+          "theta": 0.5680254623293877,
+          "phi": -2.3384348147083074,
           "x": -37.51195030368399,
           "y": 204.45437783002853,
           "z": 68.22097625024617
